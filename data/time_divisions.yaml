@@ -1,0 +1,850 @@
+---
+meta:
+  source: Images provided in chat
+  units: Ma (million years ago)
+  note: 'Values are copied from the images; uncertainties are stored separately in
+    uncertainty_ma when shown (e.g., 149.2±0.7 becomes end_ma: 149.2, uncertainty_ma:
+    0.7).'
+eons:
+- name: Phanerozoic
+  rank: eon
+  end_ma: 538.8
+  uncertainty_ma: 0.6
+  children:
+  - name: Cenozoic
+    rank: era
+    end_ma: 66.0
+    children:
+    - name: Quaternary
+      rank: period
+      end_ma: 2.58
+      children:
+      - name: Holocene
+        rank: epoch
+        end_ma: 0.0117
+        children:
+        - name: Meghalayan
+          rank: stage
+          end_ma: 0.0042
+          color: "#EDE7C8"
+        - name: Northgrippian
+          rank: stage
+          end_ma: 0.0082
+          color: "#EDE7C8"
+        - name: Greenlandian
+          rank: stage
+          end_ma: 0.0117
+          color: "#EDE7C8"
+        color: "#EDE7C8"
+      - name: Pleistocene
+        rank: epoch
+        end_ma: 2.58
+        children:
+        - name: Upper
+          rank: stage
+          end_ma: 0.129
+          color: "#EDE7C8"
+        - name: Chibanian
+          rank: stage
+          end_ma: 0.774
+          color: "#EDE7C6"
+        - name: Calabrian
+          rank: stage
+          end_ma: 1.8
+          color: "#EDE6C2"
+        - name: Gelasian
+          rank: stage
+          end_ma: 2.58
+          color: "#EDE6BE"
+        color: "#EDE6C2"
+      color: "#EDE6C2"
+    - name: Neogene
+      rank: period
+      end_ma: 23.04
+      children:
+      - name: Pliocene
+        rank: epoch
+        end_ma: 5.333
+        children:
+        - name: Piacenzian
+          rank: stage
+          end_ma: 3.6
+          color: "#ECE6BA"
+        - name: Zanclean
+          rank: stage
+          end_ma: 5.333
+          color: "#ECE5B4"
+        color: "#ECE5B6"
+      - name: Miocene
+        rank: epoch
+        end_ma: 23.04
+        children:
+        - name: Messinian
+          rank: stage
+          end_ma: 7.246
+          color: "#ECE4AC"
+        - name: Tortonian
+          rank: stage
+          end_ma: 11.63
+          color: "#EBE29E"
+        - name: Serravallian
+          rank: stage
+          end_ma: 13.82
+          color: "#EAE190"
+        - name: Langhian
+          rank: stage
+          end_ma: 15.98
+          color: "#EAE086"
+        - name: Burdigalian
+          rank: stage
+          end_ma: 20.45
+          color: "#E9DE77"
+        - name: Aquitanian
+          rank: stage
+          end_ma: 23.04
+          color: "#E8DD68"
+        color: "#EAE089"
+      color: "#EAE18F"
+    - name: Paleogene
+      rank: period
+      end_ma: 66.0
+      children:
+      - name: Oligocene
+        rank: epoch
+        end_ma: 33.9
+        children:
+        - name: Chattian
+          rank: stage
+          end_ma: 27.3
+          color: "#E7D963"
+        - name: Rupelian
+          rank: stage
+          end_ma: 33.9
+          color: "#E5D265"
+        color: "#E6D564"
+      - name: Eocene
+        rank: epoch
+        end_ma: 56.0
+        children:
+        - name: Priabonian
+          rank: stage
+          end_ma: 37.71
+          color: "#E4CC68"
+        - name: Bartonian
+          rank: stage
+          end_ma: 41.03
+          color: "#E2C769"
+        - name: Lutetian
+          rank: stage
+          end_ma: 48.07
+          color: "#E0C16C"
+        - name: Ypresian
+          rank: stage
+          end_ma: 56.0
+          color: "#DEB86F"
+        color: "#E0C06C"
+      - name: Paleocene
+        rank: epoch
+        end_ma: 66.0
+        children:
+        - name: Thanetian
+          rank: stage
+          end_ma: 59.24
+          color: "#DCB171"
+        - name: Selandian
+          rank: stage
+          end_ma: 61.66
+          color: "#DBAD73"
+        - name: Danian
+          rank: stage
+          end_ma: 66.0
+          color: "#DAA974"
+        color: "#DBAC73"
+      color: "#E0C16C"
+    color: "#E5CF66"
+  - name: Mesozoic
+    rank: era
+    end_ma: 252.17
+    children:
+    - name: Cretaceous
+      rank: period
+      end_ma: 145.0
+      children:
+      - name: Upper
+        rank: epoch
+        end_ma: 100.5
+        uncertainty_ma: 0.1
+        children:
+        - name: Maastrichtian
+          rank: stage
+          end_ma: 72.2
+          uncertainty_ma: 0.2
+          color: "#D6A775"
+        - name: Campanian
+          rank: stage
+          end_ma: 83.6
+          uncertainty_ma: 0.2
+          color: "#CEA975"
+        - name: Santonian
+          rank: stage
+          end_ma: 85.7
+          uncertainty_ma: 0.2
+          color: "#C8AB75"
+        - name: Coniacian
+          rank: stage
+          end_ma: 89.8
+          uncertainty_ma: 0.3
+          color: "#C6AC75"
+        - name: Turonian
+          rank: stage
+          end_ma: 93.9
+          uncertainty_ma: 0.3
+          color: "#C2AE75"
+        - name: Cenomanian
+          rank: stage
+          end_ma: 100.5
+          uncertainty_ma: 0.1
+          color: "#BDAF75"
+        color: "#CAAB75"
+      - name: Lower
+        rank: epoch
+        end_ma: 145.0
+        children:
+        - name: Albian
+          rank: stage
+          end_ma: 113.2
+          uncertainty_ma: 0.3
+          color: "#B5B275"
+        - name: Aptian
+          rank: stage
+          end_ma: 121.4
+          uncertainty_ma: 0.6
+          color: "#ACB575"
+        - name: Barremian
+          rank: stage
+          end_ma: 125.77
+          color: "#A6B775"
+        - name: Hauterivian
+          rank: stage
+          end_ma: 132.6
+          uncertainty_ma: 0.6
+          color: "#A1B875"
+        - name: Valanginian
+          rank: stage
+          end_ma: 137.05
+          uncertainty_ma: 0.2
+          color: "#9CBA75"
+        - name: Berriasian
+          rank: stage
+          end_ma: 143.1
+          uncertainty_ma: 0.6
+          color: "#97BC75"
+        color: "#A7B775"
+      color: "#B6B275"
+    - name: Jurassic
+      rank: period
+      end_ma: 201.4
+      uncertainty_ma: 0.2
+      children:
+      - name: Upper
+        rank: epoch
+        end_ma: 161.5
+        uncertainty_ma: 1.0
+        children:
+        - name: Tithonian
+          rank: stage
+          end_ma: 149.2
+          uncertainty_ma: 0.7
+          color: "#91BC78"
+        - name: Kimmeridgian
+          rank: stage
+          end_ma: 154.8
+          uncertainty_ma: 0.8
+          color: "#8BBA80"
+        - name: Oxfordian
+          rank: stage
+          end_ma: 161.5
+          uncertainty_ma: 1.0
+          color: "#85B88A"
+        color: "#8ABA82"
+      - name: Middle
+        rank: epoch
+        end_ma: 174.7
+        uncertainty_ma: 0.8
+        children:
+        - name: Callovian
+          rank: stage
+          end_ma: 165.3
+          uncertainty_ma: 1.1
+          color: "#7FB692"
+        - name: Bathonian
+          rank: stage
+          end_ma: 168.2
+          uncertainty_ma: 1.2
+          color: "#7BB597"
+        - name: Bajocian
+          rank: stage
+          end_ma: 170.9
+          uncertainty_ma: 0.8
+          color: "#78B39B"
+        - name: Aalenian
+          rank: stage
+          end_ma: 174.7
+          uncertainty_ma: 0.8
+          color: "#75B2A0"
+        color: "#7AB499"
+      - name: Lower
+        rank: epoch
+        end_ma: 201.4
+        uncertainty_ma: 0.2
+        children:
+        - name: Toarcian
+          rank: stage
+          end_ma: 182.4
+          uncertainty_ma: 0.3
+          color: "#6FB0A9"
+        - name: Pliensbachian
+          rank: stage
+          end_ma: 192.9
+          uncertainty_ma: 0.3
+          color: "#65ACB8"
+        - name: Sinemurian
+          rank: stage
+          end_ma: 199.5
+          uncertainty_ma: 0.3
+          color: "#5CA9C5"
+        - name: Hettangian
+          rank: stage
+          end_ma: 201.4
+          uncertainty_ma: 0.2
+          color: "#57A7CC"
+        color: "#64ACB8"
+      color: "#75B2A1"
+    - name: Triassic
+      rank: period
+      end_ma: 251.902
+      uncertainty_ma: 0.024
+      children:
+      - name: Upper
+        rank: epoch
+        end_ma: 237
+        children:
+        - name: Rhaetian
+          rank: stage
+          end_ma: 205.7
+          color: "#58A4CB"
+        - name: Norian
+          rank: stage
+          end_ma: 227.3
+          color: "#6290BC"
+        - name: Carnian
+          rank: stage
+          end_ma: 237
+          color: "#6F78AB"
+        color: "#648CB9"
+      - name: Middle
+        rank: epoch
+        end_ma: 246.7
+        children:
+        - name: Ladinian
+          rank: stage
+          end_ma: 241.46
+          uncertainty_ma: 0.28
+          color: "#756DA3"
+        - name: Anisian
+          rank: stage
+          end_ma: 246.7
+          color: "#79669E"
+        color: "#7769A0"
+      - name: Lower
+        rank: epoch
+        end_ma: 251.902
+        uncertainty_ma: 0.024
+        children:
+        - name: Olenekian
+          rank: stage
+          end_ma: 249.9
+          color: "#7C6099"
+        - name: Induan
+          rank: stage
+          end_ma: 251.902
+          uncertainty_ma: 0.024
+          color: "#7E5C96"
+        color: "#7D5E98"
+      color: "#6A81B1"
+    color: "#84B88B"
+  - name: Paleozoic
+    rank: era
+    end_ma: 541.0
+    children:
+    - name: Permian
+      rank: period
+      end_ma: 298.9
+      uncertainty_ma: 0.15
+      children:
+      - name: Lopingian
+        rank: epoch
+        end_ma: 259.51
+        uncertainty_ma: 0.21
+        children:
+        - name: Changhsingian
+          rank: stage
+          end_ma: 251.902
+          uncertainty_ma: 0.024
+          color: "#7F5A95"
+        - name: Wuchiapingian
+          rank: stage
+          end_ma: 254.14
+          uncertainty_ma: 0.07
+          color: "#815A94"
+        color: "#855B90"
+      - name: Guadalupian
+        rank: epoch
+        end_ma: 268.9
+        uncertainty_ma: 0.4
+        children:
+        - name: Capitanian
+          rank: stage
+          end_ma: 259.51
+          uncertainty_ma: 0.21
+          color: "#8B5D8A"
+        - name: Wordian
+          rank: stage
+          end_ma: 264.28
+          uncertainty_ma: 0.16
+          color: "#8F5D87"
+        - name: Roadian
+          rank: stage
+          end_ma: 268.9
+          uncertainty_ma: 0.4
+          color: "#965F80"
+        color: "#925E84"
+      - name: Cisuralian
+        rank: epoch
+        end_ma: 298.9
+        uncertainty_ma: 0.15
+        children:
+        - name: Kungurian
+          rank: stage
+          end_ma: 283.3
+          uncertainty_ma: 0.6
+          color: "#A56273"
+        - name: Artinskian
+          rank: stage
+          end_ma: 290.1
+          uncertainty_ma: 0.26
+          color: "#B66663"
+        - name: Sakmarian
+          rank: stage
+          end_ma: 293.52
+          uncertainty_ma: 0.17
+          color: "#BE685C"
+        - name: Asselian
+          rank: stage
+          end_ma: 298.9
+          uncertainty_ma: 0.15
+          color: "#C56956"
+        color: "#B16567"
+      color: "#A46273"
+    - name: Carboniferous
+      rank: period
+      end_ma: 358.86
+      uncertainty_ma: 0.19
+      children:
+      - name: Pennsylvanian
+        rank: epoch
+        end_ma: 323.4
+        uncertainty_ma: 0.4
+        children:
+        - name: Gzhelian
+          rank: stage
+          end_ma: 303.7
+          uncertainty_ma: 0.1
+          color: "#C26F5A"
+        - name: Kasimovian
+          rank: stage
+          end_ma: 307.0
+          uncertainty_ma: 0.1
+          color: "#B57767"
+        - name: Moscovian
+          rank: stage
+          end_ma: 315.2
+          uncertainty_ma: 0.2
+          color: "#A38379"
+        - name: Bashkirian
+          rank: stage
+          end_ma: 323.4
+          uncertainty_ma: 0.4
+          color: "#8A9494"
+        color: "#A3847A"
+      - name: Mississippian
+        rank: epoch
+        end_ma: 358.86
+        uncertainty_ma: 0.19
+        children:
+        - name: Serpukhovian
+          rank: stage
+          end_ma: 330.3
+          uncertainty_ma: 0.4
+          color: "#809F9F"
+        - name: Visean
+          rank: stage
+          end_ma: 346.7
+          uncertainty_ma: 0.4
+          color: "#8AA599"
+        - name: Tournaisian
+          rank: stage
+          end_ma: 358.86
+          uncertainty_ma: 0.19
+          color: "#96AD92"
+        color: "#8CA698"
+      color: "#82A09E"
+    - name: Devonian
+      rank: period
+      end_ma: 419.62
+      uncertainty_ma: 1.36
+      children:
+      - name: Upper
+        rank: epoch
+        end_ma: 382.7
+        uncertainty_ma: 1.6
+        children:
+        - name: Famennian
+          rank: stage
+          end_ma: 372.15
+          uncertainty_ma: 0.46
+          color: "#9FAE8B"
+        - name: Frasnian
+          rank: stage
+          end_ma: 382.7
+          uncertainty_ma: 1.6
+          color: "#A5AA83"
+        color: "#A1AC87"
+      - name: Middle
+        rank: epoch
+        end_ma: 393.47
+        uncertainty_ma: 0.99
+        children:
+        - name: Givetian
+          rank: stage
+          end_ma: 387.95
+          uncertainty_ma: 1.04
+          color: "#A9A77E"
+        - name: Eifelian
+          rank: stage
+          end_ma: 393.47
+          uncertainty_ma: 0.99
+          color: "#ACA67A"
+        color: "#ABA67C"
+      - name: Lower
+        rank: epoch
+        end_ma: 419.62
+        uncertainty_ma: 1.36
+        children:
+        - name: Pragian
+          rank: stage
+          end_ma: 410.62
+          uncertainty_ma: 1.95
+          color: "#B2A273"
+        - name: Emsian
+          rank: stage
+          end_ma: 413.02
+          uncertainty_ma: 1.91
+          color: "#B89F6C"
+        - name: Lochkovian
+          rank: stage
+          end_ma: 419.62
+          uncertainty_ma: 1.36
+          color: "#BA9D69"
+        color: "#B5A070"
+      color: "#ACA67B"
+    - name: Silurian
+      rank: period
+      end_ma: 443.8
+      uncertainty_ma: 1.5
+      children:
+      - name: Přídolí
+        rank: epoch
+        end_ma: 422.7
+        uncertainty_ma: 0.6
+        children:
+        - name: Přídolí*
+          rank: stage
+          end_ma: 421.16
+          color: "#BAA173"
+        - name: Kopanina*
+          rank: stage
+          end_ma: 422.7
+          color: "#B89F6C"
+        color: "#BB9F6C"
+      - name: Ludlow
+        rank: epoch
+        end_ma: 427.4
+        uncertainty_ma: 1.5
+        children:
+        - name: Ludfordian
+          rank: stage
+          end_ma: 425.6
+          uncertainty_ma: 1.5
+          color: "#B8A476"
+        - name: Gorstian
+          rank: stage
+          end_ma: 427.4
+          uncertainty_ma: 1.5
+          color: "#B6A77D"
+        color: "#B7A579"
+      - name: Wenlock
+        rank: epoch
+        end_ma: 433.4
+        uncertainty_ma: 1.5
+        children:
+        - name: Homerian
+          rank: stage
+          end_ma: 430.6
+          uncertainty_ma: 1.3
+          color: "#B4AC85"
+        - name: Sheinwoodian
+          rank: stage
+          end_ma: 432.9
+          uncertainty_ma: 1.2
+          color: "#B2B08E"
+        color: "#B3AE89"
+      - name: Llandovery
+        rank: epoch
+        end_ma: 443.8
+        uncertainty_ma: 1.5
+        children:
+        - name: Telychian
+          rank: stage
+          end_ma: 438.6
+          uncertainty_ma: 1.0
+          color: "#AEB79B"
+        - name: Aeronian
+          rank: stage
+          end_ma: 440.5
+          uncertainty_ma: 1.0
+          color: "#ACBDA6"
+        - name: Rhuddanian
+          rank: stage
+          end_ma: 443.1
+          uncertainty_ma: 0.9
+          color: "#AAC1AE"
+        color: "#ACBBA3"
+      color: "#B2B08E"
+    - name: Ordovician
+      rank: period
+      end_ma: 485.4
+      uncertainty_ma: 1.9
+      children:
+      - name: Upper
+        rank: epoch
+        end_ma: 458.4
+        uncertainty_ma: 0.9
+        children:
+        - name: Hirnantian
+          rank: stage
+          end_ma: 445.2
+          uncertainty_ma: 0.9
+          color: "#A7C3B3"
+        - name: Katian
+          rank: stage
+          end_ma: 452.8
+          uncertainty_ma: 0.7
+          color: "#9DC0AF"
+        - name: Sandbian
+          rank: stage
+          end_ma: 458.4
+          uncertainty_ma: 0.9
+          color: "#90BAA9"
+        color: "#99BEAD"
+      - name: Middle
+        rank: epoch
+        end_ma: 469.2
+        uncertainty_ma: 0.9
+        children:
+        - name: Darriwilian
+          rank: stage
+          end_ma: 467.3
+          uncertainty_ma: 1.1
+          color: "#81B5A2"
+        - name: Dapingian
+          rank: stage
+          end_ma: 469.2
+          uncertainty_ma: 0.9
+          color: "#75B09D"
+        color: "#7FB4A1"
+      - name: Lower
+        rank: epoch
+        end_ma: 477.7
+        uncertainty_ma: 1.4
+        children:
+        - name: Floian
+          rank: stage
+          end_ma: 477.7
+          uncertainty_ma: 1.4
+          color: "#6BAC98"
+        - name: Tremadocian
+          rank: stage
+          end_ma: 485.4
+          uncertainty_ma: 1.9
+          color: "#5AA591"
+        color: "#6BAC98"
+      color: "#7DB3A1"
+    - name: Cambrian
+      rank: period
+      end_ma: 538.8
+      uncertainty_ma: 0.6
+      children:
+      - name: Furongian
+        rank: epoch
+        end_ma: 497.0
+        children:
+        - name: Stage 10
+          rank: stage
+          end_ma: 486.85
+          uncertainty_ma: 1.5
+          color: "#50A28D"
+        - name: Jiangshanian
+          rank: stage
+          end_ma: 494.2
+          color: "#53A18B"
+        - name: Paibian
+          rank: stage
+          end_ma: 497.0
+          color: "#59A189"
+        color: "#54A18B"
+      - name: Miaolingian
+        rank: epoch
+        end_ma: 506.5
+        children:
+        - name: Guzhangian
+          rank: stage
+          end_ma: 500.5
+          color: "#5DA188"
+        - name: Drumian
+          rank: stage
+          end_ma: 504.5
+          color: "#61A287"
+        - name: Wuliuan
+          rank: stage
+          end_ma: 506.5
+          color: "#65A286"
+        color: "#60A287"
+      - name: Series 2
+        rank: epoch
+        end_ma: 521.0
+        children:
+        - name: Stage 4
+          rank: stage
+          end_ma: 514.5
+          color: "#6BA284"
+        - name: Stage 3
+          rank: stage
+          end_ma: 521.0
+          color: "#73A282"
+        color: "#6EA283"
+      - name: Terreneuvian
+        rank: epoch
+        end_ma: 538.8
+        uncertainty_ma: 0.6
+        children:
+        - name: Stage 2
+          rank: stage
+          end_ma: 529.0
+          color: "#7BA27F"
+        - name: Fortunian
+          rank: stage
+          end_ma: 538.8
+          uncertainty_ma: 0.6
+          color: "#86A37C"
+        color: "#81A37E"
+      color: "#6CA284"
+    color: "#AFA476"
+  color: "#9C607B"
+- name: Proterozoic
+  rank: eon
+  end_ma: 2500
+  children:
+  - name: Neoproterozoic
+    rank: era
+    end_ma: 1000
+    children:
+    - name: Ediacaran
+      rank: period
+      end_ma: 635
+      color: "#96A67B"
+    - name: Cryogenian
+      rank: period
+      end_ma: 720
+      color: "#A7AD7D"
+    - name: Tonian
+      rank: period
+      end_ma: 1000
+      color: "#C8B981"
+    color: "#B8B37F"
+  - name: Mesoproterozoic
+    rank: era
+    end_ma: 1600
+    children:
+    - name: Stenian
+      rank: period
+      end_ma: 1200
+      color: "#DEBB86"
+    - name: Ectasian
+      rank: period
+      end_ma: 1400
+      color: "#D8AB8B"
+    - name: Calymmian
+      rank: period
+      end_ma: 1600
+      color: "#D39B90"
+    color: "#D8AB8B"
+  - name: Paleoproterozoic
+    rank: era
+    end_ma: 2500
+    children:
+    - name: Statherian
+      rank: period
+      end_ma: 1800
+      color: "#CD8B95"
+    - name: Orosirian
+      rank: period
+      end_ma: 2050
+      color: "#CC7F94"
+    - name: Rhyacian
+      rank: period
+      end_ma: 2300
+      color: "#CF768E"
+    - name: Siderian
+      rank: period
+      end_ma: 2500
+      color: "#D26E88"
+    color: "#CD7A91"
+  color: "#D29990"
+- name: Archean
+  rank: eon
+  end_ma: 4031
+  uncertainty_ma: 3
+  children:
+  - name: Neoarchean
+    rank: era
+    end_ma: 2800
+    color: "#D16E8C"
+  - name: Mesoarchean
+    rank: era
+    end_ma: 3200
+    color: "#CC7599"
+  - name: Paleoarchean
+    rank: era
+    end_ma: 3600
+    color: "#C4689D"
+  - name: Eoarchean
+    rank: era
+    end_ma: 4031
+    uncertainty_ma: 3
+    color: "#B94494"
+  color: "#C773A0"
+- name: Hadean
+  rank: eon
+  end_ma: 4567
+  color: "#A4348B"
