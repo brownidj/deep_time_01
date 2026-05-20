@@ -123,7 +123,7 @@ rg --files "$ROOT_DIR" \
 
 ## Code base architecture state
 
-Assessment date: 2026-05-19
+Assessment date: 2026-05-21
 
 ### Overall status
 - Layered architecture now exists: `lib/domain`, `lib/application`, `lib/app`, `lib/ui`, and `lib/infra`.
@@ -134,15 +134,16 @@ Assessment date: 2026-05-19
 - Database-backed timeline storage (divisions, taxa, fossil ranges) with schema, seed data, and repositories.
 - Timeline service to load divisions/taxa and query overlapping fossil ranges.
 - Added `TimelineLayoutService` to derive display-safe timeline segments from hierarchical divisions.
-- Implemented a full-width continuous row UI with geological bands (eon/era) and an interactive primary row.
+- Implemented a full-width continuous row UI with geological bands (eon/era) and interactive rows for period, epoch, stage, and representational life (RLife).
 - Carboniferous continuity is handled in one strip by splitting into contiguous `Mississippian` then `Pennsylvanian` segments.
-- Representational life rows are intentionally not rendered in this phase.
+- Representational life (RLife) row renders period-aligned organism lists and uses period colors.
 - Embedded explicit per-division colors in `data/time_divisions.yaml` (every node has a `color`) and load them via a YAML palette repository; missing colors are treated as errors (no fallback). Palette keys are hierarchical paths to avoid float drift.
 - Central debug gate (`AppDebug`) for logging.
 - Added a pure unit test for timeline layout behavior (`test/timeline_layout_service_test.dart`).
 - Added pure unit tests for deep-time palette anchors and interpolation behavior (`test/deep_time_palette_test.dart`).
 - Geological time divisions captured in `data/time_divisions.yaml` and loaded into SQLite on first run.
-- YAML data normalized to `start_ma` plus optional `uncertainty_ma` and persisted as `start_ma_uncertainty`.
+- YAML data now uses `end_ma` values (boundary ages) plus optional `uncertainty_ma`; seeding derives start/end ranges from sibling boundaries.
+- Mass extinction markers are rendered as small yellow triangles at period boundaries, with labels and tooltips.
 
 ### Code goodness (quality assessment)
 - Strengths:
@@ -155,8 +156,7 @@ Assessment date: 2026-05-19
   - Error handling is minimal for DB operations beyond the close path.
   - Geological boundary consistency (end date equals next start date) is not enforced by rules/constraints.
   - Geologic rank taxonomy now includes `stage`, but rank handling is still incomplete for other possible labels.
-  - There are few in-code comments, which is below the prompt expectation to include clear comments throughout.
-  - No automated enforcement of the 300-line rule.
+- There are few in-code comments, which is below the prompt expectation to include clear comments throughout.
 
 ### Architecture and separation of concerns
 - `lib/main.dart` is a thin entry point that only calls `runApp`.
@@ -164,7 +164,7 @@ Assessment date: 2026-05-19
 - Domain models and repository contracts are isolated in `lib/domain`.
 - Infrastructure code lives in `lib/infra` with database setup, schema, seed data, and repository implementations.
 - Palette loading is handled by `YamlTimelinePaletteRepository` in infra and exposed via `TimelineService` with validation that every division has a color. Seeding now reinitializes the DB if the division count changes.
-- Layout derivation now lives in `lib/application/services/timeline_layout_service.dart` (UI remains free of repository and DB concerns).
+- Layout derivation now lives in `lib/application/services/timeline_layout_service.dart` and helper modules (`timeline_layout_builder.dart`, `timeline_layout_rows.dart`, `timeline_layout_slots.dart`, `timeline_layout_rlife.dart`).
 - UI remains split into screen/widget modules under `lib/ui` and consumes service output only.
 
 ### Readability and maintainability
@@ -174,7 +174,7 @@ Assessment date: 2026-05-19
 
 ### File-size constraint compliance
 - All Dart files are under 300 lines.
-- There is still no script enforcing the 300-line rule.
+- `scripts/check_file_sizes.sh` now skips binary files and explicitly excludes `data/time_divisions.yaml`.
 
 ### Testing and refactor posture
 - Added a small pure test for `TimelineService`.
@@ -192,10 +192,10 @@ Assessment date: 2026-05-19
 
 ## Tests run
 
-Run date: 2026-05-19
+Run date: 2026-05-21
 
 1. `flutter analyze`
-- Result: informational findings only (`9` infos, no errors/warnings). Existing infos are deprecated `dispose()` calls in repository files.
+- Result: pass (no issues).
 
-2. `flutter test`
-- Result: pass (`5` tests passed).
+2. `./scripts/check_file_sizes.sh .`
+- Result: pass.
