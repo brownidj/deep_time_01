@@ -2,6 +2,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:gts_01/application/services/timeline_layout_service.dart';
 import 'package:gts_01/domain/models/geologic_division.dart';
 import 'package:gts_01/domain/models/geologic_rank.dart';
+import 'package:gts_01/domain/models/timeline_marker_catalog.dart';
+import 'package:gts_01/domain/models/timeline_palette.dart';
 
 void main() {
   test(
@@ -75,7 +77,7 @@ void main() {
       ];
 
       final service = TimelineLayoutService();
-      final layout = service.build(divisions);
+      final layout = service.build(divisions, _testMarkers());
       final epochLabels = layout.epochSegments
           .where((segment) => !segment.isGap)
           .map((segment) {
@@ -149,7 +151,7 @@ void main() {
     ];
 
     final service = TimelineLayoutService();
-    final layout = service.build(divisions);
+    final layout = service.build(divisions, _testMarkers());
     final periodLabels = layout.periodSegments
         .where((segment) => !segment.isGap)
         .map((segment) => segment.label)
@@ -195,7 +197,7 @@ void main() {
     ];
 
     final service = TimelineLayoutService();
-    final layout = service.build(divisions);
+    final layout = service.build(divisions, _testMarkers());
     final eonLabels = layout.eonSegments
         .where((segment) => !segment.isGap)
         .map((segment) => segment.label)
@@ -203,4 +205,83 @@ void main() {
 
     expect(eonLabels, ['Hadean', 'Archean', 'Proterozoic', 'Phanerozoic']);
   });
+
+  test('build includes event segments with period-based color keys', () {
+    final divisions = [
+      const GeologicDivision(
+        id: 1,
+        name: 'Phanerozoic',
+        rank: GeologicRank.eon,
+        startMa: 66,
+        endMa: 0,
+        parentId: null,
+      ),
+      const GeologicDivision(
+        id: 2,
+        name: 'Cenozoic',
+        rank: GeologicRank.era,
+        startMa: 66,
+        endMa: 0,
+        parentId: 1,
+      ),
+      const GeologicDivision(
+        id: 3,
+        name: 'Paleogene',
+        rank: GeologicRank.period,
+        startMa: 66,
+        endMa: 23,
+        parentId: 2,
+      ),
+      const GeologicDivision(
+        id: 4,
+        name: 'Neogene',
+        rank: GeologicRank.period,
+        startMa: 23,
+        endMa: 0,
+        parentId: 2,
+      ),
+    ];
+
+    final service = TimelineLayoutService();
+    final layout = service.build(divisions, _testMarkers());
+
+    expect(layout.eventSegments, isNotEmpty);
+
+    final petm = layout.eventSegments.firstWhere(
+      (e) => e.label == 'PETM biotic event',
+    );
+    expect(petm.type.name, 'point');
+
+    final expectedKey = divisionColorKey(
+      name: 'Paleogene',
+      rank: 'period',
+      parentKey: divisionColorKey(
+        name: 'Cenozoic',
+        rank: 'era',
+        parentKey: divisionColorKey(name: 'Phanerozoic', rank: 'eon'),
+      ),
+    );
+    expect(petm.colorKey, expectedKey);
+  });
+}
+
+TimelineMarkerCatalog _testMarkers() {
+  return const TimelineMarkerCatalog(
+    events: [
+      TimelineEventDefinition(
+        label: 'PETM biotic event',
+        shortLabel: 'PETM',
+        kind: TimelineEventKind.point,
+        atMa: 56,
+      ),
+      TimelineEventDefinition(
+        label: 'Rise of mammals',
+        shortLabel: 'Mammal rise',
+        kind: TimelineEventKind.bar,
+        startMa: 66,
+        endMa: 23,
+      ),
+    ],
+    extinctions: [],
+  );
 }

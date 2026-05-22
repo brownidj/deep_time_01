@@ -137,6 +137,7 @@ Assessment date: 2026-05-21
 - Implemented a full-width continuous row UI with geological bands (eon/era) and interactive rows for period, epoch, stage, and representational life (RLife).
 - Carboniferous continuity is handled in one strip by splitting into contiguous `Mississippian` then `Pennsylvanian` segments.
 - Representational life (RLife) row renders period-aligned organism lists and uses period colors.
+- Added an Events row with interval bars (e.g., GOE/GOBE) and point markers (e.g., PETM), aligned to timeline units.
 - Embedded explicit per-division colors in `data/time_divisions.yaml` (every node has a `color`) and load them via a YAML palette repository; missing colors are treated as errors (no fallback). Palette keys are hierarchical paths to avoid float drift.
 - Central debug gate (`AppDebug`) for logging.
 - Added a pure unit test for timeline layout behavior (`test/timeline_layout_service_test.dart`).

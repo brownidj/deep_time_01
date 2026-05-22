@@ -1,34 +1,81 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:gts_01/application/services/timeline_layout_service.dart';
+import 'package:gts_01/domain/models/timeline_marker_catalog.dart';
+
+part 'timeline_extinction_marker_widgets.dart';
 
 class ExtinctionMarkers extends StatelessWidget {
   const ExtinctionMarkers({
     super.key,
     required this.width,
+    required this.height,
     required this.periodSegments,
     required this.stageSegments,
+    this.extinctions = const [],
+    this.markerLayouts,
   });
 
+  static const markerHeight = 14.0;
+  static const triangleWidth = 12.0;
+  static const majorMarkerHeight = 42.0;
+  static const majorTriangleWidth = 36.0;
+  static const lineWidth = 1.0;
+  static const markerColor = Color(0xFFFF6D00);
+
   final double width;
+  final double height;
   final List<TimelineRowSegment> periodSegments;
   final List<TimelineRowSegment> stageSegments;
+  final List<ExtinctionDefinition> extinctions;
+  final List<ExtinctionMarkerLayout>? markerLayouts;
 
   @override
   Widget build(BuildContext context) {
-    final markers = _buildMarkers();
+    final markers =
+        markerLayouts ??
+        ExtinctionMarkers.buildMarkerLayouts(
+          width: width,
+          periodSegments: periodSegments,
+          stageSegments: stageSegments,
+          extinctions: extinctions,
+        );
     if (markers.isEmpty) {
       return const SizedBox.shrink();
     }
+    final textStyle = Theme.of(context).textTheme.labelSmall?.copyWith(
+      color: Colors.black,
+      fontWeight: FontWeight.w700,
+    );
     return SizedBox(
-      height: 10,
+      height: height,
       child: Stack(
+        clipBehavior: Clip.none,
         children: [
           for (final marker in markers)
+            if (textStyle != null)
+              Positioned(
+                left: _centeredLeftForMarker(
+                  marker: marker,
+                  textStyle: textStyle,
+                ).clamp(0.0, width),
+                top: marker.isMajor
+                    ? (markerHeight - majorMarkerHeight)
+                    : 0.0,
+                child: _ExtinctionMarker(
+                  label: marker.isMajor ? marker.label : marker.shortLabel,
+                  isMajor: marker.isMajor,
+                ),
+              ),
+          for (final marker in markers)
             Positioned(
-              left: (marker.x - 6).clamp(0.0, width - 12),
-              child: Tooltip(
-                message: marker.label,
-                child: _ExtinctionMarker(label: marker.shortLabel),
+              left: (marker.x - lineWidth / 2).clamp(0.0, width - lineWidth),
+              top: markerHeight,
+              bottom: 0,
+              child: Container(
+                width: lineWidth,
+                color: markerColor,
               ),
             ),
         ],
@@ -36,8 +83,13 @@ class ExtinctionMarkers extends StatelessWidget {
     );
   }
 
-  List<_MarkerData> _buildMarkers() {
-    final markers = <_MarkerData>[];
+  static List<ExtinctionMarkerLayout> buildMarkerLayouts({
+    required double width,
+    required List<TimelineRowSegment> periodSegments,
+    required List<TimelineRowSegment> stageSegments,
+    required List<ExtinctionDefinition> extinctions,
+  }) {
+    final markers = <ExtinctionMarkerLayout>[];
     final periodTotal = _totalUnits(periodSegments);
     final stageTotal = _totalUnits(stageSegments);
     if (periodTotal <= 0) {
@@ -69,57 +121,54 @@ class ExtinctionMarkers extends StatelessWidget {
       return null;
     }
 
-    final ordovician = boundaryForPeriod('Ordovician');
-    if (ordovician != null) {
-      markers.add(
-        _MarkerData(
-          label: 'End-Ordovician extinction',
-          shortLabel: 'E-O',
-          x: ordovician,
-        ),
-      );
+    double? positionForMa(double ma) {
+      var unitCursor = 0.0;
+      for (final segment in periodSegments) {
+        final unitEnd = unitCursor + segment.unitSpan;
+        if (!segment.isGap &&
+            ma <= segment.startMa &&
+            ma >= segment.endMa) {
+          final span = segment.startMa - segment.endMa;
+          if (span <= 0) {
+            return width * (unitCursor / periodTotal);
+          }
+          final fraction = (segment.startMa - ma) / span;
+          final unitPos =
+              unitCursor + (segment.unitSpan * fraction.clamp(0.0, 1.0));
+          return width * (unitPos / periodTotal);
+        }
+        unitCursor = unitEnd;
+      }
+      if (ma >= periodSegments.first.startMa) {
+        return 0;
+      }
+      return width;
     }
 
-    final lateDevonian = boundaryForStage('Frasnian');
-    if (lateDevonian != null) {
+    for (final extinction in extinctions) {
+      double? x;
+      switch (extinction.anchor.type) {
+        case ExtinctionAnchorType.period:
+          x = boundaryForPeriod(extinction.anchor.label ?? '');
+          break;
+        case ExtinctionAnchorType.stage:
+          x = boundaryForStage(extinction.anchor.label ?? '');
+          break;
+        case ExtinctionAnchorType.ma:
+          if (extinction.anchor.ma != null) {
+            x = positionForMa(extinction.anchor.ma!);
+          }
+          break;
+      }
+      if (x == null) {
+        continue;
+      }
       markers.add(
-        _MarkerData(
-          label: 'Late Devonian extinctions',
-          shortLabel: 'LD',
-          x: lateDevonian,
-        ),
-      );
-    }
-
-    final permian = boundaryForPeriod('Permian');
-    if (permian != null) {
-      markers.add(
-        _MarkerData(
-          label: 'End-Permian extinction',
-          shortLabel: 'E-P',
-          x: permian,
-        ),
-      );
-    }
-
-    final triassic = boundaryForPeriod('Triassic');
-    if (triassic != null) {
-      markers.add(
-        _MarkerData(
-          label: 'End-Triassic extinction',
-          shortLabel: 'E-T',
-          x: triassic,
-        ),
-      );
-    }
-
-    final cretaceous = boundaryForPeriod('Cretaceous');
-    if (cretaceous != null) {
-      markers.add(
-        _MarkerData(
-          label: 'End-Cretaceous / K-Pg extinction',
-          shortLabel: 'K-Pg',
-          x: cretaceous,
+        ExtinctionMarkerLayout(
+          label: extinction.label,
+          shortLabel: extinction.shortLabel,
+          x: x,
+          isMajor: extinction.isMajor,
         ),
       );
     }
@@ -127,64 +176,29 @@ class ExtinctionMarkers extends StatelessWidget {
     return markers;
   }
 
-  double _totalUnits(List<TimelineRowSegment> segments) {
+  static double _totalUnits(List<TimelineRowSegment> segments) {
     return segments.fold<double>(0.0, (sum, segment) => sum + segment.unitSpan);
   }
-}
 
-class _ExtinctionMarker extends StatelessWidget {
-  const _ExtinctionMarker({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          label,
-          style: Theme.of(context).textTheme.labelSmall?.copyWith(
-            color: const Color(0xFFFFD978),
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        const SizedBox(height: 2),
-        CustomPaint(
-          size: const Size(12, 10),
-          painter: _TrianglePainter(),
-        ),
-      ],
-    );
+  double _centeredLeftForMarker({
+    required ExtinctionMarkerLayout marker,
+    required TextStyle textStyle,
+  }) {
+    final label = marker.isMajor ? marker.label : marker.shortLabel;
+    final effectiveStyle = marker.isMajor
+        ? textStyle.copyWith(
+            fontSize: (textStyle.fontSize ?? 12) + 4,
+          )
+        : textStyle;
+    final textPainter = TextPainter(
+      text: TextSpan(text: label, style: effectiveStyle),
+      maxLines: 1,
+      textDirection: TextDirection.ltr,
+    )..layout();
+    final markerTriangleWidth = marker.isMajor
+        ? majorTriangleWidth
+        : triangleWidth;
+    final markerWidth = math.max(textPainter.width, markerTriangleWidth);
+    return marker.x - markerWidth / 2;
   }
-}
-
-class _TrianglePainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = const Color(0xFFFFD978)
-      ..style = PaintingStyle.fill;
-    final path = Path()
-      ..moveTo(size.width / 2, size.height)
-      ..lineTo(0, 0)
-      ..lineTo(size.width, 0)
-      ..close();
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class _MarkerData {
-  const _MarkerData({
-    required this.label,
-    required this.shortLabel,
-    required this.x,
-  });
-
-  final String label;
-  final String shortLabel;
-  final double x;
 }

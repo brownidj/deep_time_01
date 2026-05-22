@@ -4,9 +4,11 @@ import 'package:gts_01/domain/models/geologic_division.dart';
 import 'package:gts_01/domain/models/geologic_rank.dart';
 import 'package:gts_01/domain/models/paleontology_taxon.dart';
 import 'package:gts_01/domain/models/fossil_range.dart';
+import 'package:gts_01/domain/models/timeline_marker_catalog.dart';
 import 'package:gts_01/domain/models/timeline_palette.dart';
 import 'package:gts_01/domain/repositories/geologic_division_repository.dart';
 import 'package:gts_01/domain/repositories/paleontology_repository.dart';
+import 'package:gts_01/domain/repositories/timeline_marker_repository.dart';
 import 'package:gts_01/domain/repositories/timeline_palette_repository.dart';
 
 class _FakeDivisionRepository implements GeologicDivisionRepository {
@@ -119,6 +121,15 @@ class _FakePaletteRepository implements TimelinePaletteRepository {
   Future<TimelinePalette> fetchPalette() async => _palette;
 }
 
+class _FakeMarkerRepository implements TimelineMarkerRepository {
+  _FakeMarkerRepository(this._markers);
+
+  final TimelineMarkerCatalog _markers;
+
+  @override
+  Future<TimelineMarkerCatalog> fetchMarkers() async => _markers;
+}
+
 extension<T> on Iterable<T> {
   T? get firstOrNull {
     final iterator = this.iterator;
@@ -160,6 +171,9 @@ void main() {
       divisionRepository: _FakeDivisionRepository(divisions),
       paleontologyRepository: _FakePaleontologyRepository(taxa, ranges),
       paletteRepository: _FakePaletteRepository(palette),
+      markerRepository: _FakeMarkerRepository(
+        const TimelineMarkerCatalog(events: [], extinctions: []),
+      ),
     );
 
     final snapshot = await service.loadSnapshot();
@@ -168,6 +182,7 @@ void main() {
     expect(snapshot.taxa, hasLength(1));
     expect(snapshot.ranges, hasLength(1));
     expect(snapshot.palette, palette);
+    expect(snapshot.markers.events, isEmpty);
   });
 
   test('rangesForDivision returns overlapping ranges', () async {
@@ -187,6 +202,9 @@ void main() {
       divisionRepository: _FakeDivisionRepository([division]),
       paleontologyRepository: _FakePaleontologyRepository(const [], ranges),
       paletteRepository: _FakePaletteRepository(palette),
+      markerRepository: _FakeMarkerRepository(
+        const TimelineMarkerCatalog(events: [], extinctions: []),
+      ),
     );
 
     final results = await service.rangesForDivision(division);

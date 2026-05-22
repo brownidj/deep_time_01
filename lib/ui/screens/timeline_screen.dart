@@ -202,7 +202,8 @@ class _TimelineScreenState extends State<TimelineScreen> {
 
         final divisions = snapshot.data!.divisions;
         final palette = DeepTimePalette(snapshot.data!.palette);
-        final layout = _layoutService.build(divisions);
+        final markers = snapshot.data!.markers;
+        final layout = _layoutService.build(divisions, markers);
         _primeSelection(
           layout.periodSegments,
           layout.epochSegments,
@@ -241,6 +242,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
                   TimelineBody(
                     layout: layout,
                     palette: palette,
+                    markers: markers,
                     labelMode: _labelMode,
                     scrollController: _timelineScrollController,
                     selectedId: selected?.id,

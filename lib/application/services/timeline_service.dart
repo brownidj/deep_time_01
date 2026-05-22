@@ -1,9 +1,11 @@
 import 'package:gts_01/domain/models/geologic_division.dart';
 import 'package:gts_01/domain/models/paleontology_taxon.dart';
 import 'package:gts_01/domain/models/fossil_range.dart';
+import 'package:gts_01/domain/models/timeline_marker_catalog.dart';
 import 'package:gts_01/domain/models/timeline_palette.dart';
 import 'package:gts_01/domain/repositories/geologic_division_repository.dart';
 import 'package:gts_01/domain/repositories/paleontology_repository.dart';
+import 'package:gts_01/domain/repositories/timeline_marker_repository.dart';
 import 'package:gts_01/domain/repositories/timeline_palette_repository.dart';
 
 class TimelineSnapshot {
@@ -12,12 +14,14 @@ class TimelineSnapshot {
     required this.taxa,
     required this.ranges,
     required this.palette,
+    required this.markers,
   });
 
   final List<GeologicDivision> divisions;
   final List<PaleontologyTaxon> taxa;
   final List<FossilRange> ranges;
   final TimelinePalette palette;
+  final TimelineMarkerCatalog markers;
 }
 
 class TimelineService {
@@ -25,11 +29,13 @@ class TimelineService {
     required this._divisionRepository,
     required this._paleontologyRepository,
     required this._paletteRepository,
+    required this._markerRepository,
   });
 
   final GeologicDivisionRepository _divisionRepository;
   final PaleontologyRepository _paleontologyRepository;
   final TimelinePaletteRepository _paletteRepository;
+  final TimelineMarkerRepository _markerRepository;
 
   Future<TimelineSnapshot> loadSnapshot() async {
     final divisions = await _divisionRepository.fetchAll();
@@ -39,12 +45,14 @@ class TimelineService {
       0,
     );
     final palette = await _paletteRepository.fetchPalette();
+    final markers = await _markerRepository.fetchMarkers();
     _validatePaletteCoverage(palette, divisions);
     return TimelineSnapshot(
       divisions: divisions,
       taxa: taxa,
       ranges: ranges,
       palette: palette,
+      markers: markers,
     );
   }
 

@@ -1,0 +1,183 @@
+events:
+  - label: Great Oxidation
+    short_label: GOE
+    type: bar
+    start_ma: 2400
+    end_ma: 2100
+  - label: Ediacaran biota
+    short_label: Ediacaran
+    type: bar
+    start_ma: 575
+    end_ma: 539
+  - label: Cambrian explosion
+    short_label: Cambrian expl.
+    type: bar
+    start_ma: 539
+    end_ma: 520
+  - label: Great Ordovician Biodiversification
+    short_label: GOBE
+    type: bar
+    start_ma: 485
+    end_ma: 445
+  - label: First land plants
+    short_label: First land plants
+    type: bar
+    start_ma: 470
+    end_ma: 430
+  - label: First forests
+    short_label: First forests
+    type: bar
+    start_ma: 390
+    end_ma: 370
+  - label: First tetrapods
+    short_label: Tetrapods
+    type: bar
+    start_ma: 375
+    end_ma: 365
+  - label: Coal swamps
+    short_label: Coal swamps
+    type: bar
+    start_ma: 359
+    end_ma: 299
+  - label: Pangaea assembled
+    short_label: Pangaea
+    type: bar
+    start_ma: 320
+    end_ma: 250
+  - label: First dinosaurs
+    short_label: Dinosaurs
+    type: bar
+    start_ma: 233
+    end_ma: 231
+  - label: First mammals
+    short_label: First Mammals
+    type: bar
+    start_ma: 225
+    end_ma: 200
+  - label: First birds
+    short_label: Birds
+    type: bar
+    start_ma: 160
+    end_ma: 150
+  - label: Flowering plants
+    short_label: Angiosperms
+    type: bar
+    start_ma: 135
+    end_ma: 125
+  - label: Rise of mammals
+    short_label: Rise of mammals
+    type: bar
+    start_ma: 66
+    end_ma: 23
+  - label: Grassland expansion
+    short_label: Grasslands
+    type: bar
+    start_ma: 23
+    end_ma: 5
+  - label: Quaternary glaciations
+    short_label: Quaternary glaciations
+    type: bar
+    start_ma: 2.58
+    end_ma: 0.0117
+  - label: End-Ediacaran turnover
+    short_label: EET
+    type: point
+    at_ma: 539
+  - label: Ireviken event
+    short_label: IE
+    type: point
+    at_ma: 433
+  - label: Lau event
+    short_label: LE
+    type: point
+    at_ma: 420
+  - label: OAE2
+    short_label: OAE2
+    type: point
+    at_ma: 94
+  - label: PETM biotic event
+    short_label: PETM
+    type: point
+    at_ma: 56
+  - label: Eocene-Oligocene turnover
+    short_label: EOT
+    type: point
+    at_ma: 34
+  - label: Antarctic glaciation
+    short_label: Antarctic glaciation
+    type: bar
+    start_ma: 33.9
+    end_ma: 0.0
+  - label: Homo sapiens
+    short_label: H. sapiens
+    type: bar
+    start_ma: 0.3
+    end_ma: 0.0
+
+extinctions:
+  - label: End-Ordovician
+    short_label: EO
+    is_major: true
+    anchor:
+      type: period
+      label: Ordovician
+  - label: Late Devonian
+    short_label: LD
+    is_major: true
+    anchor:
+      type: stage
+      label: Frasnian
+  - label: End-Permian
+    short_label: EP
+    is_major: true
+    anchor:
+      type: period
+      label: Permian
+  - label: End-Triassic
+    short_label: ET
+    is_major: true
+    anchor:
+      type: period
+      label: Triassic
+  - label: End-Cretaceous/K-Pg
+    short_label: K-Pg
+    is_major: true
+    anchor:
+      type: period
+      label: Cretaceous
+  - label: Cambrian extinction pulses
+    short_label: CEP
+    is_major: false
+    anchor:
+      type: ma
+      ma: 510
+  - label: Kellwasser event
+    short_label: KE
+    is_major: false
+    anchor:
+      type: ma
+      ma: 372
+  - label: Hangenberg event
+    short_label: HE
+    is_major: false
+    anchor:
+      type: ma
+      ma: 359
+  - label: Capitanian extinction
+    short_label: CE
+    is_major: false
+    anchor:
+      type: ma
+      ma: 262
+  - label: Toarcian OAE
+    short_label: TOAE
+    is_major: false
+    anchor:
+      type: ma
+      ma: 183
+  - label: Late Pleistocene megafaunal extinctions
+    short_label: LPME
+    is_major: false
+    anchor:
+      type: ma
+      ma: 0.05

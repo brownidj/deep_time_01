@@ -11,6 +11,8 @@ class TimelineRowLabels extends StatelessWidget {
     required this.subRowHeight,
     required this.stageRowHeight,
     required this.rlifeRowHeight,
+    required this.eventsRowHeight,
+    required this.extinctionsRowHeight,
     required this.labelMode,
   });
 
@@ -20,6 +22,8 @@ class TimelineRowLabels extends StatelessWidget {
   final double subRowHeight;
   final double stageRowHeight;
   final double rlifeRowHeight;
+  final double eventsRowHeight;
+  final double extinctionsRowHeight;
   final TimeLabelMode labelMode;
 
   @override
@@ -59,6 +63,16 @@ class TimelineRowLabels extends StatelessWidget {
         _RowLabel(
           text: 'RLife',
           height: rlifeRowHeight,
+          style: labelStyle,
+        ),
+        _RowLabel(
+          text: 'Events',
+          height: eventsRowHeight,
+          style: labelStyle,
+        ),
+        _RowLabel(
+          text: 'Extinctions',
+          height: extinctionsRowHeight,
           style: labelStyle,
         ),
       ],

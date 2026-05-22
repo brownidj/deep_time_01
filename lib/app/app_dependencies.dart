@@ -3,6 +3,7 @@ import 'package:gts_01/application/services/timeline_service.dart';
 import 'package:gts_01/infra/db/app_database.dart';
 import 'package:gts_01/infra/repositories/sqlite_geologic_division_repository.dart';
 import 'package:gts_01/infra/repositories/sqlite_paleontology_repository.dart';
+import 'package:gts_01/infra/repositories/yaml_timeline_marker_repository.dart';
 import 'package:gts_01/infra/repositories/yaml_timeline_palette_repository.dart';
 
 class AppDependencies {
@@ -19,10 +20,14 @@ class AppDependencies {
       final paletteRepository = YamlTimelinePaletteRepository(
         assetPath: 'data/time_divisions.yaml',
       );
+      final markerRepository = YamlTimelineMarkerRepository(
+        assetPath: 'data/timeline_markers.yaml',
+      );
       final timelineService = TimelineService(
         divisionRepository: divisionRepository,
         paleontologyRepository: paleontologyRepository,
         paletteRepository: paletteRepository,
+        markerRepository: markerRepository,
       );
       return AppDependencies(
         database: database,

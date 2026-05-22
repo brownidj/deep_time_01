@@ -48,6 +48,30 @@ class TimelineRowSegment {
   double get durationMa => startMa - endMa;
 }
 
+enum TimelineEventType { point, bar }
+
+class TimelineEventSegment {
+  const TimelineEventSegment({
+    required this.label,
+    required this.shortLabel,
+    required this.type,
+    required this.startMa,
+    required this.endMa,
+    required this.startUnit,
+    required this.endUnit,
+    required this.colorKey,
+  });
+
+  final String label;
+  final String shortLabel;
+  final TimelineEventType type;
+  final double startMa;
+  final double endMa;
+  final double startUnit;
+  final double endUnit;
+  final String colorKey;
+}
+
 class TimelineLayoutSnapshot {
   const TimelineLayoutSnapshot({
     required this.eonSegments,
@@ -56,6 +80,7 @@ class TimelineLayoutSnapshot {
     required this.epochSegments,
     required this.stageSegments,
     required this.rlifeSegments,
+    required this.eventSegments,
     required this.oldestMa,
     required this.youngestMa,
   });
@@ -66,6 +91,7 @@ class TimelineLayoutSnapshot {
   final List<TimelineRowSegment> epochSegments;
   final List<TimelineRowSegment> stageSegments;
   final List<TimelineRowSegment> rlifeSegments;
+  final List<TimelineEventSegment> eventSegments;
   final double oldestMa;
   final double youngestMa;
 

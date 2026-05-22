@@ -10,79 +10,82 @@ class TimelineBands extends StatelessWidget {
     required this.eraSegments,
     required this.palette,
     required this.onTapSegment,
+    required this.eonHeight,
+    required this.eraHeight,
   });
 
   final List<TimelineBandSegment> eonSegments;
   final List<TimelineBandSegment> eraSegments;
   final DeepTimePalette palette;
   final ValueChanged<TimelineBandSegment> onTapSegment;
+  final double eonHeight;
+  final double eraHeight;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (eonSegments.isNotEmpty)
-          TimelineBandRow(
-            segments: eonSegments,
-            height: 44,
-            colorForSegment: (segment) => segment.isGap
-                ? const Color(0xFF2A2E2E)
-                : palette.colorForKey(segment.colorKey),
-            labelStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: DeepTimePalette.darkLabel,
-            ),
-            borderColor: DeepTimePalette.frameBorder,
-            overlayBuilder: (context, index, width) {
-              final segment = eonSegments[index];
-              final content = _BandLabel(
-                segment: segment,
-                width: width,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: DeepTimePalette.darkLabel,
-                ),
-              );
-              if (segment.isGap) {
-                return content;
-              }
-              return InkWell(
-                onTap: () => onTapSegment(segment),
-                child: content,
-              );
-            },
+        TimelineBandRow(
+          segments: eonSegments,
+          height: eonHeight,
+          colorForSegment: (segment) => segment.isGap
+              ? const Color(0xFF2A2E2E)
+              : palette.colorForKey(segment.colorKey),
+          labelStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w700,
+            color: DeepTimePalette.darkLabel,
           ),
-        if (eraSegments.isNotEmpty)
-          TimelineBandRow(
-            segments: eraSegments,
-            height: 52,
-            colorForSegment: (segment) => segment.isGap
-                ? const Color(0xFF2A2E2E)
-                : palette.colorForKey(segment.colorKey),
-            labelStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: DeepTimePalette.darkLabel,
-            ),
-            borderColor: DeepTimePalette.frameBorder,
-            overlayBuilder: (context, index, width) {
-              final segment = eraSegments[index];
-              final content = _BandLabel(
-                segment: segment,
-                width: width,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: DeepTimePalette.darkLabel,
-                ),
-              );
-              if (segment.isGap) {
-                return content;
-              }
-              return InkWell(
-                onTap: () => onTapSegment(segment),
-                child: content,
-              );
-            },
+          borderColor: DeepTimePalette.frameBorder,
+          overlayBuilder: (context, index, width) {
+            final segment = eonSegments[index];
+            final content = _BandLabel(
+              segment: segment,
+              width: width,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: DeepTimePalette.darkLabel,
+              ),
+            );
+            if (segment.isGap) {
+              return content;
+            }
+            return InkWell(
+              onTap: () => onTapSegment(segment),
+              child: content,
+            );
+          },
+        ),
+        TimelineBandRow(
+          segments: eraSegments,
+          height: eraHeight,
+          colorForSegment: (segment) => segment.isGap
+              ? const Color(0xFF2A2E2E)
+              : palette.colorForKey(segment.colorKey),
+          labelStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w700,
+            color: DeepTimePalette.darkLabel,
           ),
+          borderColor: DeepTimePalette.frameBorder,
+          overlayBuilder: (context, index, width) {
+            final segment = eraSegments[index];
+            final content = _BandLabel(
+              segment: segment,
+              width: width,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: DeepTimePalette.darkLabel,
+              ),
+              verticalOffset: -30,
+            );
+            if (segment.isGap) {
+              return content;
+            }
+            return InkWell(
+              onTap: () => onTapSegment(segment),
+              child: content,
+            );
+          },
+        ),
       ],
     );
   }
@@ -169,20 +172,25 @@ class _BandLabel extends StatelessWidget {
     required this.segment,
     required this.width,
     required this.style,
+    this.verticalOffset = 0,
   });
 
   final TimelineBandSegment segment;
   final double width;
   final TextStyle? style;
+  final double verticalOffset;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: TimelineSegmentLabel(
-        label: segment.label,
-        width: width,
-        style: style,
+      child: Transform.translate(
+        offset: Offset(0, verticalOffset),
+        child: TimelineSegmentLabel(
+          label: segment.label,
+          width: width,
+          style: style,
+        ),
       ),
     );
   }
