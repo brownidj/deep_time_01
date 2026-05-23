@@ -1,7 +1,8 @@
-import 'package:gts_01/domain/models/geologic_rank.dart';
+import 'package:deep_time/domain/models/geologic_rank.dart';
 
 class TimelineBandSegment {
   const TimelineBandSegment({
+    required this.id,
     required this.label,
     required this.rank,
     required this.startMa,
@@ -9,8 +10,10 @@ class TimelineBandSegment {
     required this.colorKey,
     required this.isGap,
     required this.unitSpan,
+    this.explanation,
   });
 
+  final int id;
   final String label;
   final GeologicRank rank;
   final double startMa;
@@ -18,6 +21,7 @@ class TimelineBandSegment {
   final String colorKey;
   final bool isGap;
   final double unitSpan;
+  final String? explanation;
 
   double get durationMa => startMa - endMa;
 }
@@ -33,6 +37,7 @@ class TimelineRowSegment {
     required this.isGap,
     required this.unitSpan,
     this.secondaryLabel,
+    this.explanation,
   });
 
   final int id;
@@ -44,6 +49,7 @@ class TimelineRowSegment {
   final bool isGap;
   final double unitSpan;
   final String? secondaryLabel;
+  final String? explanation;
 
   double get durationMa => startMa - endMa;
 }
@@ -55,6 +61,7 @@ class TimelineEventSegment {
     required this.label,
     required this.shortLabel,
     required this.type,
+    this.explanation,
     required this.startMa,
     required this.endMa,
     required this.startUnit,
@@ -65,6 +72,7 @@ class TimelineEventSegment {
   final String label;
   final String shortLabel;
   final TimelineEventType type;
+  final String? explanation;
   final double startMa;
   final double endMa;
   final double startUnit;

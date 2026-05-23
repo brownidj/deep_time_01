@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gts_01/ui/models/time_label_mode.dart';
-import 'package:gts_01/ui/theme/deep_time_palette.dart';
+import 'package:deep_time/ui/models/time_label_mode.dart';
+import 'package:deep_time/ui/theme/deep_time_palette.dart';
 
 class TimelineRowLabels extends StatelessWidget {
   const TimelineRowLabels({
@@ -12,6 +12,7 @@ class TimelineRowLabels extends StatelessWidget {
     required this.stageRowHeight,
     required this.rlifeRowHeight,
     required this.eventsRowHeight,
+    required this.cladeRowHeight,
     required this.extinctionsRowHeight,
     required this.labelMode,
   });
@@ -23,6 +24,7 @@ class TimelineRowLabels extends StatelessWidget {
   final double stageRowHeight;
   final double rlifeRowHeight;
   final double eventsRowHeight;
+  final double cladeRowHeight;
   final double extinctionsRowHeight;
   final TimeLabelMode labelMode;
 
@@ -38,6 +40,7 @@ class TimelineRowLabels extends StatelessWidget {
           text: labelMode.labelForRank('eon'),
           height: eonHeight,
           style: labelStyle,
+          backgroundColor: DeepTimePalette.frameBorder,
         ),
         _RowLabel(
           text: labelMode.labelForRank('era'),
@@ -49,31 +52,43 @@ class TimelineRowLabels extends StatelessWidget {
           text: labelMode.divisionRowLabel(),
           height: subRowHeight,
           style: labelStyle,
+          backgroundColor: DeepTimePalette.frameBorder,
         ),
         _RowLabel(
           text: labelMode.seriesRowLabel(),
           height: subRowHeight,
           style: labelStyle,
+          backgroundColor: DeepTimePalette.frameBorder,
         ),
         _RowLabel(
           text: labelMode.stageRowLabel(),
           height: stageRowHeight,
           style: labelStyle,
+          backgroundColor: DeepTimePalette.frameBorder,
         ),
         _RowLabel(
           text: 'RLife',
           height: rlifeRowHeight,
           style: labelStyle,
+          backgroundColor: DeepTimePalette.frameBorder,
         ),
         _RowLabel(
           text: 'Events',
           height: eventsRowHeight,
           style: labelStyle,
+          backgroundColor: DeepTimePalette.frameBorder,
         ),
         _RowLabel(
           text: 'Extinctions',
           height: extinctionsRowHeight,
           style: labelStyle,
+          backgroundColor: DeepTimePalette.frameBorder,
+        ),
+        _RowLabel(
+          text: 'Clades',
+          height: cladeRowHeight,
+          style: labelStyle,
+          backgroundColor: DeepTimePalette.frameBorder,
         ),
       ],
     );

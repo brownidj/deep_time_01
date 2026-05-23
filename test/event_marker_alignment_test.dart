@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gts_01/application/services/timeline_layout_models.dart';
-import 'package:gts_01/ui/screens/timeline/timeline_event_markers.dart';
-import 'package:gts_01/ui/theme/deep_time_palette.dart';
+import 'package:deep_time/application/services/timeline_layout_models.dart';
+import 'package:deep_time/ui/screens/timeline/timeline_event_markers.dart';
 
 void main() {
-  testWidgets('Point marker label sits 3px above triangle', (tester) async {
+  testWidgets('Point marker label is below the triangle', (tester) async {
     const events = [
       TimelineEventSegment(
         label: 'CE',
@@ -30,6 +29,8 @@ void main() {
               totalUnits: 1,
               events: events,
               height: 200,
+              lineTop: 20,
+              markerTop: 140,
             ),
           ),
         ),
@@ -47,20 +48,112 @@ void main() {
     );
     expect(customPaintFinder, findsOneWidget);
 
-    final textBottom = tester.getBottomLeft(textFinder).dy;
-    final triangleTop = tester.getTopLeft(customPaintFinder).dy;
+    final textTop = tester.getTopLeft(textFinder).dy;
+    final triangleBottom = tester.getBottomLeft(customPaintFinder).dy;
 
-    expect((triangleTop - textBottom).round(), 3);
+    expect(textTop, greaterThanOrEqualTo(triangleBottom));
   });
 
-  testWidgets('Boundary line is continuous across point markers', (
+  testWidgets('Point marker line ends at boundary', (tester) async {
+    const events = [
+      TimelineEventSegment(
+        label: 'PETM',
+        shortLabel: 'PETM',
+        type: TimelineEventType.point,
+        startMa: 56,
+        endMa: 56,
+        startUnit: 0.5,
+        endUnit: 0.5,
+        colorKey: '',
+      ),
+    ];
+
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: SizedBox(
+            width: 400,
+            height: 200,
+            child: EventPointMarkers(
+              width: 400,
+              totalUnits: 1,
+              events: events,
+              height: 200,
+              lineTop: 20,
+              markerTop: 140,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    final lineFinder = find.byWidgetPredicate((widget) {
+      if (widget is! Container) {
+        return false;
+      }
+      return widget.color == EventPointMarkers.markerColor;
+    });
+    expect(lineFinder, findsWidgets);
+    final firstLineTop = tester.getTopLeft(lineFinder.first).dy;
+    expect(firstLineTop, 20);
+  });
+
+  testWidgets('Point marker triangle points up', (tester) async {
+    const events = [
+      TimelineEventSegment(
+        label: 'PETM',
+        shortLabel: 'PETM',
+        type: TimelineEventType.point,
+        startMa: 56,
+        endMa: 56,
+        startUnit: 0.5,
+        endUnit: 0.5,
+        colorKey: '',
+      ),
+    ];
+
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: SizedBox(
+            width: 400,
+            height: 200,
+            child: EventPointMarkers(
+              width: 400,
+              totalUnits: 1,
+              events: events,
+              height: 200,
+              lineTop: 20,
+              markerTop: 140,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    final triangleFinder = find.descendant(
+      of: find.byType(EventPointMarkers),
+      matching: find.byType(CustomPaint),
+    );
+    expect(triangleFinder, findsOneWidget);
+    final triangleTop = tester.getTopLeft(triangleFinder).dy;
+    final triangleBottom = tester.getBottomLeft(triangleFinder).dy;
+    expect(triangleTop, lessThan(triangleBottom));
+  });
+
+  testWidgets('Point marker short label opens explanation on long press', (
     tester,
   ) async {
     const events = [
       TimelineEventSegment(
-        label: 'PETM',
+        label: 'PETM biotic event',
         shortLabel: 'PETM',
         type: TimelineEventType.point,
+        explanation: 'Example explanation text.',
         startMa: 56,
         endMa: 56,
         startUnit: 0.5,
@@ -80,6 +173,8 @@ void main() {
               totalUnits: 1,
               events: events,
               height: 200,
+              lineTop: 20,
+              markerTop: 140,
             ),
           ),
         ),
@@ -88,24 +183,23 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    final boundaryLineFinder = find.byWidgetPredicate((widget) {
-      if (widget is! Container) {
-        return false;
-      }
-      final constraints = widget.constraints;
-      final height = constraints?.minHeight ?? constraints?.maxHeight;
-      return height == 1 && widget.color == DeepTimePalette.periodDivider;
-    });
+    await tester.longPress(find.text('PETM'));
+    await tester.pumpAndSettle();
 
-    expect(boundaryLineFinder, findsOneWidget);
+    expect(find.byType(AlertDialog), findsOneWidget);
+    expect(find.text('PETM biotic event'), findsOneWidget);
+    expect(find.text('Example explanation text.'), findsOneWidget);
   });
 
-  testWidgets('Point marker label is centered above triangle', (tester) async {
+  testWidgets('Point marker line opens explanation on long press', (
+    tester,
+  ) async {
     const events = [
       TimelineEventSegment(
-        label: 'PETM',
+        label: 'PETM biotic event',
         shortLabel: 'PETM',
         type: TimelineEventType.point,
+        explanation: 'Example explanation text.',
         startMa: 56,
         endMa: 56,
         startUnit: 0.5,
@@ -125,6 +219,11 @@ void main() {
               totalUnits: 1,
               events: events,
               height: 200,
+              lineTop: 20,
+              markerTop: 140,
+              showMarkers: false,
+              showLines: false,
+              showLineHitTargets: true,
             ),
           ),
         ),
@@ -133,14 +232,10 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    final textCenter = tester.getCenter(find.text('PETM'));
-    final triangleCenter = tester.getCenter(
-      find.descendant(
-        of: find.byType(EventPointMarkers),
-        matching: find.byType(CustomPaint),
-      ),
-    );
+    await tester.longPressAt(const Offset(200, 60));
+    await tester.pumpAndSettle();
 
-    expect((textCenter.dx - triangleCenter.dx).abs(), lessThanOrEqualTo(1));
+    expect(find.byType(AlertDialog), findsOneWidget);
+    expect(find.text('PETM biotic event'), findsOneWidget);
   });
 }

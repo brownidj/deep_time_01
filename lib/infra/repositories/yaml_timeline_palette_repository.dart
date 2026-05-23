@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
-import 'package:gts_01/domain/models/timeline_palette.dart';
-import 'package:gts_01/domain/repositories/timeline_palette_repository.dart';
+import 'package:deep_time/domain/models/timeline_palette.dart';
+import 'package:deep_time/domain/repositories/timeline_palette_repository.dart';
 import 'package:yaml/yaml.dart';
 
 class YamlTimelinePaletteRepository implements TimelinePaletteRepository {
@@ -43,9 +43,7 @@ class YamlTimelinePaletteRepository implements TimelinePaletteRepository {
     final color = node['color'] as String?;
 
     if (name == null || rank == null || endRaw == null) {
-      throw StateError(
-        'Division node missing name/rank/end_ma in $assetPath',
-      );
+      throw StateError('Division node missing name/rank/end_ma in $assetPath');
     }
     if (color == null) {
       throw StateError('Division "$name" is missing color in $assetPath');

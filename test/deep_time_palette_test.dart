@@ -1,7 +1,7 @@
 import 'dart:ui' show Color;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gts_01/domain/models/timeline_palette.dart';
-import 'package:gts_01/ui/theme/deep_time_palette.dart';
+import 'package:deep_time/domain/models/timeline_palette.dart';
+import 'package:deep_time/ui/theme/deep_time_palette.dart';
 
 void main() {
   TimelinePalette buildPalette() {

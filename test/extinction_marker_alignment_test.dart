@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gts_01/application/services/timeline_layout_models.dart';
-import 'package:gts_01/domain/models/geologic_rank.dart';
-import 'package:gts_01/domain/models/timeline_marker_catalog.dart';
-import 'package:gts_01/ui/screens/timeline/timeline_extinction_markers.dart';
+import 'package:deep_time/application/services/timeline_layout_models.dart';
+import 'package:deep_time/domain/models/geologic_rank.dart';
+import 'package:deep_time/domain/models/timeline_marker_catalog.dart';
+import 'package:deep_time/ui/screens/timeline/timeline_extinction_markers.dart';
 
 void main() {
   testWidgets('Major extinction marker tip aligns with era-period boundary', (
@@ -54,6 +54,8 @@ void main() {
             child: ExtinctionMarkers(
               width: 400,
               height: 200,
+              lineTop: 0,
+              triangleTip: 100,
               periodSegments: periodSegments,
               stageSegments: const [],
               extinctions: extinctions,
@@ -80,9 +82,6 @@ void main() {
     final markerHeight = markerBottom - markerTop;
 
     expect(markerHeight, ExtinctionMarkers.majorMarkerHeight);
-    expect(
-      markerTop,
-      ExtinctionMarkers.markerHeight - ExtinctionMarkers.majorMarkerHeight,
-    );
+    expect(markerTop, 100);
   });
 }

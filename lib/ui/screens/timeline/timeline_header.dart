@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:gts_01/ui/models/time_label_mode.dart';
-import 'package:gts_01/ui/theme/deep_time_palette.dart';
+import 'package:deep_time/ui/theme/deep_time_palette.dart';
 
 class TimelineHeader extends StatelessWidget {
   const TimelineHeader({
     super.key,
-    required this.labelMode,
-    required this.onLabelModeChanged,
     required this.onSettings,
+    required this.scale,
+    required this.onScaleChanged,
+    required this.minScale,
+    required this.maxScale,
   });
 
-  final TimeLabelMode labelMode;
-  final ValueChanged<TimeLabelMode> onLabelModeChanged;
   final VoidCallback onSettings;
+  final double scale;
+  final ValueChanged<double> onScaleChanged;
+  final double minScale;
+  final double maxScale;
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +24,16 @@ class TimelineHeader extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          Image.asset(
+            'assets/logos/desktop_logo.png',
+            width: 36,
+            height: 36,
+            fit: BoxFit.contain,
+          ),
+          const SizedBox(width: 12),
           Expanded(
             child: Text(
-              'Geological Time Scale',
+              'Deep Time',
               style: Theme.of(context).textTheme.displaySmall?.copyWith(
                 fontWeight: FontWeight.w800,
                 color: DeepTimePalette.panelText,
@@ -31,19 +41,30 @@ class TimelineHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
-          SegmentedButton<TimeLabelMode>(
-            segments: TimeLabelMode.values
-                .map(
-                  (mode) => ButtonSegment<TimeLabelMode>(
-                    value: mode,
-                    label: Text(mode.displayName),
+          SizedBox(
+            width: 220,
+            child: Row(
+              children: [
+                Text(
+                  'Scale',
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    color: DeepTimePalette.panelText,
+                    fontWeight: FontWeight.w600,
                   ),
-                )
-                .toList(),
-            selected: {labelMode},
-            onSelectionChanged: (values) {
-              onLabelModeChanged(values.first);
-            },
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Slider(
+                    min: minScale,
+                    max: maxScale,
+                    divisions: 12,
+                    value: scale.clamp(minScale, maxScale),
+                    label: scale.toStringAsFixed(1),
+                    onChanged: onScaleChanged,
+                  ),
+                ),
+              ],
+            ),
           ),
           const SizedBox(width: 12),
           IconButton(

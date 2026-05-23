@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gts_01/domain/models/fossil_range.dart';
-import 'package:gts_01/domain/models/geologic_division.dart';
-import 'package:gts_01/domain/models/paleontology_taxon.dart';
+import 'package:deep_time/domain/models/fossil_range.dart';
+import 'package:deep_time/domain/models/geologic_division.dart';
+import 'package:deep_time/domain/models/paleontology_taxon.dart';
 
 class PaleontologyPanel extends StatelessWidget {
   const PaleontologyPanel({
@@ -22,14 +22,11 @@ class PaleontologyPanel extends StatelessWidget {
       return const Center(child: CircularProgressIndicator());
     }
 
-    final taxaById = {
-      for (final taxon in taxa) taxon.id: taxon,
-    };
+    final taxaById = {for (final taxon in taxa) taxon.id: taxon};
     final tiles = ranges
-        .map((range) => _RangeView(
-              taxon: taxaById[range.taxonId],
-              range: range,
-            ))
+        .map(
+          (range) => _RangeView(taxon: taxaById[range.taxonId], range: range),
+        )
         .where((view) => view.taxon != null)
         .toList();
 
@@ -40,9 +37,9 @@ class PaleontologyPanel extends StatelessWidget {
         children: [
           Text(
             selected.name,
-            style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.displaySmall?.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 8),
           Text(
@@ -102,15 +99,12 @@ class _PaleoCard extends StatelessWidget {
           children: [
             Text(
               taxon.name,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
-            Text(
-              taxon.summary,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
+            Text(taxon.summary, style: Theme.of(context).textTheme.bodyMedium),
             const SizedBox(height: 12),
             Text(
               'Range: ${view.range.startMa.toStringAsFixed(2)}–'

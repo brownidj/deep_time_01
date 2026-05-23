@@ -1,5 +1,5 @@
-import 'package:gts_01/domain/models/geologic_division.dart';
-import 'package:gts_01/domain/models/geologic_rank.dart';
+import 'package:deep_time/domain/models/geologic_division.dart';
+import 'package:deep_time/domain/models/geologic_rank.dart';
 
 class TimelineSlotBuilder {
   List<TimelineSlot> buildSlots(
@@ -19,8 +19,8 @@ class TimelineSlotBuilder {
     final cenozoicEpochCount = cenozoicEra == null
         ? 0
         : _countEpochsForEra(cenozoicEra, childrenByParentId);
-    final mesozoicPeriodWeight = (mesozoicPeriodCount > 0 &&
-            cenozoicEpochCount > 0)
+    final mesozoicPeriodWeight =
+        (mesozoicPeriodCount > 0 && cenozoicEpochCount > 0)
         ? cenozoicEpochCount / mesozoicPeriodCount
         : 1.0;
 
@@ -32,17 +32,21 @@ class TimelineSlotBuilder {
         continue;
       }
       for (final era in eras) {
-        final periods =
-            _childrenOfRank(era, GeologicRank.period, childrenByParentId)
-              ..sort((a, b) => b.startMa.compareTo(a.startMa));
+        final periods = _childrenOfRank(
+          era,
+          GeologicRank.period,
+          childrenByParentId,
+        )..sort((a, b) => b.startMa.compareTo(a.startMa));
         if (periods.isEmpty) {
           slots.add(TimelineSlot(eon: eon, era: era));
           continue;
         }
         for (final period in periods) {
-          final epochs =
-              _childrenOfRank(period, GeologicRank.epoch, childrenByParentId)
-                ..sort((a, b) => b.startMa.compareTo(a.startMa));
+          final epochs = _childrenOfRank(
+            period,
+            GeologicRank.epoch,
+            childrenByParentId,
+          )..sort((a, b) => b.startMa.compareTo(a.startMa));
           if (epochs.isEmpty) {
             slots.add(TimelineSlot(eon: eon, era: era, period: period));
             continue;
@@ -52,9 +56,11 @@ class TimelineSlotBuilder {
               ? mesozoicPeriodWeight / epochs.length
               : 1.0;
           for (final epoch in epochs) {
-            final stages =
-                _childrenOfRank(epoch, GeologicRank.stage, childrenByParentId)
-                  ..sort((a, b) => b.startMa.compareTo(a.startMa));
+            final stages = _childrenOfRank(
+              epoch,
+              GeologicRank.stage,
+              childrenByParentId,
+            )..sort((a, b) => b.startMa.compareTo(a.startMa));
             slots.add(
               TimelineSlot(
                 eon: eon,
@@ -102,10 +108,17 @@ class TimelineSlotBuilder {
     Map<int, List<GeologicDivision>> childrenByParentId,
   ) {
     var count = 0;
-    final periods = _childrenOfRank(era, GeologicRank.period, childrenByParentId);
+    final periods = _childrenOfRank(
+      era,
+      GeologicRank.period,
+      childrenByParentId,
+    );
     for (final period in periods) {
-      count +=
-          _childrenOfRank(period, GeologicRank.epoch, childrenByParentId).length;
+      count += _childrenOfRank(
+        period,
+        GeologicRank.epoch,
+        childrenByParentId,
+      ).length;
     }
     return count;
   }
@@ -134,8 +147,8 @@ class TimelineSlot {
     this.epoch,
     List<GeologicDivision>? stages,
     double? weight,
-  })  : stages = stages ?? const [],
-        weight = weight ?? 1.0;
+  }) : stages = stages ?? const [],
+       weight = weight ?? 1.0;
 
   final GeologicDivision eon;
   final GeologicDivision? era;

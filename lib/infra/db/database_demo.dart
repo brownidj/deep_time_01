@@ -1,10 +1,10 @@
-import 'package:gts_01/domain/models/fossil_range.dart';
-import 'package:gts_01/domain/models/geologic_division.dart';
-import 'package:gts_01/domain/models/geologic_rank.dart';
-import 'package:gts_01/domain/models/paleontology_taxon.dart';
-import 'package:gts_01/infra/db/app_database.dart';
-import 'package:gts_01/infra/repositories/sqlite_geologic_division_repository.dart';
-import 'package:gts_01/infra/repositories/sqlite_paleontology_repository.dart';
+import 'package:deep_time/domain/models/fossil_range.dart';
+import 'package:deep_time/domain/models/geologic_division.dart';
+import 'package:deep_time/domain/models/geologic_rank.dart';
+import 'package:deep_time/domain/models/paleontology_taxon.dart';
+import 'package:deep_time/infra/db/app_database.dart';
+import 'package:deep_time/infra/repositories/sqlite_geologic_division_repository.dart';
+import 'package:deep_time/infra/repositories/sqlite_paleontology_repository.dart';
 
 Future<void> runDatabaseDemo() async {
   final database = await AppDatabase.open();

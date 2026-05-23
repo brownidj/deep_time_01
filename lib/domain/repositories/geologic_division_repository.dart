@@ -1,4 +1,4 @@
-import 'package:gts_01/domain/models/geologic_division.dart';
+import 'package:deep_time/domain/models/geologic_division.dart';
 
 abstract class GeologicDivisionRepository {
   Future<int> insert(GeologicDivision division);

@@ -1,9 +1,11 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:gts_01/application/services/timeline_layout_service.dart';
-import 'package:gts_01/ui/screens/timeline/timeline_extinction_markers.dart';
-import 'package:gts_01/ui/theme/deep_time_palette.dart';
+import 'package:deep_time/application/services/timeline_layout_service.dart';
+import 'package:deep_time/ui/widgets/timeline_explanation_dialog.dart';
+import 'package:deep_time/ui/widgets/time_range_format.dart';
+
+part 'timeline_event_marker_widgets.dart';
 
 class EventPointMarkers extends StatelessWidget {
   const EventPointMarkers({
@@ -12,14 +14,22 @@ class EventPointMarkers extends StatelessWidget {
     required this.totalUnits,
     required this.events,
     required this.height,
-    this.extinctionMarkers = const [],
+    required this.lineTop,
+    required this.markerTop,
+    this.showMarkers = true,
+    this.showLines = true,
+    this.showLineHitTargets = false,
   });
 
   final double width;
   final double totalUnits;
   final List<TimelineEventSegment> events;
   final double height;
-  final List<ExtinctionMarkerLayout> extinctionMarkers;
+  final double lineTop;
+  final double markerTop;
+  final bool showMarkers;
+  final bool showLines;
+  final bool showLineHitTargets;
 
   static const markerHeight = 14.0;
   static const triangleWidth = 12.0;
@@ -37,18 +47,13 @@ class EventPointMarkers extends StatelessWidget {
       return const SizedBox.shrink();
     }
     final labelStyle = Theme.of(context).textTheme.labelSmall?.copyWith(
-      color: Colors.black,
+      color: markerColor,
       fontWeight: FontWeight.w700,
     );
     if (labelStyle == null) {
       return const SizedBox.shrink();
     }
-    final majorStyle = labelStyle.copyWith(
-      fontSize: (labelStyle.fontSize ?? 12) + 4,
-    );
-    final stackedLevels = <List<_Span>>[
-      _extinctionSpans(labelStyle, majorStyle),
-    ];
+    final stackedLevels = <List<_Span>>[[]];
     final markerOffsets = <TimelineEventSegment, double>{};
     for (final event in pointEvents) {
       final center = (event.startUnit / totalUnits * width);
@@ -83,156 +88,96 @@ class EventPointMarkers extends StatelessWidget {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          for (final event in pointEvents)
-            if ((event.startUnit / totalUnits * width).isFinite)
-              Positioned(
-                left: (event.startUnit / totalUnits * width).clamp(0.0, width),
-                child: FractionalTranslation(
-                  translation: const Offset(-0.5, 0),
-                  child: _EventMarker(
-                    label: event.shortLabel,
-                    verticalOffset: markerOffsets[event] ?? 0,
+          if (showMarkers)
+            for (final event in pointEvents)
+              if ((event.startUnit / totalUnits * width).isFinite)
+                Positioned(
+                  left: (event.startUnit / totalUnits * width).clamp(
+                    0.0,
+                    width,
+                  ),
+                  top: markerTop + (markerOffsets[event] ?? 0),
+                  child: FractionalTranslation(
+                    translation: const Offset(-0.5, 0),
+                    child: _EventMarker(
+                      label: event.shortLabel,
+                      pointUp: true,
+                      explanation: event.explanation,
+                      title: event.label,
+                      tooltip: formatTimeRange(
+                        startMa: event.startMa,
+                        endMa: event.startMa == event.endMa
+                            ? null
+                            : event.endMa,
+                        startPrecision: 1,
+                        endPrecision: 1,
+                        durationPrecision: 1,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-          for (final event in pointEvents)
-            if ((event.startUnit / totalUnits * width).isFinite &&
-                (markerOffsets[event] ?? 0) > 0)
-              Positioned(
-                left: (event.startUnit / totalUnits * width - 0.5)
-                    .clamp(0.0, width - 1),
-                top: markerHeight - (markerOffsets[event] ?? 0),
-                height: markerOffsets[event] ?? 0,
-                child: Container(
-                  width: 1,
-                  color: markerColor,
+          if (showLines)
+            for (final event in pointEvents)
+              if ((event.startUnit / totalUnits * width).isFinite &&
+                  (markerTop + (markerOffsets[event] ?? 0)) > lineTop)
+                Positioned(
+                  left: (event.startUnit / totalUnits * width - 0.5).clamp(
+                    0.0,
+                    width - 1,
+                  ),
+                  top: lineTop,
+                  height: (markerTop + (markerOffsets[event] ?? 0) - lineTop)
+                      .clamp(0.0, height),
+                  child: Container(width: 1, color: markerColor),
                 ),
-              ),
-          for (final event in pointEvents)
-            Positioned(
-              left: (event.startUnit / totalUnits * width - 0.5)
-                  .clamp(0.0, width - 1),
-              top: markerHeight,
-              bottom: 0,
-              child: Container(
-                width: 1,
-                color: markerColor,
-              ),
-            ),
-          Positioned(
-            top: markerHeight,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: 1,
-              color: DeepTimePalette.periodDivider,
-            ),
-          ),
+          if (showLineHitTargets)
+            for (final event in pointEvents)
+              if ((event.startUnit / totalUnits * width).isFinite &&
+                  (markerTop + (markerOffsets[event] ?? 0)) > lineTop)
+                Positioned(
+                  left: (event.startUnit / totalUnits * width - 6).clamp(
+                    0.0,
+                    width - 12,
+                  ),
+                  top: lineTop,
+                  height: (markerTop + (markerOffsets[event] ?? 0) - lineTop)
+                      .clamp(0.0, height),
+                  child: SizedBox(
+                    width: 12,
+                    child: _EventLineHitTarget(
+                      title: event.label,
+                      explanation: event.explanation,
+                    ),
+                  ),
+                ),
         ],
       ),
     );
   }
-
-  List<_Span> _extinctionSpans(TextStyle baseStyle, TextStyle majorStyle) {
-    if (extinctionMarkers.isEmpty) {
-      return [];
-    }
-    final spans = <_Span>[];
-    for (final marker in extinctionMarkers) {
-      final label = marker.isMajor ? marker.label : marker.shortLabel;
-      final style = marker.isMajor ? majorStyle : baseStyle;
-      final textPainter = TextPainter(
-        text: TextSpan(text: label, style: style),
-        maxLines: 1,
-        textDirection: TextDirection.ltr,
-      )..layout();
-      final triangle = marker.isMajor
-          ? ExtinctionMarkers.majorTriangleWidth
-          : ExtinctionMarkers.triangleWidth;
-      final markerWidth = math.max(textPainter.width, triangle);
-      spans.add(_Span(center: marker.x, halfWidth: markerWidth / 2));
-    }
-    return spans;
-  }
 }
 
-class _EventMarker extends StatelessWidget {
-  const _EventMarker({
-    required this.label,
-    required this.verticalOffset,
-  });
+class _EventLineHitTarget extends StatelessWidget {
+  const _EventLineHitTarget({required this.title, required this.explanation});
 
-  final String label;
-  final double verticalOffset;
+  final String title;
+  final String? explanation;
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = Theme.of(context).textTheme.labelSmall?.copyWith(
-      color: Colors.black,
-      fontWeight: FontWeight.w700,
-    );
-    final textPainter = TextPainter(
-      text: TextSpan(text: label, style: textStyle),
-      maxLines: 1,
-      textDirection: TextDirection.ltr,
-    )..layout();
-    final markerWidth = math.max(
-      textPainter.width,
-      EventPointMarkers.triangleWidth,
-    );
-
-    return Transform.translate(
-      offset: Offset(0, -verticalOffset),
-      child: SizedBox(
-        width: markerWidth,
-        height: EventPointMarkers.markerHeight,
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Positioned(
-              bottom: 0,
-              left: (markerWidth - EventPointMarkers.triangleWidth) / 2,
-              child: CustomPaint(
-                size: const Size(
-                  EventPointMarkers.triangleWidth,
-                  EventPointMarkers.markerHeight,
-                ),
-                painter: _DownTrianglePainter(),
-              ),
-            ),
-            Positioned(
-              bottom: EventPointMarkers.markerHeight + 3,
-              left: 0,
-              right: 0,
-              child: Text(
-                label,
-                style: textStyle,
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ],
-        ),
+    final hasExplanation =
+        explanation != null && explanation!.trim().isNotEmpty;
+    if (!hasExplanation) {
+      return const SizedBox.shrink();
+    }
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onLongPress: () => showTimelineExplanationDialog(
+        context: context,
+        title: title,
+        explanation: explanation!.trim(),
       ),
     );
   }
-}
-
-class _DownTrianglePainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = EventPointMarkers.markerColor
-      ..style = PaintingStyle.fill;
-    final path = Path()
-      ..moveTo(size.width / 2, size.height)
-      ..lineTo(0, 0)
-      ..lineTo(size.width, 0)
-      ..close();
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 class _Span {

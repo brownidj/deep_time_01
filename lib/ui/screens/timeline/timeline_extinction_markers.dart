@@ -1,8 +1,10 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:gts_01/application/services/timeline_layout_service.dart';
-import 'package:gts_01/domain/models/timeline_marker_catalog.dart';
+import 'package:deep_time/application/services/timeline_layout_service.dart';
+import 'package:deep_time/domain/models/timeline_marker_catalog.dart';
+import 'package:deep_time/ui/widgets/timeline_explanation_dialog.dart';
+import 'package:deep_time/ui/widgets/time_range_format.dart';
 
 part 'timeline_extinction_marker_widgets.dart';
 
@@ -13,8 +15,13 @@ class ExtinctionMarkers extends StatelessWidget {
     required this.height,
     required this.periodSegments,
     required this.stageSegments,
+    required this.lineTop,
+    required this.triangleTip,
     this.extinctions = const [],
     this.markerLayouts,
+    this.showMarkers = true,
+    this.showLines = true,
+    this.showLineHitTargets = false,
   });
 
   static const markerHeight = 14.0;
@@ -26,10 +33,15 @@ class ExtinctionMarkers extends StatelessWidget {
 
   final double width;
   final double height;
+  final double lineTop;
+  final double triangleTip;
   final List<TimelineRowSegment> periodSegments;
   final List<TimelineRowSegment> stageSegments;
   final List<ExtinctionDefinition> extinctions;
   final List<ExtinctionMarkerLayout>? markerLayouts;
+  final bool showMarkers;
+  final bool showLines;
+  final bool showLineHitTargets;
 
   @override
   Widget build(BuildContext context) {
@@ -53,31 +65,55 @@ class ExtinctionMarkers extends StatelessWidget {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          for (final marker in markers)
-            if (textStyle != null)
+          if (showMarkers)
+            for (final marker in markers)
+              if (textStyle != null)
+                Positioned(
+                  left: _centeredLeftForMarker(
+                    marker: marker,
+                    textStyle: textStyle,
+                  ).clamp(0.0, width),
+                  top: triangleTip,
+                  child: Tooltip(
+                    message: marker.ma == null
+                        ? marker.label
+                        : '${marker.label} • '
+                            '${formatTimeRange(
+                              startMa: marker.ma!,
+                              endMa: null,
+                              startPrecision: 1,
+                              durationPrecision: 1,
+                            )}',
+                    child: _ExtinctionMarker(
+                      label: marker.isMajor ? marker.label : marker.shortLabel,
+                      isMajor: marker.isMajor,
+                      pointUp: true,
+                      explanation: marker.explanation,
+                    ),
+                  ),
+                ),
+          if (showLines)
+            for (final marker in markers)
               Positioned(
-                left: _centeredLeftForMarker(
-                  marker: marker,
-                  textStyle: textStyle,
-                ).clamp(0.0, width),
-                top: marker.isMajor
-                    ? (markerHeight - majorMarkerHeight)
-                    : 0.0,
-                child: _ExtinctionMarker(
-                  label: marker.isMajor ? marker.label : marker.shortLabel,
-                  isMajor: marker.isMajor,
+                left: (marker.x - lineWidth / 2).clamp(0.0, width - lineWidth),
+                top: lineTop,
+                height: (triangleTip - lineTop).clamp(0.0, height),
+                child: Container(width: lineWidth, color: markerColor),
+              ),
+          if (showLineHitTargets)
+            for (final marker in markers)
+              Positioned(
+                left: (marker.x - 6).clamp(0.0, width - 12),
+                top: lineTop,
+                height: (triangleTip - lineTop).clamp(0.0, height),
+                child: SizedBox(
+                  width: 12,
+                  child: _ExtinctionLineHitTarget(
+                    title: marker.label,
+                    explanation: marker.explanation,
+                  ),
                 ),
               ),
-          for (final marker in markers)
-            Positioned(
-              left: (marker.x - lineWidth / 2).clamp(0.0, width - lineWidth),
-              top: markerHeight,
-              bottom: 0,
-              child: Container(
-                width: lineWidth,
-                color: markerColor,
-              ),
-            ),
         ],
       ),
     );
@@ -121,13 +157,29 @@ class ExtinctionMarkers extends StatelessWidget {
       return null;
     }
 
+    double? boundaryMaForPeriod(String label) {
+      for (final segment in periodSegments) {
+        if (!segment.isGap && segment.label == label) {
+          return segment.endMa;
+        }
+      }
+      return null;
+    }
+
+    double? boundaryMaForStage(String label) {
+      for (final segment in stageSegments) {
+        if (!segment.isGap && segment.label == label) {
+          return segment.endMa;
+        }
+      }
+      return null;
+    }
+
     double? positionForMa(double ma) {
       var unitCursor = 0.0;
       for (final segment in periodSegments) {
         final unitEnd = unitCursor + segment.unitSpan;
-        if (!segment.isGap &&
-            ma <= segment.startMa &&
-            ma >= segment.endMa) {
+        if (!segment.isGap && ma <= segment.startMa && ma >= segment.endMa) {
           final span = segment.startMa - segment.endMa;
           if (span <= 0) {
             return width * (unitCursor / periodTotal);
@@ -147,16 +199,20 @@ class ExtinctionMarkers extends StatelessWidget {
 
     for (final extinction in extinctions) {
       double? x;
+      double? ma;
       switch (extinction.anchor.type) {
         case ExtinctionAnchorType.period:
           x = boundaryForPeriod(extinction.anchor.label ?? '');
+          ma = boundaryMaForPeriod(extinction.anchor.label ?? '');
           break;
         case ExtinctionAnchorType.stage:
           x = boundaryForStage(extinction.anchor.label ?? '');
+          ma = boundaryMaForStage(extinction.anchor.label ?? '');
           break;
         case ExtinctionAnchorType.ma:
           if (extinction.anchor.ma != null) {
             x = positionForMa(extinction.anchor.ma!);
+            ma = extinction.anchor.ma;
           }
           break;
       }
@@ -169,6 +225,8 @@ class ExtinctionMarkers extends StatelessWidget {
           shortLabel: extinction.shortLabel,
           x: x,
           isMajor: extinction.isMajor,
+          explanation: extinction.explanation,
+          ma: ma,
         ),
       );
     }
@@ -186,9 +244,7 @@ class ExtinctionMarkers extends StatelessWidget {
   }) {
     final label = marker.isMajor ? marker.label : marker.shortLabel;
     final effectiveStyle = marker.isMajor
-        ? textStyle.copyWith(
-            fontSize: (textStyle.fontSize ?? 12) + 4,
-          )
+        ? textStyle.copyWith(fontSize: (textStyle.fontSize ?? 12) + 4)
         : textStyle;
     final textPainter = TextPainter(
       text: TextSpan(text: label, style: effectiveStyle),
@@ -200,5 +256,32 @@ class ExtinctionMarkers extends StatelessWidget {
         : triangleWidth;
     final markerWidth = math.max(textPainter.width, markerTriangleWidth);
     return marker.x - markerWidth / 2;
+  }
+}
+
+class _ExtinctionLineHitTarget extends StatelessWidget {
+  const _ExtinctionLineHitTarget({
+    required this.title,
+    required this.explanation,
+  });
+
+  final String title;
+  final String? explanation;
+
+  @override
+  Widget build(BuildContext context) {
+    final hasExplanation =
+        explanation != null && explanation!.trim().isNotEmpty;
+    if (!hasExplanation) {
+      return const SizedBox.shrink();
+    }
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onLongPress: () => showTimelineExplanationDialog(
+        context: context,
+        title: title,
+        explanation: explanation!.trim(),
+      ),
+    );
   }
 }

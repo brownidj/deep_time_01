@@ -1,0 +1,64 @@
+- id: trilobita
+  label: Trilobites
+  scientific_rank: class
+  parent_id: arthropoda
+  start_ma: 521
+  end_ma: 252
+  range_note: Cambrian to end-Permian
+  confidence: approximate
+  display_groups:
+    - marine_invertebrates
+  display_priority: 15
+  min_zoom_level: period
+  short_description: Marine arthropods that were especially abundant during the Paleozoic.
+  representative_taxa:
+    - Olenellus
+    - Elrathia
+    - Phacops
+  tags:
+    - marine
+    - arthropod
+    - Paleozoic
+    - index fossils
+
+- id: ammonoidea
+  label: Ammonoids
+  scientific_rank: subclass
+  parent_id: cephalopoda
+  start_ma: 409
+  end_ma: 66
+  range_note: Devonian to K-Pg boundary
+  confidence: approximate
+  display_groups:
+    - marine_invertebrates
+  display_priority: 20
+  min_zoom_level: period
+  short_description: Externally shelled cephalopods, especially important as Mesozoic index fossils.
+  representative_taxa:
+    - Goniatites
+    - Ceratites
+    - Ammonites
+  extinction_note: Extinct at the K-Pg boundary.
+  tags:
+    - marine
+    - cephalopod
+    - index fossils
+    - extinction
+
+- id: mammalia
+  label: Mammals
+  scientific_rank: class
+  parent_id: synapsida
+  start_ma: 225
+  end_ma: 0
+  range_note: Late Triassic to present
+  confidence: approximate
+  display_groups:
+    - mammals_birds
+  display_priority: 10
+  min_zoom_level: era
+  short_description: Endothermic vertebrates characterised by hair, mammary glands, and specialised teeth.
+  tags:
+    - vertebrate
+    - mammal
+    - living clade

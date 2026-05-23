@@ -1,5 +1,5 @@
-import 'package:gts_01/domain/models/geologic_division.dart';
-import 'package:gts_01/domain/models/timeline_palette.dart';
+import 'package:deep_time/domain/models/geologic_division.dart';
+import 'package:deep_time/domain/models/timeline_palette.dart';
 
 String colorKeyForDivision(
   GeologicDivision division,

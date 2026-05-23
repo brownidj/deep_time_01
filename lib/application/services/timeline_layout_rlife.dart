@@ -1,8 +1,8 @@
-import 'package:gts_01/application/services/timeline_layout_color_keys.dart';
-import 'package:gts_01/application/services/timeline_layout_models.dart';
-import 'package:gts_01/application/services/timeline_layout_slots.dart';
-import 'package:gts_01/domain/models/geologic_division.dart';
-import 'package:gts_01/domain/models/geologic_rank.dart';
+import 'package:deep_time/application/services/timeline_layout_color_keys.dart';
+import 'package:deep_time/application/services/timeline_layout_models.dart';
+import 'package:deep_time/application/services/timeline_layout_slots.dart';
+import 'package:deep_time/domain/models/geologic_division.dart';
+import 'package:deep_time/domain/models/geologic_rank.dart';
 
 class TimelineRLifeBuilder {
   TimelineRLifeBuilder({required this.divisionById});
@@ -12,31 +12,31 @@ class TimelineRLifeBuilder {
   List<TimelineRowSegment> buildRLifeRow(List<TimelineSlot> slots) {
     const rlifeData = {
       'Precambrian':
-          'microbial mats, stromatolites, early eukaryotes, Ediacaran organisms',
+          'Microbial mats, Stromatolites, Early eukaryotes, Ediacaran organisms',
       'Cambrian':
-          'trilobites, archaeocyathids, early arthropods, early chordates, small shelly fossils',
+          'Trilobites, Archaeocyathids, Early arthropods, Early chordates, Small shelly fossils',
       'Ordovician':
-          'brachiopods, bryozoans, graptolites, nautiloids, trilobites, early jawless fish',
+          'Brachiopods, Bryozoans, Graptolites, Nautiloids, Trilobites, Early jawless fish',
       'Silurian':
-          'sea scorpions, corals, crinoids, jawless fish, early jawed fish, early land plants',
+          'Sea scorpions, Corals, Crinoids, Jawless fish, Early jawed fish, Early land plants',
       'Devonian':
-          'armoured fish, lobe-finned fish, early sharks, ammonoids, early forests, first tetrapods',
+          'Armoured fish, Lobe-finned fish, Early sharks, Ammonoids, Early forests, First tetrapods',
       'Carboniferous':
-          'coal-swamp plants, giant insects, amphibians, early reptiles, crinoids, brachiopods',
+          'Coal-swamp plants, Giant insects, Amphibians, Early reptiles, Crinoids, Brachiopods',
       'Permian':
-          'synapsids, conifers, seed ferns, ammonoids, fusulinids, large terrestrial reptiles',
+          'Synapsids, Conifers, Seed ferns, Ammonoids, Fusulinids, Large terrestrial reptiles',
       'Triassic':
-          'early dinosaurs, marine reptiles, ammonites, conifers, early mammals, pterosaurs',
+          'Early dinosaurs, Marine reptiles, Ammonites, Conifers, Early mammals, Pterosaurs',
       'Jurassic':
-          'dinosaurs, pterosaurs, marine reptiles, ammonites, cycads, conifers, early birds',
+          'Dinosaurs, Pterosaurs, Marine reptiles, Ammonites, Cycads, Conifers, Early birds',
       'Cretaceous':
-          'flowering plants, dinosaurs, ammonites, mosasaurs, plesiosaurs, birds, early mammals',
+          'Flowering plants, Dinosaurs, Ammonites, Mosasaurs, Plesiosaurs, Birds, Early mammals',
       'Paleogene':
-          'mammals diversify, birds diversify, early whales, grasses begin expanding, foraminifera',
+          'Mammals diversify, Birds diversify, Early whales, Grasses begin expanding, Foraminifera',
       'Neogene':
-          'grassland mammals, horses, antelope, apes, whales, sharks, modern bird groups',
+          'Grassland mammals, Horses, Antelope, Apes, Whales, Sharks, Modern bird groups',
       'Quaternary':
-          'mammoths, mastodons, sabre-toothed cats, giant ground sloths, humans, Ice Age megafauna',
+          'Mammoths, Mastodons, Sabre-toothed cats, Giant ground sloths, Humans, Ice Age megafauna',
     };
     final phanerozoicPeriods = {
       'Cambrian',
@@ -77,6 +77,7 @@ class TimelineRLifeBuilder {
             isGap: true,
             unitSpan: currentSpan,
             secondaryLabel: null,
+            explanation: null,
           ),
         );
       } else {
@@ -91,6 +92,7 @@ class TimelineRLifeBuilder {
             isGap: false,
             unitSpan: currentSpan,
             secondaryLabel: null,
+            explanation: null,
           ),
         );
       }

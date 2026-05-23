@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS geologic_divisions (
   start_ma REAL NOT NULL,
   start_ma_uncertainty REAL,
   end_ma REAL NOT NULL,
+  explanation TEXT,
   parent_id INTEGER,
   FOREIGN KEY (parent_id) REFERENCES geologic_divisions(id) ON DELETE SET NULL
 );
@@ -51,7 +52,12 @@ CREATE TABLE IF NOT EXISTS app_meta (
     final columns = db.select('PRAGMA table_info(geologic_divisions)');
     final names = columns.map((row) => row['name'] as String).toSet();
     if (!names.contains('start_ma_uncertainty')) {
-      db.execute('ALTER TABLE geologic_divisions ADD COLUMN start_ma_uncertainty REAL');
+      db.execute(
+        'ALTER TABLE geologic_divisions ADD COLUMN start_ma_uncertainty REAL',
+      );
+    }
+    if (!names.contains('explanation')) {
+      db.execute('ALTER TABLE geologic_divisions ADD COLUMN explanation TEXT');
     }
   }
 }

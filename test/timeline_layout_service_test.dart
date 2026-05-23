@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gts_01/application/services/timeline_layout_service.dart';
-import 'package:gts_01/domain/models/geologic_division.dart';
-import 'package:gts_01/domain/models/geologic_rank.dart';
-import 'package:gts_01/domain/models/timeline_marker_catalog.dart';
-import 'package:gts_01/domain/models/timeline_palette.dart';
+import 'package:deep_time/application/services/timeline_layout_service.dart';
+import 'package:deep_time/domain/models/geologic_division.dart';
+import 'package:deep_time/domain/models/geologic_rank.dart';
+import 'package:deep_time/domain/models/timeline_marker_catalog.dart';
+import 'package:deep_time/domain/models/timeline_palette.dart';
 
 void main() {
   test(

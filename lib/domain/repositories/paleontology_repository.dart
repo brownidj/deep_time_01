@@ -1,5 +1,5 @@
-import 'package:gts_01/domain/models/fossil_range.dart';
-import 'package:gts_01/domain/models/paleontology_taxon.dart';
+import 'package:deep_time/domain/models/fossil_range.dart';
+import 'package:deep_time/domain/models/paleontology_taxon.dart';
 
 abstract class PaleontologyRepository {
   Future<int> insertTaxon(PaleontologyTaxon taxon);

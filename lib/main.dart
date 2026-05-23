@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:gts_01/app/app_debug.dart';
-import 'package:gts_01/app/time_app.dart';
+import 'package:deep_time/app/app_debug.dart';
+import 'package:deep_time/app/time_app.dart';
 import 'package:window_manager/window_manager.dart';
 
 Future<void> main() async {
@@ -10,11 +10,11 @@ Future<void> main() async {
   const bool enableAppDebug = true;
   const bool enablePreferences = true;
   AppDebug.configure(enabled: enableAppDebug);
-  await _maximizeWindow();
+  await _prepareInitialWindow();
   runApp(TimeApp(enablePreferences: enablePreferences));
 }
 
-Future<void> _maximizeWindow() async {
+Future<void> _prepareInitialWindow() async {
   if (!Platform.isMacOS && !Platform.isWindows && !Platform.isLinux) {
     return;
   }
@@ -22,9 +22,11 @@ Future<void> _maximizeWindow() async {
   const windowOptions = WindowOptions(
     titleBarStyle: TitleBarStyle.normal,
     center: true,
+    size: Size(400, 400),
+    minimumSize: Size(400, 400),
+    maximumSize: Size(400, 400),
   );
   await windowManager.waitUntilReadyToShow(windowOptions, () async {
-    await windowManager.maximize();
     await windowManager.show();
     await windowManager.focus();
   });

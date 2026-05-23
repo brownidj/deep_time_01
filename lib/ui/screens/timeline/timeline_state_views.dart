@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:gts_01/app/app_debug.dart';
+import 'package:deep_time/app/app_debug.dart';
 
 class TimelineLoadingView extends StatelessWidget {
   const TimelineLoadingView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: CircularProgressIndicator()),
-    );
+    return const Scaffold(body: Center(child: CircularProgressIndicator()));
   }
 }
 

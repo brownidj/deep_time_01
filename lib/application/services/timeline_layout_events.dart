@@ -1,11 +1,10 @@
-import 'package:gts_01/application/services/timeline_layout_models.dart';
-import 'package:gts_01/domain/models/timeline_marker_catalog.dart';
+import 'package:deep_time/application/services/timeline_layout_models.dart';
+import 'package:deep_time/domain/models/timeline_marker_catalog.dart';
 
 class TimelineEventsBuilder {
-  TimelineEventsBuilder({required List<TimelineEventDefinition> definitions})
-    : _definitions = definitions;
+  TimelineEventsBuilder({required this.definitions});
 
-  final List<TimelineEventDefinition> _definitions;
+  final List<TimelineEventDefinition> definitions;
 
   List<TimelineEventSegment> buildEventsRow({
     required List<TimelineRowSegment> periodSegments,
@@ -18,7 +17,7 @@ class TimelineEventsBuilder {
     }
 
     final events = <TimelineEventSegment>[];
-    for (final definition in _definitions) {
+    for (final definition in definitions) {
       final range = _resolveRange(definition);
       if (range == null) {
         continue;
@@ -31,6 +30,7 @@ class TimelineEventsBuilder {
           label: definition.label,
           shortLabel: definition.shortLabel,
           type: _eventTypeFor(definition.kind),
+          explanation: definition.explanation,
           startMa: range.startMa,
           endMa: range.endMa,
           startUnit: startUnit <= endUnit ? startUnit : endUnit,
@@ -187,10 +187,7 @@ class TimelineEventsBuilder {
 
   _MaRange? _resolveRange(TimelineEventDefinition definition) {
     if (definition.startMa != null && definition.endMa != null) {
-      return _MaRange(
-        startMa: definition.startMa!,
-        endMa: definition.endMa!,
-      );
+      return _MaRange(startMa: definition.startMa!, endMa: definition.endMa!);
     }
     if (definition.atMa != null) {
       return _MaRange(startMa: definition.atMa!, endMa: definition.atMa!);

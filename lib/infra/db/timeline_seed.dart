@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import 'package:gts_01/app/app_debug.dart';
+import 'package:deep_time/app/app_debug.dart';
 import 'package:sqlite3/sqlite3.dart';
 import 'package:yaml/yaml.dart';
 
@@ -74,10 +74,10 @@ class TimelineSeeder {
   }
 
   static void _writeSeedHash(Database db, String hash) {
-    db.execute(
-      'INSERT OR REPLACE INTO app_meta (key, value) VALUES (?, ?)',
-      ['timeline_seed_hash', hash],
-    );
+    db.execute('INSERT OR REPLACE INTO app_meta (key, value) VALUES (?, ?)', [
+      'timeline_seed_hash',
+      hash,
+    ]);
   }
 
   static int _countNodes(Object? value) {
@@ -119,8 +119,9 @@ INSERT INTO geologic_divisions (
   start_ma,
   start_ma_uncertainty,
   end_ma,
+  explanation,
   parent_id
-) VALUES (?, ?, ?, ?, ?, ?)
+) VALUES (?, ?, ?, ?, ?, ?, ?)
 ''');
 
     try {
@@ -205,6 +206,7 @@ INSERT INTO geologic_divisions (
       node.startMa,
       node.uncertaintyMa,
       node.endMa,
+      node.explanation,
       parentId,
     ]);
     final nodeId = db.lastInsertRowId;
@@ -221,6 +223,7 @@ class _DivisionNode {
     required this.startMa,
     required this.uncertaintyMa,
     required this.children,
+    required this.explanation,
   });
 
   factory _DivisionNode.fromYaml(YamlMap map) {
@@ -228,6 +231,7 @@ class _DivisionNode {
     final rank = map['rank'] as String? ?? 'unknown';
     final startMa = _parseDouble(map['end_ma']);
     final uncertaintyMa = _parseOptionalDouble(map['uncertainty_ma']);
+    final explanation = map['explanation'] as String?;
     final children = TimelineSeeder._readNodes(map['children']);
 
     return _DivisionNode(
@@ -235,6 +239,7 @@ class _DivisionNode {
       rank: rank,
       startMa: startMa,
       uncertaintyMa: uncertaintyMa,
+      explanation: explanation,
       children: children,
     );
   }
@@ -244,6 +249,7 @@ class _DivisionNode {
   final double startMa;
   final double? uncertaintyMa;
   final List<_DivisionNode> children;
+  final String? explanation;
   double endMa = 0.0;
 
   static double _parseDouble(Object? value) {

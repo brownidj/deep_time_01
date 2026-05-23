@@ -1,8 +1,1 @@
-enum GeologicRank {
-  eon,
-  era,
-  period,
-  epoch,
-  stage,
-  age,
-}
+enum GeologicRank { eon, era, period, epoch, stage, age }

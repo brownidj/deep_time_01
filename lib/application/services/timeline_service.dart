@@ -1,12 +1,14 @@
-import 'package:gts_01/domain/models/geologic_division.dart';
-import 'package:gts_01/domain/models/paleontology_taxon.dart';
-import 'package:gts_01/domain/models/fossil_range.dart';
-import 'package:gts_01/domain/models/timeline_marker_catalog.dart';
-import 'package:gts_01/domain/models/timeline_palette.dart';
-import 'package:gts_01/domain/repositories/geologic_division_repository.dart';
-import 'package:gts_01/domain/repositories/paleontology_repository.dart';
-import 'package:gts_01/domain/repositories/timeline_marker_repository.dart';
-import 'package:gts_01/domain/repositories/timeline_palette_repository.dart';
+import 'package:deep_time/domain/models/clade.dart';
+import 'package:deep_time/domain/models/geologic_division.dart';
+import 'package:deep_time/domain/models/paleontology_taxon.dart';
+import 'package:deep_time/domain/models/fossil_range.dart';
+import 'package:deep_time/domain/models/timeline_marker_catalog.dart';
+import 'package:deep_time/domain/models/timeline_palette.dart';
+import 'package:deep_time/domain/repositories/geologic_division_repository.dart';
+import 'package:deep_time/domain/repositories/paleontology_repository.dart';
+import 'package:deep_time/domain/repositories/clade_repository.dart';
+import 'package:deep_time/domain/repositories/timeline_marker_repository.dart';
+import 'package:deep_time/domain/repositories/timeline_palette_repository.dart';
 
 class TimelineSnapshot {
   const TimelineSnapshot({
@@ -15,6 +17,7 @@ class TimelineSnapshot {
     required this.ranges,
     required this.palette,
     required this.markers,
+    required this.clades,
   });
 
   final List<GeologicDivision> divisions;
@@ -22,6 +25,7 @@ class TimelineSnapshot {
   final List<FossilRange> ranges;
   final TimelinePalette palette;
   final TimelineMarkerCatalog markers;
+  final List<Clade> clades;
 }
 
 class TimelineService {
@@ -30,12 +34,14 @@ class TimelineService {
     required this._paleontologyRepository,
     required this._paletteRepository,
     required this._markerRepository,
+    required this._cladeRepository,
   });
 
   final GeologicDivisionRepository _divisionRepository;
   final PaleontologyRepository _paleontologyRepository;
   final TimelinePaletteRepository _paletteRepository;
   final TimelineMarkerRepository _markerRepository;
+  final CladeRepository _cladeRepository;
 
   Future<TimelineSnapshot> loadSnapshot() async {
     final divisions = await _divisionRepository.fetchAll();
@@ -46,6 +52,7 @@ class TimelineService {
     );
     final palette = await _paletteRepository.fetchPalette();
     final markers = await _markerRepository.fetchMarkers();
+    final clades = await _cladeRepository.fetchAll();
     _validatePaletteCoverage(palette, divisions);
     return TimelineSnapshot(
       divisions: divisions,
@@ -53,6 +60,7 @@ class TimelineService {
       ranges: ranges,
       palette: palette,
       markers: markers,
+      clades: clades,
     );
   }
 

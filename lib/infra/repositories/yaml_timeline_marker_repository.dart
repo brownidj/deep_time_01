@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
-import 'package:gts_01/domain/models/timeline_marker_catalog.dart';
-import 'package:gts_01/domain/repositories/timeline_marker_repository.dart';
+import 'package:deep_time/domain/models/timeline_marker_catalog.dart';
+import 'package:deep_time/domain/repositories/timeline_marker_repository.dart';
 import 'package:yaml/yaml.dart';
 
 class YamlTimelineMarkerRepository implements TimelineMarkerRepository {
@@ -21,52 +21,50 @@ class YamlTimelineMarkerRepository implements TimelineMarkerRepository {
     if (value is! YamlList) {
       return const [];
     }
-    return value
-        .whereType<YamlMap>()
-        .map((event) {
-          final label = _requireString(event, 'label');
-          final shortLabel = _requireString(event, 'short_label');
-          final type = _requireString(event, 'type');
-          final kind = _parseEventKind(type);
-          final startMa = _readDouble(event['start_ma']);
-          final endMa = _readDouble(event['end_ma']);
-          final atMa = _readDouble(event['at_ma']);
-          return TimelineEventDefinition(
-            label: label,
-            shortLabel: shortLabel,
-            kind: kind,
-            startMa: startMa,
-            endMa: endMa,
-            atMa: atMa,
-          );
-        })
-        .toList();
+    return value.whereType<YamlMap>().map((event) {
+      final label = _requireString(event, 'label');
+      final shortLabel = _requireString(event, 'short_label');
+      final type = _requireString(event, 'type');
+      final kind = _parseEventKind(type);
+      final startMa = _readDouble(event['start_ma']);
+      final endMa = _readDouble(event['end_ma']);
+      final atMa = _readDouble(event['at_ma']);
+      final explanation = _readString(event['explanation']);
+      return TimelineEventDefinition(
+        label: label,
+        shortLabel: shortLabel,
+        kind: kind,
+        explanation: explanation,
+        startMa: startMa,
+        endMa: endMa,
+        atMa: atMa,
+      );
+    }).toList();
   }
 
   List<ExtinctionDefinition> _readExtinctions(Object? value) {
     if (value is! YamlList) {
       return const [];
     }
-    return value
-        .whereType<YamlMap>()
-        .map((extinction) {
-          final label = _requireString(extinction, 'label');
-          final shortLabel = _requireString(extinction, 'short_label');
-          final isMajor = _readBool(extinction['is_major']) ?? false;
-          final anchorMap = extinction['anchor'];
-          if (anchorMap is! YamlMap) {
-            throw StateError('Missing anchor for extinction "$label".');
-          }
-          final anchorType = _requireString(anchorMap, 'type');
-          final anchor = _parseAnchor(anchorType, anchorMap);
-          return ExtinctionDefinition(
-            label: label,
-            shortLabel: shortLabel,
-            isMajor: isMajor,
-            anchor: anchor,
-          );
-        })
-        .toList();
+    return value.whereType<YamlMap>().map((extinction) {
+      final label = _requireString(extinction, 'label');
+      final shortLabel = _requireString(extinction, 'short_label');
+      final isMajor = _readBool(extinction['is_major']) ?? false;
+      final anchorMap = extinction['anchor'];
+      if (anchorMap is! YamlMap) {
+        throw StateError('Missing anchor for extinction "$label".');
+      }
+      final anchorType = _requireString(anchorMap, 'type');
+      final anchor = _parseAnchor(anchorType, anchorMap);
+      final explanation = _readString(extinction['explanation']);
+      return ExtinctionDefinition(
+        label: label,
+        shortLabel: shortLabel,
+        isMajor: isMajor,
+        anchor: anchor,
+        explanation: explanation,
+      );
+    }).toList();
   }
 
   TimelineEventKind _parseEventKind(String value) {
@@ -106,6 +104,14 @@ class YamlTimelineMarkerRepository implements TimelineMarkerRepository {
       return value;
     }
     throw StateError('Missing required string "$key".');
+  }
+
+  String? _readString(Object? value) {
+    if (value is String) {
+      final trimmed = value.trim();
+      return trimmed.isEmpty ? null : trimmed;
+    }
+    return null;
   }
 
   double _requireDouble(YamlMap map, String key) {

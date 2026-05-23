@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:gts_01/application/services/timeline_layout_models.dart';
-import 'package:gts_01/ui/theme/deep_time_palette.dart';
+import 'package:deep_time/application/services/timeline_layout_models.dart';
+import 'package:deep_time/ui/theme/deep_time_palette.dart';
+import 'package:deep_time/ui/widgets/timeline_explanation_dialog.dart';
+import 'package:deep_time/ui/widgets/time_range_format.dart';
 
 class TimelineEventsRow extends StatelessWidget {
   const TimelineEventsRow({
@@ -30,7 +32,8 @@ class TimelineEventsRow extends StatelessWidget {
     if (rows.isEmpty) {
       return rowHeight;
     }
-    final minHeight = rows.length * _barHeight + (rows.length + 1) * _barSpacing;
+    final minHeight =
+        rows.length * _barHeight + (rows.length + 1) * _barSpacing;
     return rowHeight < minHeight ? minHeight : rowHeight;
   }
 
@@ -41,7 +44,7 @@ class TimelineEventsRow extends StatelessWidget {
         height: rowHeight,
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color: DeepTimePalette.panelBackground,
+            color: DeepTimePalette.timelineGapBackground,
             border: Border.all(color: DeepTimePalette.periodDivider),
           ),
         ),
@@ -61,7 +64,7 @@ class TimelineEventsRow extends StatelessWidget {
               Positioned.fill(
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: DeepTimePalette.panelBackground,
+                    color: DeepTimePalette.timelineGapBackground,
                     border: Border.all(color: DeepTimePalette.periodDivider),
                   ),
                 ),
@@ -86,8 +89,9 @@ class TimelineEventsRow extends StatelessWidget {
   static List<List<TimelineEventSegment>> _layoutRows(
     List<TimelineEventSegment> events,
   ) {
-    final bars =
-        events.where((event) => event.type == TimelineEventType.bar).toList();
+    final bars = events
+        .where((event) => event.type == TimelineEventType.bar)
+        .toList();
     if (bars.isEmpty) {
       return const [];
     }
@@ -155,6 +159,9 @@ class _EventBar extends StatelessWidget {
       }
     }
     final displayLabel = event.shortLabel;
+    final hasExplanation =
+        event.explanation != null && event.explanation!.trim().isNotEmpty;
+    final endMa = event.startMa == event.endMa ? null : event.endMa;
     return Positioned(
       left: startX,
       top: top,
@@ -162,20 +169,35 @@ class _EventBar extends StatelessWidget {
       height: TimelineEventsRow._barHeight,
       child: Tooltip(
         message:
-            '${event.label} • ${event.startMa.toStringAsFixed(1)}–'
-            '${event.endMa.toStringAsFixed(1)} Ma',
-        child: Container(
-          alignment: Alignment.centerLeft,
-          padding: const EdgeInsets.symmetric(horizontal: 6),
-          decoration: BoxDecoration(
-            color: barColor,
-            border: Border.all(color: barColor),
-          ),
-          child: Text(
-            displayLabel,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: labelStyle,
+            '${event.label} • '
+            '${formatTimeRange(
+              startMa: event.startMa,
+              endMa: endMa,
+              startPrecision: 1,
+              endPrecision: 1,
+              durationPrecision: 1,
+            )}',
+        child: GestureDetector(
+          onLongPress: hasExplanation
+              ? () => showTimelineExplanationDialog(
+                  context: context,
+                  title: event.label,
+                  explanation: event.explanation!.trim(),
+                )
+              : null,
+          child: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            decoration: BoxDecoration(
+              color: barColor,
+              border: Border.all(color: barColor),
+            ),
+            child: Text(
+              displayLabel,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: labelStyle,
+            ),
           ),
         ),
       ),

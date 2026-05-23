@@ -1,9 +1,9 @@
-import 'package:gts_01/application/services/timeline_layout_builder.dart';
-import 'package:gts_01/application/services/timeline_layout_models.dart';
-import 'package:gts_01/domain/models/geologic_division.dart';
-import 'package:gts_01/domain/models/timeline_marker_catalog.dart';
+import 'package:deep_time/application/services/timeline_layout_builder.dart';
+import 'package:deep_time/application/services/timeline_layout_models.dart';
+import 'package:deep_time/domain/models/geologic_division.dart';
+import 'package:deep_time/domain/models/timeline_marker_catalog.dart';
 
-export 'package:gts_01/application/services/timeline_layout_models.dart';
+export 'package:deep_time/application/services/timeline_layout_models.dart';
 
 class TimelineLayoutService {
   TimelineLayoutSnapshot build(

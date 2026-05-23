@@ -1,7 +1,7 @@
-import 'package:gts_01/domain/models/fossil_range.dart';
-import 'package:gts_01/domain/models/paleontology_taxon.dart';
-import 'package:gts_01/domain/repositories/paleontology_repository.dart';
-import 'package:gts_01/infra/db/app_database.dart';
+import 'package:deep_time/domain/models/fossil_range.dart';
+import 'package:deep_time/domain/models/paleontology_taxon.dart';
+import 'package:deep_time/domain/repositories/paleontology_repository.dart';
+import 'package:deep_time/infra/db/app_database.dart';
 import 'package:sqlite3/sqlite3.dart';
 
 class SqlitePaleontologyRepository implements PaleontologyRepository {

@@ -1,7 +1,7 @@
-import 'package:gts_01/domain/models/geologic_division.dart';
-import 'package:gts_01/domain/models/geologic_rank.dart';
-import 'package:gts_01/domain/repositories/geologic_division_repository.dart';
-import 'package:gts_01/infra/db/app_database.dart';
+import 'package:deep_time/domain/models/geologic_division.dart';
+import 'package:deep_time/domain/models/geologic_rank.dart';
+import 'package:deep_time/domain/repositories/geologic_division_repository.dart';
+import 'package:deep_time/infra/db/app_database.dart';
 import 'package:sqlite3/sqlite3.dart';
 
 class SqliteGeologicDivisionRepository implements GeologicDivisionRepository {
@@ -20,8 +20,9 @@ INSERT INTO geologic_divisions (
   start_ma,
   start_ma_uncertainty,
   end_ma,
+  explanation,
   parent_id
-) VALUES (?, ?, ?, ?, ?, ?)
+) VALUES (?, ?, ?, ?, ?, ?, ?)
 ''');
     try {
       stmt.execute([
@@ -30,6 +31,7 @@ INSERT INTO geologic_divisions (
         division.startMa,
         division.startMaUncertainty,
         division.endMa,
+        division.explanation,
         division.parentId,
       ]);
       return _db.lastInsertRowId;
@@ -61,7 +63,7 @@ INSERT INTO geologic_divisions (
   Future<void> update(GeologicDivision division) async {
     final stmt = _db.prepare('''
 UPDATE geologic_divisions
-SET name = ?, rank = ?, start_ma = ?, start_ma_uncertainty = ?, end_ma = ?, parent_id = ?
+SET name = ?, rank = ?, start_ma = ?, start_ma_uncertainty = ?, end_ma = ?, explanation = ?, parent_id = ?
 WHERE id = ?
 ''');
     try {
@@ -71,6 +73,7 @@ WHERE id = ?
         division.startMa,
         division.startMaUncertainty,
         division.endMa,
+        division.explanation,
         division.parentId,
         division.id,
       ]);
@@ -97,6 +100,7 @@ WHERE id = ?
       startMa: (row['start_ma'] as num).toDouble(),
       startMaUncertainty: (row['start_ma_uncertainty'] as num?)?.toDouble(),
       endMa: (row['end_ma'] as num).toDouble(),
+      explanation: row['explanation'] as String?,
       parentId: row['parent_id'] as int?,
     );
   }

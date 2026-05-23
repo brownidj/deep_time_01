@@ -1,11 +1,11 @@
-import 'package:gts_01/application/services/timeline_layout_events.dart';
-import 'package:gts_01/application/services/timeline_layout_models.dart';
-import 'package:gts_01/application/services/timeline_layout_rlife.dart';
-import 'package:gts_01/application/services/timeline_layout_rows.dart';
-import 'package:gts_01/application/services/timeline_layout_slots.dart';
-import 'package:gts_01/domain/models/timeline_marker_catalog.dart';
-import 'package:gts_01/domain/models/geologic_division.dart';
-import 'package:gts_01/domain/models/geologic_rank.dart';
+import 'package:deep_time/application/services/timeline_layout_events.dart';
+import 'package:deep_time/application/services/timeline_layout_models.dart';
+import 'package:deep_time/application/services/timeline_layout_rlife.dart';
+import 'package:deep_time/application/services/timeline_layout_rows.dart';
+import 'package:deep_time/application/services/timeline_layout_slots.dart';
+import 'package:deep_time/domain/models/timeline_marker_catalog.dart';
+import 'package:deep_time/domain/models/geologic_division.dart';
+import 'package:deep_time/domain/models/geologic_rank.dart';
 
 class TimelineLayoutBuilder {
   TimelineLayoutSnapshot build(
@@ -66,14 +66,8 @@ class TimelineLayoutBuilder {
     final rlifeBuilder = TimelineRLifeBuilder(divisionById: divisionById);
     final eventsBuilder = TimelineEventsBuilder(definitions: markers.events);
 
-    final eonSegments = rowBuilder.buildBandRow(
-      slots,
-      rank: GeologicRank.eon,
-    );
-    final eraSegments = rowBuilder.buildBandRow(
-      slots,
-      rank: GeologicRank.era,
-    );
+    final eonSegments = rowBuilder.buildBandRow(slots, rank: GeologicRank.eon);
+    final eraSegments = rowBuilder.buildBandRow(slots, rank: GeologicRank.era);
     final periodSegments = rowBuilder.buildRankRow(
       slots,
       rank: GeologicRank.period,

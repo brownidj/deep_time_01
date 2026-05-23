@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gts_01/domain/models/geologic_division.dart';
-import 'package:gts_01/domain/models/geologic_rank.dart';
-import 'package:gts_01/ui/widgets/division_list.dart';
+import 'package:deep_time/domain/models/geologic_division.dart';
+import 'package:deep_time/domain/models/geologic_rank.dart';
+import 'package:deep_time/ui/widgets/division_list.dart';
 
 void main() {
   testWidgets('DivisionList renders divisions', (WidgetTester tester) async {

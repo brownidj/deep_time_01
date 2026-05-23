@@ -1,6 +1,6 @@
-import 'package:gts_01/app/app_debug.dart';
-import 'package:gts_01/infra/db/schema.dart';
-import 'package:gts_01/infra/db/timeline_seed.dart';
+import 'package:deep_time/app/app_debug.dart';
+import 'package:deep_time/infra/db/schema.dart';
+import 'package:deep_time/infra/db/timeline_seed.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:sqlite3/sqlite3.dart';
@@ -42,8 +42,11 @@ class AppDatabase {
     try {
       _db.close();
     } catch (error, stackTrace) {
-      AppDebug.log('Failed to close database', error: error, stackTrace: stackTrace);
+      AppDebug.log(
+        'Failed to close database',
+        error: error,
+        stackTrace: stackTrace,
+      );
     }
   }
-
 }

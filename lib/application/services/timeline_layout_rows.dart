@@ -1,8 +1,8 @@
-import 'package:gts_01/application/services/timeline_layout_models.dart';
-import 'package:gts_01/application/services/timeline_layout_color_keys.dart';
-import 'package:gts_01/application/services/timeline_layout_slots.dart';
-import 'package:gts_01/domain/models/geologic_division.dart';
-import 'package:gts_01/domain/models/geologic_rank.dart';
+import 'package:deep_time/application/services/timeline_layout_models.dart';
+import 'package:deep_time/application/services/timeline_layout_color_keys.dart';
+import 'package:deep_time/application/services/timeline_layout_slots.dart';
+import 'package:deep_time/domain/models/geologic_division.dart';
+import 'package:deep_time/domain/models/geologic_rank.dart';
 
 class TimelineRowBuilder {
   TimelineRowBuilder({required this.divisionById});
@@ -76,13 +76,7 @@ class TimelineRowBuilder {
           0.0,
           (sum, slot) => sum + slot.weight,
         );
-        segments.add(
-          _rowFromDivision(
-            null,
-            totalWeight,
-            GeologicRank.stage,
-          ),
-        );
+        segments.add(_rowFromDivision(null, totalWeight, GeologicRank.stage));
         continue;
       }
 
@@ -110,6 +104,7 @@ class TimelineRowBuilder {
               isGap: false,
               unitSpan: span,
               secondaryLabel: null,
+              explanation: stage.explanation,
             ),
           );
         }
@@ -125,6 +120,7 @@ class TimelineRowBuilder {
   ) {
     if (division == null) {
       return TimelineBandSegment(
+        id: -1,
         label: '',
         rank: rank,
         startMa: 0,
@@ -132,9 +128,11 @@ class TimelineRowBuilder {
         colorKey: '',
         isGap: true,
         unitSpan: unitSpan,
+        explanation: null,
       );
     }
     return TimelineBandSegment(
+      id: division.id,
       label: division.name,
       rank: division.rank,
       startMa: division.startMa,
@@ -142,6 +140,7 @@ class TimelineRowBuilder {
       colorKey: colorKeyForDivision(division, divisionById),
       isGap: false,
       unitSpan: unitSpan,
+      explanation: division.explanation,
     );
   }
 
@@ -161,6 +160,7 @@ class TimelineRowBuilder {
         isGap: true,
         unitSpan: unitSpan,
         secondaryLabel: null,
+        explanation: null,
       );
     }
     return TimelineRowSegment(
@@ -173,6 +173,7 @@ class TimelineRowBuilder {
       isGap: false,
       unitSpan: unitSpan,
       secondaryLabel: null,
+      explanation: division.explanation,
     );
   }
 }

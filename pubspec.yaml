@@ -1,4 +1,4 @@
-name: gts_01
+name: deep_time
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 0.1.1+4
+version: 0.2.0+15
 
 environment:
   sdk: ^3.12.0
@@ -46,6 +46,8 @@ dev_dependencies:
     sdk: flutter
   integration_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.4.1
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -68,6 +70,11 @@ flutter:
   assets:
     - data/time_divisions.yaml
     - data/timeline_markers.yaml
+    - assets/logos/logo2.png
+    - assets/logos/desktop_logo.png
+    - data/clades.yaml
+    - data/clade_display_groups.yaml
+    - data/clade_representative_ids.yaml
 
   # To add assets to your application, add an assets section, like this:
   # assets:
@@ -99,3 +106,24 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+flutter_native_splash:
+  color: "#0f1c21"
+  image: assets/logos/logo2.png
+  android: true
+  ios: true
+  web: false
+  android_12:
+    color: "#0f1c21"
+    image: assets/logos/logo2.png
+
+flutter_launcher_icons:
+  image_path: "assets/logos/desktop_logo.png"
+  android: false
+  ios: false
+  macos:
+    generate: true
+    image_path: "assets/logos/desktop_logo.png"
+  windows:
+    generate: true
+    image_path: "assets/logos/desktop_logo.png"

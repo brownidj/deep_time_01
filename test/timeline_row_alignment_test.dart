@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gts_01/application/services/timeline_layout_service.dart';
-import 'package:gts_01/domain/models/geologic_rank.dart';
-import 'package:gts_01/domain/models/timeline_palette.dart';
-import 'package:gts_01/domain/models/timeline_marker_catalog.dart';
-import 'package:gts_01/ui/models/time_label_mode.dart';
-import 'package:gts_01/ui/screens/timeline/timeline_body.dart';
-import 'package:gts_01/ui/theme/deep_time_palette.dart';
-import 'package:gts_01/ui/widgets/continuous_timeline_row.dart';
-import 'package:gts_01/ui/widgets/timeline_band_row.dart';
-import 'package:gts_01/ui/widgets/timeline_events_row.dart';
+import 'package:deep_time/application/services/timeline_layout_service.dart';
+import 'package:deep_time/domain/models/geologic_rank.dart';
+import 'package:deep_time/domain/models/timeline_palette.dart';
+import 'package:deep_time/domain/models/timeline_marker_catalog.dart';
+import 'package:deep_time/ui/models/clade_view_mode.dart';
+import 'package:deep_time/ui/models/time_label_mode.dart';
+import 'package:deep_time/ui/screens/timeline/timeline_body.dart';
+import 'package:deep_time/ui/theme/deep_time_palette.dart';
+import 'package:deep_time/ui/widgets/continuous_timeline_row.dart';
+import 'package:deep_time/ui/widgets/timeline_band_row.dart';
+import 'package:deep_time/ui/widgets/timeline_events_row.dart';
 
 void main() {
   testWidgets('Timeline rows align with static label heights', (tester) async {
@@ -29,6 +30,7 @@ void main() {
     final layout = TimelineLayoutSnapshot(
       eonSegments: const [
         TimelineBandSegment(
+          id: 1,
           label: 'TestEon',
           rank: GeologicRank.eon,
           startMa: 100,
@@ -40,6 +42,7 @@ void main() {
       ],
       eraSegments: const [
         TimelineBandSegment(
+          id: 2,
           label: 'TestEra',
           rank: GeologicRank.era,
           startMa: 100,
@@ -136,10 +139,7 @@ void main() {
       oldestMa: 100,
       youngestMa: 0,
     );
-    const markers = TimelineMarkerCatalog(
-      events: [],
-      extinctions: [],
-    );
+    const markers = TimelineMarkerCatalog(events: [], extinctions: []);
 
     await tester.pumpWidget(
       MaterialApp(
@@ -158,6 +158,13 @@ void main() {
                   selectedId: null,
                   onBandSelect: (_) {},
                   onSelect: (_) {},
+                  clades: const [],
+                  cladeViewMode: CladeViewMode.representativeOnly,
+                  cladeCategoryId: 'all',
+                  cladeRepresentativeIds: const [],
+                  cladeSearchQuery: '',
+                  cladeSpotlightId: null,
+                  onCladeSpotlight: (_) {},
                 ),
               ],
             ),
@@ -216,7 +223,9 @@ void main() {
     expect(ageHeight, ageLabelHeight);
     expect(rlifeHeight, rlifeLabelHeight);
 
-    final eventsRowHeight = tester.getSize(find.byType(TimelineEventsRow)).height;
+    final eventsRowHeight = tester
+        .getSize(find.byType(TimelineEventsRow))
+        .height;
     final expectedEventsHeight = TimelineEventsRow.requiredHeight(
       events: layout.eventSegments,
       rowHeight: 70.0,

@@ -1,33 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:gts_01/app/app_debug.dart';
-import 'package:gts_01/ui/models/time_label_mode.dart';
+import 'package:deep_time/domain/models/clade_display_group.dart';
+import 'package:deep_time/ui/models/clade_view_mode.dart';
+import 'package:deep_time/ui/models/time_label_mode.dart';
 
 class TimelineSettingsDialog extends StatefulWidget {
   const TimelineSettingsDialog({
     super.key,
     required this.labelMode,
     required this.onScaleChanged,
+    required this.cladeViewMode,
+    required this.cladeCategoryId,
+    required this.cladeDisplayGroups,
+    required this.onCladeViewModeChanged,
+    required this.onCladeCategoryChanged,
   });
 
   final TimeLabelMode labelMode;
   final ValueChanged<double> onScaleChanged;
+  final CladeViewMode cladeViewMode;
+  final String cladeCategoryId;
+  final List<CladeDisplayGroup> cladeDisplayGroups;
+  final ValueChanged<CladeViewMode> onCladeViewModeChanged;
+  final ValueChanged<String> onCladeCategoryChanged;
 
   @override
   State<TimelineSettingsDialog> createState() => _TimelineSettingsDialogState();
 }
 
 class _TimelineSettingsDialogState extends State<TimelineSettingsDialog> {
-  late double _localScale;
-
-  @override
-  void initState() {
-    super.initState();
-    _localScale = AppDebug.timelineScale.clamp(
-      AppDebug.minTimelineScale,
-      AppDebug.maxTimelineScale,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -56,22 +56,56 @@ class _TimelineSettingsDialogState extends State<TimelineSettingsDialog> {
           Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              'Timeline scale (${_localScale.toStringAsFixed(1)}×)',
+              'Clade view',
               style: Theme.of(context).textTheme.labelLarge,
             ),
           ),
-          Slider(
-            min: AppDebug.minTimelineScale,
-            max: AppDebug.maxTimelineScale,
-            divisions: 12,
-            value: _localScale,
-            label: _localScale.toStringAsFixed(1),
+          const SizedBox(height: 4),
+          RadioGroup<CladeViewMode>(
+            groupValue: widget.cladeViewMode,
             onChanged: (value) {
-              setState(() {
-                _localScale = value;
-              });
-              widget.onScaleChanged(value);
+              if (value != null) {
+                widget.onCladeViewModeChanged(value);
+              }
             },
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: CladeViewMode.values
+                  .map(
+                    (mode) => RadioListTile<CladeViewMode>(
+                      title: Text(mode.label),
+                      value: mode,
+                    ),
+                  )
+                  .toList(),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'Category',
+              style: Theme.of(context).textTheme.labelLarge,
+            ),
+          ),
+          DropdownButtonFormField<String>(
+            value: widget.cladeCategoryId,
+            items: [
+              const DropdownMenuItem<String>(value: 'all', child: Text('All')),
+              ...widget.cladeDisplayGroups.map(
+                (group) => DropdownMenuItem<String>(
+                  value: group.id,
+                  child: Text(group.label),
+                ),
+              ),
+            ],
+            onChanged: widget.cladeViewMode == CladeViewMode.byCategory
+                ? (value) {
+                    if (value != null) {
+                      widget.onCladeCategoryChanged(value);
+                    }
+                  }
+                : null,
           ),
         ],
       ),

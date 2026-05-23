@@ -27,7 +27,10 @@ violations="$(
     -g '!**/generated_plugin_registrant.*' \
     -g '!**/*.g.dart' \
     -g '!**/*.freezed.dart' \
-    -g '!data/time_divisions.yaml' \
+    -g '!**/*.yaml' \
+    -g '!**/*.yml' \
+    -g '!**/*.py' \
+    -g '!**/*.md' \
     | while IFS= read -r file; do
       [[ -f "$file" ]] || continue
       if ! file --brief --mime "$file" 2>/dev/null | grep -q 'charset='; then

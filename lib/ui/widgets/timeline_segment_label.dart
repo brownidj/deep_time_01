@@ -34,10 +34,7 @@ class TimelineSegmentLabel extends StatelessWidget {
       style: style,
     );
     if (!vertical) {
-      return Align(
-        alignment: Alignment.centerLeft,
-        child: text,
-      );
+      return Align(alignment: Alignment.centerLeft, child: text);
     }
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -51,10 +48,7 @@ class TimelineSegmentLabel extends StatelessWidget {
             child: FittedBox(
               fit: BoxFit.scaleDown,
               alignment: Alignment.center,
-              child: RotatedBox(
-                quarterTurns: 3,
-                child: text,
-              ),
+              child: RotatedBox(quarterTurns: 3, child: text),
             ),
           ),
         );

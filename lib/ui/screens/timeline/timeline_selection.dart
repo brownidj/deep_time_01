@@ -1,4 +1,4 @@
-import 'package:gts_01/application/services/timeline_layout_service.dart';
+import 'package:deep_time/application/services/timeline_layout_service.dart';
 
 class SelectedDivision {
   const SelectedDivision({
@@ -19,7 +19,7 @@ class SelectedDivision {
 
   factory SelectedDivision.fromBand(TimelineBandSegment segment) {
     return SelectedDivision(
-      id: segment.label.hashCode,
+      id: segment.id,
       label: segment.label,
       startMa: segment.startMa,
       endMa: segment.endMa,

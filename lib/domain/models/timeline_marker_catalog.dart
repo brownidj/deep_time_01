@@ -5,6 +5,7 @@ class TimelineEventDefinition {
     required this.label,
     required this.shortLabel,
     required this.kind,
+    this.explanation,
     this.startMa,
     this.endMa,
     this.atMa,
@@ -13,6 +14,7 @@ class TimelineEventDefinition {
   final String label;
   final String shortLabel;
   final TimelineEventKind kind;
+  final String? explanation;
   final double? startMa;
   final double? endMa;
   final double? atMa;
@@ -21,11 +23,7 @@ class TimelineEventDefinition {
 enum ExtinctionAnchorType { period, stage, ma }
 
 class ExtinctionAnchor {
-  const ExtinctionAnchor({
-    required this.type,
-    this.label,
-    this.ma,
-  });
+  const ExtinctionAnchor({required this.type, this.label, this.ma});
 
   final ExtinctionAnchorType type;
   final String? label;
@@ -38,12 +36,14 @@ class ExtinctionDefinition {
     required this.shortLabel,
     required this.isMajor,
     required this.anchor,
+    this.explanation,
   });
 
   final String label;
   final String shortLabel;
   final bool isMajor;
   final ExtinctionAnchor anchor;
+  final String? explanation;
 }
 
 class TimelineMarkerCatalog {

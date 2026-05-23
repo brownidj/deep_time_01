@@ -1,4 +1,4 @@
-import 'package:gts_01/domain/models/geologic_rank.dart';
+import 'package:deep_time/domain/models/geologic_rank.dart';
 
 class GeologicDivision {
   const GeologicDivision({
@@ -9,6 +9,7 @@ class GeologicDivision {
     required this.endMa,
     this.startMaUncertainty,
     this.parentId,
+    this.explanation,
   });
 
   final int id;
@@ -18,6 +19,7 @@ class GeologicDivision {
   final double endMa;
   final double? startMaUncertainty;
   final int? parentId;
+  final String? explanation;
 
   double get durationMa => startMa - endMa;
 }

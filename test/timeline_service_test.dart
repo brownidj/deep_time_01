@@ -1,15 +1,17 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gts_01/application/services/timeline_service.dart';
-import 'package:gts_01/domain/models/geologic_division.dart';
-import 'package:gts_01/domain/models/geologic_rank.dart';
-import 'package:gts_01/domain/models/paleontology_taxon.dart';
-import 'package:gts_01/domain/models/fossil_range.dart';
-import 'package:gts_01/domain/models/timeline_marker_catalog.dart';
-import 'package:gts_01/domain/models/timeline_palette.dart';
-import 'package:gts_01/domain/repositories/geologic_division_repository.dart';
-import 'package:gts_01/domain/repositories/paleontology_repository.dart';
-import 'package:gts_01/domain/repositories/timeline_marker_repository.dart';
-import 'package:gts_01/domain/repositories/timeline_palette_repository.dart';
+import 'package:deep_time/application/services/timeline_service.dart';
+import 'package:deep_time/domain/models/geologic_division.dart';
+import 'package:deep_time/domain/models/geologic_rank.dart';
+import 'package:deep_time/domain/models/clade.dart';
+import 'package:deep_time/domain/models/paleontology_taxon.dart';
+import 'package:deep_time/domain/models/fossil_range.dart';
+import 'package:deep_time/domain/models/timeline_marker_catalog.dart';
+import 'package:deep_time/domain/models/timeline_palette.dart';
+import 'package:deep_time/domain/repositories/clade_repository.dart';
+import 'package:deep_time/domain/repositories/geologic_division_repository.dart';
+import 'package:deep_time/domain/repositories/paleontology_repository.dart';
+import 'package:deep_time/domain/repositories/timeline_marker_repository.dart';
+import 'package:deep_time/domain/repositories/timeline_palette_repository.dart';
 
 class _FakeDivisionRepository implements GeologicDivisionRepository {
   _FakeDivisionRepository(this._divisions);
@@ -130,6 +132,15 @@ class _FakeMarkerRepository implements TimelineMarkerRepository {
   Future<TimelineMarkerCatalog> fetchMarkers() async => _markers;
 }
 
+class _FakeCladeRepository implements CladeRepository {
+  _FakeCladeRepository(this._clades);
+
+  final List<Clade> _clades;
+
+  @override
+  Future<List<Clade>> fetchAll() async => _clades;
+}
+
 extension<T> on Iterable<T> {
   T? get firstOrNull {
     final iterator = this.iterator;
@@ -174,6 +185,7 @@ void main() {
       markerRepository: _FakeMarkerRepository(
         const TimelineMarkerCatalog(events: [], extinctions: []),
       ),
+      cladeRepository: _FakeCladeRepository(const []),
     );
 
     final snapshot = await service.loadSnapshot();
@@ -205,6 +217,7 @@ void main() {
       markerRepository: _FakeMarkerRepository(
         const TimelineMarkerCatalog(events: [], extinctions: []),
       ),
+      cladeRepository: _FakeCladeRepository(const []),
     );
 
     final results = await service.rangesForDivision(division);
