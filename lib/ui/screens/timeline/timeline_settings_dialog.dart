@@ -89,7 +89,7 @@ class _TimelineSettingsDialogState extends State<TimelineSettingsDialog> {
             ),
           ),
           DropdownButtonFormField<String>(
-            value: widget.cladeCategoryId,
+            initialValue: widget.cladeCategoryId,
             items: [
               const DropdownMenuItem<String>(value: 'all', child: Text('All')),
               ...widget.cladeDisplayGroups.map(

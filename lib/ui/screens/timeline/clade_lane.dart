@@ -62,11 +62,17 @@ class CladeLane extends StatelessWidget {
             oldestMa: layout.oldestMa,
             youngestMa: layout.youngestMa,
           );
-          final viewportWidth = scrollController.hasClients
-              ? scrollController.position.viewportDimension
-              : scrollWidth;
-          final scrollOffset =
-              scrollController.hasClients ? scrollController.offset : 0.0;
+          var viewportWidth = scrollWidth;
+          var scrollOffset = 0.0;
+          if (scrollController.hasClients) {
+            final position = scrollController.position;
+            if (position.hasContentDimensions) {
+              viewportWidth = position.viewportDimension;
+            }
+            if (position.hasPixels) {
+              scrollOffset = position.pixels;
+            }
+          }
           final visibleStart =
               mapper.maForX(scrollOffset) ?? layout.oldestMa;
           final visibleEnd =

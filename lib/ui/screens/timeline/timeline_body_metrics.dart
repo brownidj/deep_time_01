@@ -5,13 +5,18 @@ import 'package:deep_time/app/app_debug.dart';
 import 'package:deep_time/application/services/timeline_layout_models.dart';
 import 'package:deep_time/domain/models/timeline_marker_catalog.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_extinction_markers.dart';
+import 'package:deep_time/ui/screens/timeline/timeline_orientation.dart';
 import 'package:deep_time/ui/widgets/timeline_events_row.dart';
+
+part 'timeline_body_metrics_helpers.dart';
 
 class TimelineBodyMetrics {
   TimelineBodyMetrics._({
+    required this.defaultTrackWidth,
     required this.layout,
     required this.markers,
     required this.minHeight,
+    required this.headerHeight,
     required this.labelWidth,
     required this.eonHeight,
     required this.eraHeight,
@@ -23,11 +28,17 @@ class TimelineBodyMetrics {
     required this.cladeRowHeight,
     required this.extinctionsRowHeight,
     required this.minUnitWidth,
+    required this.minUnitHeight,
     required this.eventsRowHeight,
     required this.contentHeight,
     required this.totalUnits,
     required this.periodUnits,
     required this.scrollWidth,
+    required this.scrollHeight,
+    required this.trackOrder,
+    required this.trackWidths,
+    required this.trackStartXs,
+    required this.trackColumnsWidth,
     required this.extinctionLayouts,
     required this.eventsRowTop,
     required this.cladeRowTop,
@@ -39,15 +50,17 @@ class TimelineBodyMetrics {
     required this.epochTotalUnits,
     required this.stageTotalUnits,
     required this.rlifeTotalUnits,
-    required this.periodBoundaryXs,
-    required this.eraBoundaryXs,
-    required this.eonBoundaryXs,
+    required this.periodBoundaryYs,
+    required this.eraBoundaryYs,
+    required this.eonBoundaryYs,
   });
 
   factory TimelineBodyMetrics.fromLayout({
     required TimelineLayoutSnapshot layout,
     required TimelineMarkerCatalog markers,
     required BoxConstraints constraints,
+    TimelineOrientationConfig config = kDefaultTimelineOrientation,
+    double? minScrollHeight,
   }) {
     const labelWidth = 96.0;
     const eonHeight = 44.0;
@@ -60,6 +73,8 @@ class TimelineBodyMetrics {
     const cladeRowHeight = 140.0;
     const extinctionsRowHeight = 70.0;
     const minUnitWidth = 96.0;
+    final headerHeight = config.verticalHeaderHeight;
+    final minUnitHeight = config.minUnitHeight;
     final eventsRowHeight = TimelineEventsRow.requiredHeight(
       events: layout.eventSegments,
       rowHeight: eventsRowBaseHeight,
@@ -86,9 +101,24 @@ class TimelineBodyMetrics {
       AppDebug.minTimelineScale,
       AppDebug.maxTimelineScale,
     );
+    final trackOrder = List<TimelineTrack>.from(kDefaultTimelineTrackOrder);
+    final trackWidths = <TimelineTrack, double>{
+      for (final track in trackOrder) track: config.trackWidthFor(track),
+    };
+    final trackStartXs = <TimelineTrack, double>{};
+    var trackCursor = 0.0;
+    for (final track in trackOrder) {
+      trackStartXs[track] = trackCursor;
+      trackCursor += trackWidths[track]!;
+    }
+    final trackColumnsWidth = trackCursor;
     final scrollWidth = math.max(
       constraints.maxWidth * scale,
       totalUnits * minUnitWidth,
+    );
+    final scrollHeight = math.max(
+      math.max(constraints.maxHeight * scale, totalUnits * minUnitHeight),
+      minScrollHeight ?? 0,
     );
     final extinctionLayouts = ExtinctionMarkers.buildMarkerLayouts(
       width: scrollWidth,
@@ -133,26 +163,28 @@ class TimelineBodyMetrics {
       0.0,
       (sum, segment) => sum + segment.unitSpan,
     );
-    final periodBoundaryXs = _rowBoundaryPositions(
+    final periodBoundaryYs = _rowBoundaryPositionsForHeight(
       layout.periodSegments,
       periodUnits,
-      scrollWidth,
+      scrollHeight,
     );
-    final eraBoundaryXs = _bandBoundaryPositions(
+    final eraBoundaryYs = _bandBoundaryPositionsForHeight(
       layout.eraSegments,
       eraTotalUnits,
-      scrollWidth,
+      scrollHeight,
     );
-    final eonBoundaryXs = _bandBoundaryPositions(
+    final eonBoundaryYs = _bandBoundaryPositionsForHeight(
       layout.eonSegments,
       eonTotalUnits,
-      scrollWidth,
+      scrollHeight,
     );
 
     return TimelineBodyMetrics._(
+      defaultTrackWidth: config.defaultTrackWidth,
       layout: layout,
       markers: markers,
       minHeight: constraints.maxHeight,
+      headerHeight: headerHeight,
       labelWidth: labelWidth,
       eonHeight: eonHeight,
       eraHeight: eraHeight,
@@ -164,11 +196,17 @@ class TimelineBodyMetrics {
       cladeRowHeight: cladeRowHeight,
       extinctionsRowHeight: extinctionsRowHeight,
       minUnitWidth: minUnitWidth,
+      minUnitHeight: minUnitHeight,
       eventsRowHeight: eventsRowHeight,
       contentHeight: contentHeight,
       totalUnits: totalUnits,
       periodUnits: periodUnits,
       scrollWidth: scrollWidth,
+      scrollHeight: scrollHeight,
+      trackOrder: List.unmodifiable(trackOrder),
+      trackWidths: Map.unmodifiable(trackWidths),
+      trackStartXs: Map.unmodifiable(trackStartXs),
+      trackColumnsWidth: trackColumnsWidth,
       extinctionLayouts: extinctionLayouts,
       eventsRowTop: eventsRowTop,
       cladeRowTop: cladeRowTop,
@@ -180,15 +218,17 @@ class TimelineBodyMetrics {
       epochTotalUnits: epochTotalUnits,
       stageTotalUnits: stageTotalUnits,
       rlifeTotalUnits: rlifeTotalUnits,
-      periodBoundaryXs: periodBoundaryXs,
-      eraBoundaryXs: eraBoundaryXs,
-      eonBoundaryXs: eonBoundaryXs,
+      periodBoundaryYs: periodBoundaryYs,
+      eraBoundaryYs: eraBoundaryYs,
+      eonBoundaryYs: eonBoundaryYs,
     );
   }
 
+  final double defaultTrackWidth;
   final TimelineLayoutSnapshot layout;
   final TimelineMarkerCatalog markers;
   final double minHeight;
+  final double headerHeight;
   final double labelWidth;
   final double eonHeight;
   final double eraHeight;
@@ -200,11 +240,17 @@ class TimelineBodyMetrics {
   final double cladeRowHeight;
   final double extinctionsRowHeight;
   final double minUnitWidth;
+  final double minUnitHeight;
   final double eventsRowHeight;
   final double contentHeight;
   final double totalUnits;
   final double periodUnits;
   final double scrollWidth;
+  final double scrollHeight;
+  final List<TimelineTrack> trackOrder;
+  final Map<TimelineTrack, double> trackWidths;
+  final Map<TimelineTrack, double> trackStartXs;
+  final double trackColumnsWidth;
   final List<ExtinctionMarkerLayout> extinctionLayouts;
   final double eventsRowTop;
   final double cladeRowTop;
@@ -216,41 +262,7 @@ class TimelineBodyMetrics {
   final double epochTotalUnits;
   final double stageTotalUnits;
   final double rlifeTotalUnits;
-  final List<double> periodBoundaryXs;
-  final List<double> eraBoundaryXs;
-  final List<double> eonBoundaryXs;
-
-  static List<double> _rowBoundaryPositions(
-    List<TimelineRowSegment> segments,
-    double totalUnits,
-    double scrollWidth,
-  ) {
-    if (segments.isEmpty || totalUnits <= 0) {
-      return const [];
-    }
-    final positions = <double>[];
-    var cursor = 0.0;
-    for (var i = 0; i < segments.length - 1; i++) {
-      cursor += segments[i].unitSpan;
-      positions.add(scrollWidth * (cursor / totalUnits));
-    }
-    return positions;
-  }
-
-  static List<double> _bandBoundaryPositions(
-    List<TimelineBandSegment> segments,
-    double totalUnits,
-    double scrollWidth,
-  ) {
-    if (segments.isEmpty || totalUnits <= 0) {
-      return const [];
-    }
-    final positions = <double>[];
-    var cursor = 0.0;
-    for (var i = 0; i < segments.length - 1; i++) {
-      cursor += segments[i].unitSpan;
-      positions.add(scrollWidth * (cursor / totalUnits));
-    }
-    return positions;
-  }
+  final List<double> periodBoundaryYs;
+  final List<double> eraBoundaryYs;
+  final List<double> eonBoundaryYs;
 }

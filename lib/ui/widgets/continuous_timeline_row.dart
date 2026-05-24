@@ -45,11 +45,11 @@ class ContinuousTimelineRow extends StatelessWidget {
     );
     Color darken(Color color, double factor) {
       int scaledChannel(double value) {
-        return (value * 255.0 * factor).round().clamp(0, 255) as int;
+        return (value * 255.0 * factor).round().clamp(0, 255).toInt();
       }
 
       int scaledAlpha(double value) {
-        return (value * 255.0).round().clamp(0, 255) as int;
+        return (value * 255.0).round().clamp(0, 255).toInt();
       }
 
       return Color.fromARGB(

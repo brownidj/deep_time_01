@@ -43,14 +43,15 @@ class TimelineRowBuilder {
     var span = 0.0;
     for (final slot in slots) {
       final division = slot.divisionFor(rank);
+      final slotSpan = _slotSpanForRank(slot, rank);
       if (division?.id != current?.id) {
         if (span > 0) {
           segments.add(_rowFromDivision(current, span, rank));
         }
         current = division;
-        span = slot.weight;
+        span = slotSpan;
       } else {
-        span += slot.weight;
+        span += slotSpan;
       }
     }
     if (span > 0) {
@@ -74,7 +75,7 @@ class TimelineRowBuilder {
       if (!hasEpochs) {
         final totalWeight = eonSlots.fold<double>(
           0.0,
-          (sum, slot) => sum + slot.weight,
+          (sum, slot) => sum + _slotSpanForRank(slot, GeologicRank.stage),
         );
         segments.add(_rowFromDivision(null, totalWeight, GeologicRank.stage));
         continue;
@@ -83,15 +84,26 @@ class TimelineRowBuilder {
       for (final slot in eonSlots) {
         final epoch = slot.epoch;
         if (epoch == null) {
-          segments.add(_rowFromDivision(null, slot.weight, GeologicRank.stage));
+          segments.add(
+            _rowFromDivision(
+              null,
+              _slotSpanForRank(slot, GeologicRank.stage),
+              GeologicRank.stage,
+            ),
+          );
           continue;
         }
         final stages = slot.stages;
         if (stages.isEmpty) {
-          segments.add(_rowFromDivision(null, slot.weight, GeologicRank.stage));
+          segments.add(
+            _rowFromDivision(
+              null,
+              _slotSpanForRank(slot, GeologicRank.stage),
+              GeologicRank.stage,
+            ),
+          );
           continue;
         }
-        final span = slot.weight / stages.length;
         for (final stage in stages) {
           segments.add(
             TimelineRowSegment(
@@ -102,7 +114,7 @@ class TimelineRowBuilder {
               endMa: stage.endMa,
               colorKey: colorKeyForDivision(stage, divisionById),
               isGap: false,
-              unitSpan: span,
+              unitSpan: 1.0,
               secondaryLabel: null,
               explanation: stage.explanation,
             ),
@@ -175,5 +187,25 @@ class TimelineRowBuilder {
       secondaryLabel: null,
       explanation: division.explanation,
     );
+  }
+
+  double _slotSpanForRank(TimelineSlot slot, GeologicRank rank) {
+    switch (rank) {
+      case GeologicRank.period:
+        final hasEpochOrStage = slot.epoch != null || slot.stages.isNotEmpty;
+        if (!hasEpochOrStage) {
+          return slot.weight;
+        }
+        final periodCount = slot.stages.length;
+        return periodCount > 0 ? periodCount.toDouble() : 1.0;
+      case GeologicRank.epoch:
+      case GeologicRank.stage:
+        final count = slot.stages.length;
+        return count > 0 ? count.toDouble() : 1.0;
+      case GeologicRank.eon:
+      case GeologicRank.era:
+      case GeologicRank.age:
+        return slot.weight;
+    }
   }
 }

@@ -71,15 +71,16 @@ class _EventMarker extends StatelessWidget {
     if (!hasExplanation) {
       return _wrapTooltip(content);
     }
-    return GestureDetector(
+    final markerWithLongPress = GestureDetector(
       behavior: HitTestBehavior.translucent,
       onLongPress: () => showTimelineExplanationDialog(
         context: context,
         title: title ?? label,
         explanation: explanation!.trim(),
       ),
-      child: _wrapTooltip(content),
+      child: content,
     );
+    return _wrapTooltip(markerWithLongPress);
   }
 
   Widget _wrapTooltip(Widget content) {

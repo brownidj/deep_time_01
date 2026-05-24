@@ -1,16 +1,17 @@
 import 'package:deep_time/application/services/timeline_layout_models.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_body_metrics.dart';
+import 'package:deep_time/ui/screens/timeline/timeline_orientation.dart';
 
 extension TimelineBodyMetricsOverlay on TimelineBodyMetrics {
-  TimelineRowSegment? rowSegmentAtX(
+  TimelineRowSegment? rowSegmentAtY(
     List<TimelineRowSegment> segments,
     double totalUnits,
-    double x,
+    double y,
   ) {
-    if (segments.isEmpty || totalUnits <= 0) {
+    if (segments.isEmpty || totalUnits <= 0 || scrollHeight <= 0) {
       return null;
     }
-    final unitPos = (x / scrollWidth) * totalUnits;
+    final unitPos = (y / scrollHeight) * totalUnits;
     var cursor = 0.0;
     for (final segment in segments) {
       cursor += segment.unitSpan;
@@ -21,15 +22,15 @@ extension TimelineBodyMetricsOverlay on TimelineBodyMetrics {
     return segments.last;
   }
 
-  TimelineBandSegment? bandSegmentAtX(
+  TimelineBandSegment? bandSegmentAtY(
     List<TimelineBandSegment> segments,
     double totalUnits,
-    double x,
+    double y,
   ) {
-    if (segments.isEmpty || totalUnits <= 0) {
+    if (segments.isEmpty || totalUnits <= 0 || scrollHeight <= 0) {
       return null;
     }
-    final unitPos = (x / scrollWidth) * totalUnits;
+    final unitPos = (y / scrollHeight) * totalUnits;
     var cursor = 0.0;
     for (final segment in segments) {
       cursor += segment.unitSpan;
@@ -58,91 +59,83 @@ extension TimelineBodyMetricsOverlay on TimelineBodyMetrics {
         segment.colorKey.trim().isNotEmpty;
   }
 
-  bool hasRowContentAtX(
+  bool hasRowContentAtY(
     List<TimelineRowSegment> segments,
     double totalUnits,
-    double x,
+    double y,
   ) {
-    return rowHasContent(rowSegmentAtX(segments, totalUnits, x));
+    return rowHasContent(rowSegmentAtY(segments, totalUnits, y));
   }
 
-  bool hasBandContentAtX(
+  bool hasBandContentAtY(
     List<TimelineBandSegment> segments,
     double totalUnits,
-    double x,
+    double y,
   ) {
-    return bandHasContent(bandSegmentAtX(segments, totalUnits, x));
+    return bandHasContent(bandSegmentAtY(segments, totalUnits, y));
   }
 
-  double eonOverlayBottom(double x) {
-    final hasEra = hasBandContentAtX(layout.eraSegments, eraTotalUnits, x);
+  double _columnRight(TimelineTrack track) {
+    return trackX(track) + trackWidth(track);
+  }
+
+  double eonOverlayRight(double y) {
+    final hasEra = hasBandContentAtY(layout.eraSegments, eraTotalUnits, y);
     if (!hasEra) {
-      return eonHeight;
+      return _columnRight(TimelineTrack.eon);
     }
-    final hasPeriod = hasRowContentAtX(layout.periodSegments, periodUnits, x);
+    final hasPeriod = hasRowContentAtY(layout.periodSegments, periodUnits, y);
     if (!hasPeriod) {
-      return eonHeight + eraHeight;
+      return _columnRight(TimelineTrack.era);
     }
-    final hasEpoch = hasRowContentAtX(layout.epochSegments, epochTotalUnits, x);
+    final hasEpoch = hasRowContentAtY(layout.epochSegments, epochTotalUnits, y);
     if (!hasEpoch) {
-      return eonHeight + eraHeight + subRowHeight;
+      return _columnRight(TimelineTrack.period);
     }
-    final hasStage = hasRowContentAtX(layout.stageSegments, stageTotalUnits, x);
+    final hasStage = hasRowContentAtY(layout.stageSegments, stageTotalUnits, y);
     if (!hasStage) {
-      return eonHeight + eraHeight + subRowHeight + subRowHeight;
+      return _columnRight(TimelineTrack.epoch);
     }
-    final hasRlife = hasRowContentAtX(layout.rlifeSegments, rlifeTotalUnits, x);
+    final hasRlife = hasRowContentAtY(layout.rlifeSegments, rlifeTotalUnits, y);
     if (!hasRlife) {
-      return eonHeight +
-          eraHeight +
-          subRowHeight +
-          subRowHeight +
-          stageRowHeight;
+      return _columnRight(TimelineTrack.stage);
     }
-    return rlifeBottom;
+    return _columnRight(TimelineTrack.rlife);
   }
 
-  double eraOverlayBottom(double x) {
-    final hasPeriod = hasRowContentAtX(layout.periodSegments, periodUnits, x);
+  double eraOverlayRight(double y) {
+    final hasPeriod = hasRowContentAtY(layout.periodSegments, periodUnits, y);
     if (!hasPeriod) {
-      return eonHeight + eraHeight;
+      return _columnRight(TimelineTrack.era);
     }
-    final hasEpoch = hasRowContentAtX(layout.epochSegments, epochTotalUnits, x);
+    final hasEpoch = hasRowContentAtY(layout.epochSegments, epochTotalUnits, y);
     if (!hasEpoch) {
-      return eonHeight + eraHeight + subRowHeight;
+      return _columnRight(TimelineTrack.period);
     }
-    final hasStage = hasRowContentAtX(layout.stageSegments, stageTotalUnits, x);
+    final hasStage = hasRowContentAtY(layout.stageSegments, stageTotalUnits, y);
     if (!hasStage) {
-      return eonHeight + eraHeight + subRowHeight + subRowHeight;
+      return _columnRight(TimelineTrack.epoch);
     }
-    final hasRlife = hasRowContentAtX(layout.rlifeSegments, rlifeTotalUnits, x);
+    final hasRlife = hasRowContentAtY(layout.rlifeSegments, rlifeTotalUnits, y);
     if (!hasRlife) {
-      return eonHeight +
-          eraHeight +
-          subRowHeight +
-          subRowHeight +
-          stageRowHeight;
+      return _columnRight(TimelineTrack.stage);
     }
-    return rlifeBottom;
+    return _columnRight(TimelineTrack.rlife);
   }
 
-  double periodOverlayBottom(double x) {
-    final hasEpoch = hasRowContentAtX(layout.epochSegments, epochTotalUnits, x);
+  double periodOverlayRight(double y) {
+    final hasEpoch = hasRowContentAtY(layout.epochSegments, epochTotalUnits, y);
     if (!hasEpoch) {
-      return eonHeight + eraHeight + subRowHeight;
+      return _columnRight(TimelineTrack.period);
     }
-    final hasStage = hasRowContentAtX(layout.stageSegments, stageTotalUnits, x);
+    final hasStage = hasRowContentAtY(layout.stageSegments, stageTotalUnits, y);
     if (!hasStage) {
-      return eonHeight + eraHeight + subRowHeight + subRowHeight;
+      return _columnRight(TimelineTrack.epoch);
     }
-    final hasRlife = hasRowContentAtX(layout.rlifeSegments, rlifeTotalUnits, x);
+    final hasRlife = hasRowContentAtY(layout.rlifeSegments, rlifeTotalUnits, y);
     if (!hasRlife) {
-      return eonHeight +
-          eraHeight +
-          subRowHeight +
-          subRowHeight +
-          stageRowHeight;
+      return _columnRight(TimelineTrack.stage);
     }
-    return rlifeBottom;
+    return _columnRight(TimelineTrack.rlife);
   }
 }

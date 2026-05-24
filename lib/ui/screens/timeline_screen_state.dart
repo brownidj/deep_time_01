@@ -1,18 +1,26 @@
 part of 'timeline_screen.dart';
 
-class _TimelineScreenState extends State<TimelineScreen> {
+class _TimelineScreenState extends State<TimelineScreen>
+    with _TimelineScreenPreferences, _TimelineScreenCladeData {
   late final Future<TimelineSnapshot> _snapshotFuture;
   final TimelineLayoutService _layoutService = TimelineLayoutService();
   final ScrollController _timelineScrollController = ScrollController();
   SelectedDivision? _selectedDivision;
+  @override
   TimeLabelMode _labelMode = TimeLabelMode.geologicTime;
+  @override
   CladeViewMode _cladeViewMode = CladeViewMode.representativeOnly;
+  @override
   String _cladeCategoryId = 'all';
+  @override
   List<CladeDisplayGroup> _cladeDisplayGroups = const [];
+  @override
   List<String> _cladeRepresentativeIds = const [];
   String _cladeSearchQuery = '';
   String? _cladeSpotlightId;
+  @override
   bool _labelModeRetryScheduled = false;
+  @override
   int _labelModeRetryCount = 0;
   @override
   void initState() {

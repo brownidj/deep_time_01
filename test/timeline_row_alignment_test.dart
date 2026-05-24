@@ -1,144 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:deep_time/application/services/timeline_layout_service.dart';
-import 'package:deep_time/domain/models/geologic_rank.dart';
-import 'package:deep_time/domain/models/timeline_palette.dart';
+import 'package:deep_time/domain/models/clade.dart';
+import 'package:deep_time/domain/models/clade_zoom_level.dart';
 import 'package:deep_time/domain/models/timeline_marker_catalog.dart';
 import 'package:deep_time/ui/models/clade_view_mode.dart';
 import 'package:deep_time/ui/models/time_label_mode.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_body.dart';
-import 'package:deep_time/ui/theme/deep_time_palette.dart';
-import 'package:deep_time/ui/widgets/continuous_timeline_row.dart';
-import 'package:deep_time/ui/widgets/timeline_band_row.dart';
-import 'package:deep_time/ui/widgets/timeline_events_row.dart';
+import 'package:deep_time/ui/screens/timeline/timeline_column_headers.dart';
+import 'package:deep_time/ui/screens/timeline/timeline_vertical_columns.dart';
+import 'package:deep_time/ui/screens/timeline/timeline_vertical_overlays.dart';
+
+import 'timeline_row_alignment_helpers.dart';
 
 void main() {
-  testWidgets('Timeline rows align with static label heights', (tester) async {
-    final palette = DeepTimePalette(
-      const TimelinePalette(
-        divisionColors: {
-          'eon|test': 0xFF111111,
-          'era|test': 0xFF222222,
-          'period|test': 0xFF333333,
-          'epoch|test': 0xFF444444,
-          'stage|test': 0xFF555555,
-          'rlife|test': 0xFF666666,
-        },
-      ),
-    );
-
-    final layout = TimelineLayoutSnapshot(
-      eonSegments: const [
-        TimelineBandSegment(
-          id: 1,
-          label: 'TestEon',
-          rank: GeologicRank.eon,
-          startMa: 100,
-          endMa: 0,
-          colorKey: 'eon|test',
-          isGap: false,
-          unitSpan: 1,
-        ),
-      ],
-      eraSegments: const [
-        TimelineBandSegment(
-          id: 2,
-          label: 'TestEra',
-          rank: GeologicRank.era,
-          startMa: 100,
-          endMa: 0,
-          colorKey: 'era|test',
-          isGap: false,
-          unitSpan: 1,
-        ),
-      ],
-      periodSegments: const [
-        TimelineRowSegment(
-          id: 1,
-          label: 'TestPeriod',
-          rank: GeologicRank.period,
-          startMa: 100,
-          endMa: 0,
-          colorKey: 'period|test',
-          isGap: false,
-          unitSpan: 1,
-          secondaryLabel: null,
-        ),
-      ],
-      epochSegments: const [
-        TimelineRowSegment(
-          id: 2,
-          label: 'TestEpoch',
-          rank: GeologicRank.epoch,
-          startMa: 100,
-          endMa: 0,
-          colorKey: 'epoch|test',
-          isGap: false,
-          unitSpan: 1,
-          secondaryLabel: null,
-        ),
-      ],
-      stageSegments: const [
-        TimelineRowSegment(
-          id: 3,
-          label: 'TestStage',
-          rank: GeologicRank.stage,
-          startMa: 100,
-          endMa: 0,
-          colorKey: 'stage|test',
-          isGap: false,
-          unitSpan: 1,
-          secondaryLabel: null,
-        ),
-      ],
-      rlifeSegments: const [
-        TimelineRowSegment(
-          id: 4,
-          label: 'TestRLife',
-          rank: GeologicRank.period,
-          startMa: 100,
-          endMa: 0,
-          colorKey: 'rlife|test',
-          isGap: false,
-          unitSpan: 1,
-          secondaryLabel: null,
-        ),
-      ],
-      eventSegments: const [
-        TimelineEventSegment(
-          label: 'Event A',
-          shortLabel: 'A',
-          type: TimelineEventType.bar,
-          startMa: 100,
-          endMa: 60,
-          startUnit: 0,
-          endUnit: 1,
-          colorKey: '',
-        ),
-        TimelineEventSegment(
-          label: 'Event B',
-          shortLabel: 'B',
-          type: TimelineEventType.bar,
-          startMa: 90,
-          endMa: 70,
-          startUnit: 0.1,
-          endUnit: 0.9,
-          colorKey: '',
-        ),
-        TimelineEventSegment(
-          label: 'Event C',
-          shortLabel: 'C',
-          type: TimelineEventType.bar,
-          startMa: 80,
-          endMa: 75,
-          startUnit: 0.2,
-          endUnit: 0.8,
-          colorKey: '',
-        ),
-      ],
-      oldestMa: 100,
-      youngestMa: 0,
-    );
+  testWidgets('Timeline shows top column headers and vertical columns', (
+    tester,
+  ) async {
+    final palette = testPalette();
+    final layout = singleSpanLayout();
     const markers = TimelineMarkerCatalog(events: [], extinctions: []);
 
     await tester.pumpWidget(
@@ -175,63 +54,148 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    double labelHeightFor(String text) {
-      final labelFinder = find.ancestor(
-        of: find.text(text),
-        matching: find.byWidgetPredicate(
-          (widget) =>
-              widget is SizedBox &&
-              widget.height != null &&
-              widget.child is DecoratedBox,
+    expect(find.byType(TimelineColumnHeaders), findsOneWidget);
+    expect(find.byType(TimelineVerticalColumns), findsOneWidget);
+    expect(find.byType(TimelineVerticalOverlays), findsOneWidget);
+    expect(find.text('Eon'), findsOneWidget);
+    expect(find.text('Clades'), findsOneWidget);
+
+    final headerTop = tester.getTopLeft(find.byType(TimelineColumnHeaders)).dy;
+    final timelineTop = tester
+        .getTopLeft(find.byType(TimelineVerticalColumns))
+        .dy;
+    expect(headerTop, lessThan(timelineTop));
+  });
+
+  testWidgets('Vertical mode renders clade bars and taps spotlight callback', (
+    tester,
+  ) async {
+    final palette = testPalette();
+    final layout = splitPeriodLayout();
+    const markers = TimelineMarkerCatalog(events: [], extinctions: []);
+    const clades = [
+      Clade(
+        id: 'vertical_test_clade',
+        label: 'Vertical Test Clade',
+        scientificRank: 'test',
+        startMa: 95,
+        endMa: 5,
+        displayGroups: ['all'],
+        displayPriority: 0,
+        minZoomLevel: CladeZoomLevel.whole,
+      ),
+    ];
+
+    String? tappedId;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: SizedBox(
+            width: 1200,
+            height: 900,
+            child: Column(
+              children: [
+                TimelineBody(
+                  layout: layout,
+                  palette: palette,
+                  markers: markers,
+                  labelMode: TimeLabelMode.geologicTime,
+                  scrollController: ScrollController(),
+                  selectedId: null,
+                  onBandSelect: (_) {},
+                  onSelect: (_) {},
+                  clades: clades,
+                  cladeViewMode: CladeViewMode.representativeOnly,
+                  cladeCategoryId: 'all',
+                  cladeRepresentativeIds: const [],
+                  cladeSearchQuery: '',
+                  cladeSpotlightId: null,
+                  onCladeSpotlight: (clade) => tappedId = clade.id,
+                ),
+              ],
+            ),
+          ),
         ),
-      );
-      return tester.getSize(labelFinder).height;
-    }
-
-    final eonLabelHeight = labelHeightFor('Eon');
-    final eraLabelHeight = labelHeightFor('Era');
-    final periodLabelHeight = labelHeightFor('Period');
-    final epochLabelHeight = labelHeightFor('Epoch');
-    final ageLabelHeight = labelHeightFor('Age');
-    final rlifeLabelHeight = labelHeightFor('RLife');
-    final eventsLabelHeight = labelHeightFor('Events');
-    final extinctionsLabelHeight = labelHeightFor('Extinctions');
-
-    final bandRows = find.descendant(
-      of: find.byType(TimelineBands),
-      matching: find.byType(TimelineBandRow),
+      ),
     );
 
-    expect(bandRows, findsNWidgets(2));
+    await tester.pumpAndSettle();
 
-    final eonBandHeight = tester.getSize(bandRows.at(0)).height;
-    final eraBandHeight = tester.getSize(bandRows.at(1)).height;
-
-    expect(eonBandHeight, eonLabelHeight);
-    expect(eraBandHeight, eraLabelHeight);
-
-    final rowWidgets = find.byType(ContinuousTimelineRow);
-    expect(rowWidgets, findsNWidgets(4));
-
-    final periodHeight = tester.getSize(rowWidgets.at(0)).height;
-    final epochHeight = tester.getSize(rowWidgets.at(1)).height;
-    final ageHeight = tester.getSize(rowWidgets.at(2)).height;
-    final rlifeHeight = tester.getSize(rowWidgets.at(3)).height;
-
-    expect(periodHeight, periodLabelHeight);
-    expect(epochHeight, epochLabelHeight);
-    expect(ageHeight, ageLabelHeight);
-    expect(rlifeHeight, rlifeLabelHeight);
-
-    final eventsRowHeight = tester
-        .getSize(find.byType(TimelineEventsRow))
-        .height;
-    final expectedEventsHeight = TimelineEventsRow.requiredHeight(
-      events: layout.eventSegments,
-      rowHeight: 70.0,
+    expect(tester.takeException(), isNull);
+    final barFinder = find.byKey(
+      const ValueKey('vertical-clade-vertical_test_clade'),
     );
-    expect(eventsRowHeight, expectedEventsHeight);
-    expect(eventsLabelHeight, expectedEventsHeight);
-    expect(extinctionsLabelHeight, 70.0);
+    expect(barFinder, findsOneWidget);
+
+    await tester.ensureVisible(barFinder);
+    await tester.pumpAndSettle();
+    final tapPoint = tester.getTopLeft(barFinder) + const Offset(4, 4);
+    await tester.tapAt(tapPoint);
+    await tester.pumpAndSettle();
+    expect(tappedId, 'vertical_test_clade');
+  });
+
+  testWidgets('Vertical mode clade bars map to vertical time span', (
+    tester,
+  ) async {
+    final palette = testPalette();
+    final layout = splitPeriodLayout();
+    const markers = TimelineMarkerCatalog(events: [], extinctions: []);
+    const clades = [
+      Clade(
+        id: 'half_span_clade',
+        label: 'Half Span Clade',
+        scientificRank: 'test',
+        startMa: 100,
+        endMa: 50,
+        displayGroups: ['all'],
+        displayPriority: 0,
+        minZoomLevel: CladeZoomLevel.whole,
+      ),
+    ];
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: SizedBox(
+            width: 1200,
+            height: 900,
+            child: Column(
+              children: [
+                TimelineBody(
+                  layout: layout,
+                  palette: palette,
+                  markers: markers,
+                  labelMode: TimeLabelMode.geologicTime,
+                  scrollController: ScrollController(),
+                  selectedId: null,
+                  onBandSelect: (_) {},
+                  onSelect: (_) {},
+                  clades: clades,
+                  cladeViewMode: CladeViewMode.representativeOnly,
+                  cladeCategoryId: 'all',
+                  cladeRepresentativeIds: const [],
+                  cladeSearchQuery: '',
+                  cladeSpotlightId: null,
+                  onCladeSpotlight: (_) {},
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    final columnRect = tester.getRect(
+      find.byKey(const ValueKey('vertical-clade-column')),
+    );
+    final barRect = tester.getRect(
+      find.byKey(const ValueKey('vertical-clade-half_span_clade')),
+    );
+
+    expect((barRect.top - columnRect.top).abs(), lessThan(2.0));
+    expect((barRect.height - (columnRect.height / 2)).abs(), lessThan(4.0));
   });
 }

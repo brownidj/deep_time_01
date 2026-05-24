@@ -1,6 +1,17 @@
 part of 'timeline_screen.dart';
 
-extension TimelineScreenPreferences on _TimelineScreenState {
+mixin _TimelineScreenPreferences on State<TimelineScreen> {
+  TimeLabelMode get _labelMode;
+  set _labelMode(TimeLabelMode value);
+  CladeViewMode get _cladeViewMode;
+  set _cladeViewMode(CladeViewMode value);
+  String get _cladeCategoryId;
+  set _cladeCategoryId(String value);
+  List<CladeDisplayGroup> get _cladeDisplayGroups;
+  bool get _labelModeRetryScheduled;
+  set _labelModeRetryScheduled(bool value);
+  int get _labelModeRetryCount;
+  set _labelModeRetryCount(int value);
   Future<void> _loadPreferences() async {
     if (!widget.enablePreferences) {
       return;
@@ -198,7 +209,9 @@ extension TimelineScreenPreferences on _TimelineScreenState {
   }
 }
 
-extension TimelineScreenCladeData on _TimelineScreenState {
+mixin _TimelineScreenCladeData on State<TimelineScreen> {
+  set _cladeDisplayGroups(List<CladeDisplayGroup> value);
+  set _cladeRepresentativeIds(List<String> value);
   Future<void> _loadCladeDisplayGroups() async {
     try {
       final groups = await widget.dependencies.cladeDisplayGroupRepository

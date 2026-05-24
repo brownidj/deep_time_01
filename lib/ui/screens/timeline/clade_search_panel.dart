@@ -57,7 +57,7 @@ class _CladeSearchPanelState extends State<CladeSearchPanel> {
       fontWeight: FontWeight.w600,
     );
     final hintStyle = textTheme.bodySmall?.copyWith(
-      color: DeepTimePalette.panelText.withOpacity(0.7),
+      color: DeepTimePalette.panelText.withValues(alpha: 0.7),
     );
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
@@ -115,7 +115,7 @@ class _MatchList extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final emptyStyle = textTheme.bodySmall?.copyWith(
-      color: DeepTimePalette.panelText.withOpacity(0.8),
+      color: DeepTimePalette.panelText.withValues(alpha: 0.8),
     );
     if (matches.isEmpty) {
       return Text('No matches yet', style: emptyStyle);
