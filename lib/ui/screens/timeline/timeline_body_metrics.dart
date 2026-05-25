@@ -97,10 +97,10 @@ class TimelineBodyMetrics {
       0.0,
       (sum, segment) => sum + segment.unitSpan,
     );
-    final scale = AppDebug.timelineScale.clamp(
-      AppDebug.minTimelineScale,
-      AppDebug.maxTimelineScale,
-    );
+    final scale =
+        AppDebug.timelineScale
+            .clamp(AppDebug.minTimelineScale, AppDebug.maxTimelineScale)
+            .toDouble();
     final trackOrder = List<TimelineTrack>.from(kDefaultTimelineTrackOrder);
     final trackWidths = <TimelineTrack, double>{
       for (final track in trackOrder) track: config.trackWidthFor(track),
@@ -116,10 +116,11 @@ class TimelineBodyMetrics {
       constraints.maxWidth * scale,
       totalUnits * minUnitWidth,
     );
-    final scrollHeight = math.max(
-      math.max(constraints.maxHeight * scale, totalUnits * minUnitHeight),
-      minScrollHeight ?? 0,
-    );
+    final fixedHeight = layout.fixedHeight;
+    final baseScrollHeight = fixedHeight == null
+        ? math.max(constraints.maxHeight * scale, totalUnits * minUnitHeight)
+        : math.max(fixedHeight * scale, 0.0);
+    final scrollHeight = math.max(baseScrollHeight, minScrollHeight ?? 0.0);
     final extinctionLayouts = ExtinctionMarkers.buildMarkerLayouts(
       width: scrollWidth,
       periodSegments: layout.periodSegments,

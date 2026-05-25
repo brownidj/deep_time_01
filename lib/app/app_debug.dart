@@ -5,7 +5,7 @@ class AppDebug {
 
   static const bool _appDebug = false;
   static bool _overrideEnabled = false;
-  static const double minTimelineScale = 2.8;
+  static const double minTimelineScale = 1.0;
   static const double maxTimelineScale = 4.0;
   static double timelineScale = 3.4;
 

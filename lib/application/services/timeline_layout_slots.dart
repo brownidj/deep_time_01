@@ -6,9 +6,11 @@ class TimelineSlotBuilder {
     List<GeologicDivision> eons,
     Map<int, List<GeologicDivision>> childrenByParentId,
   ) {
+    final sortedEons = List<GeologicDivision>.from(eons)
+      ..sort((a, b) => b.startMa.compareTo(a.startMa));
     final slots = <TimelineSlot>[];
-    final mesozoicEra = _findEra(eons, childrenByParentId, 'Mesozoic');
-    final cenozoicEra = _findEra(eons, childrenByParentId, 'Cenozoic');
+    final mesozoicEra = _findEra(sortedEons, childrenByParentId, 'Mesozoic');
+    final cenozoicEra = _findEra(sortedEons, childrenByParentId, 'Cenozoic');
     final mesozoicPeriodCount = mesozoicEra == null
         ? 0
         : _childrenOfRank(
@@ -24,7 +26,7 @@ class TimelineSlotBuilder {
         ? cenozoicEpochCount / mesozoicPeriodCount
         : 1.0;
 
-    for (final eon in eons) {
+    for (final eon in sortedEons) {
       final eras = _childrenOfRank(eon, GeologicRank.era, childrenByParentId)
         ..sort((a, b) => b.startMa.compareTo(a.startMa));
       if (eras.isEmpty) {

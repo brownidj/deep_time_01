@@ -1,3 +1,4 @@
+import 'package:deep_time/domain/models/geologic_division.dart';
 import 'package:deep_time/domain/models/geologic_rank.dart';
 
 class TimelineBandSegment {
@@ -82,6 +83,7 @@ class TimelineEventSegment {
 
 class TimelineLayoutSnapshot {
   const TimelineLayoutSnapshot({
+    required this.divisions,
     required this.eonSegments,
     required this.eraSegments,
     required this.periodSegments,
@@ -91,8 +93,10 @@ class TimelineLayoutSnapshot {
     required this.eventSegments,
     required this.oldestMa,
     required this.youngestMa,
+    this.fixedHeight,
   });
 
+  final List<GeologicDivision> divisions;
   final List<TimelineBandSegment> eonSegments;
   final List<TimelineBandSegment> eraSegments;
   final List<TimelineRowSegment> periodSegments;
@@ -102,6 +106,7 @@ class TimelineLayoutSnapshot {
   final List<TimelineEventSegment> eventSegments;
   final double oldestMa;
   final double youngestMa;
+  final double? fixedHeight;
 
   TimelineRowSegments get rowSegments => TimelineRowSegments(
     periods: periodSegments,

@@ -9,6 +9,7 @@ import 'package:deep_time/domain/models/clade.dart';
 import 'package:deep_time/domain/models/timeline_marker_catalog.dart';
 import 'package:deep_time/ui/models/clade_view_mode.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_body_metrics.dart';
+import 'package:deep_time/ui/screens/timeline/timeline_min_height_helpers.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_orientation.dart';
 import 'package:deep_time/ui/theme/deep_time_palette.dart';
 import 'package:deep_time/ui/widgets/time_range_format.dart';
@@ -17,6 +18,7 @@ import 'package:deep_time/ui/widgets/timeline_explanation_dialog.dart';
 
 part 'timeline_vertical_columns_segments.dart';
 part 'timeline_vertical_columns_segment_heights.dart';
+part 'timeline_vertical_columns_ma.dart';
 part 'timeline_vertical_columns_events.dart';
 part 'timeline_vertical_columns_extinctions.dart';
 part 'timeline_vertical_columns_painters.dart';
@@ -63,18 +65,20 @@ class TimelineVerticalColumns extends StatelessWidget {
     final columnHeight = math.max(metrics.minHeight, metrics.scrollHeight);
     return LayoutBuilder(
       builder: (context, constraints) {
+        final useFixedHeights = layout.fixedHeight != null;
         final stageLabelStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
           color: DeepTimePalette.darkLabel,
           fontWeight: FontWeight.w700,
         );
         final periodLabelStyle = stageLabelStyle;
-        final minHeights = _buildMinHeightMaps(
+        final minHeights = buildMinHeightMaps(
           layout,
           stageLabelStyle,
           periodStyle: periodLabelStyle,
         );
         final scale = _widthScale(constraints.maxWidth);
         final cappedTracks = <TimelineTrack>{
+          TimelineTrack.ma,
           TimelineTrack.eon,
           TimelineTrack.era,
           TimelineTrack.period,
@@ -88,6 +92,12 @@ class TimelineVerticalColumns extends StatelessWidget {
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            _MaColumn(
+              width: scaledWidth(TimelineTrack.ma),
+              height: columnHeight,
+              layout: layout,
+              metrics: metrics,
+            ),
             _VerticalBandColumn(
               width: scaledWidth(TimelineTrack.eon),
               height: columnHeight,
@@ -99,8 +109,10 @@ class TimelineVerticalColumns extends StatelessWidget {
                   palette.colorForKey(segment.colorKey),
               rotateLabel: true,
               horizontalPadding: 2,
-              minHeightForSegment: (segment, _) =>
-                  minHeights.eonHeights[segment.id] ?? 0.0,
+              minHeightForSegment: useFixedHeights
+                  ? null
+                  : (segment, _) =>
+                      minHeights.eonHeights[segment.id] ?? 0.0,
             ),
             _VerticalBandColumn(
               width: scaledWidth(TimelineTrack.era),
@@ -113,8 +125,19 @@ class TimelineVerticalColumns extends StatelessWidget {
                   palette.colorForKey(segment.colorKey),
               rotateLabel: true,
               horizontalPadding: 2,
-              minHeightForSegment: (segment, _) =>
-                  minHeights.eraHeights[segment.id] ?? 0.0,
+              minHeightForSegment: useFixedHeights
+                  ? null
+                  : (segment, _) => segment.isGap
+                      ? minHeightFromParentRange(
+                          segment.startMa,
+                          segment.endMa,
+                          layout.eonSegments,
+                          minHeights.eonHeights,
+                          (parent) => parent.startMa,
+                          (parent) => parent.endMa,
+                          (parent) => parent.id,
+                        )
+                      : (minHeights.eraHeights[segment.id] ?? 0.0),
             ),
             _VerticalRowColumn(
               width: scaledWidth(TimelineTrack.period),
@@ -127,8 +150,19 @@ class TimelineVerticalColumns extends StatelessWidget {
                   palette.colorForKey(segment.colorKey),
               rotateLabel: true,
               horizontalPadding: 6,
-              minHeightForSegment: (segment, _) =>
-                  minHeights.periodHeights[segment.id] ?? 0.0,
+              minHeightForSegment: useFixedHeights
+                  ? null
+                  : (segment, _) => segment.isGap
+                      ? minHeightFromParentRange(
+                          segment.startMa,
+                          segment.endMa,
+                          layout.eraSegments,
+                          minHeights.eraHeights,
+                          (parent) => parent.startMa,
+                          (parent) => parent.endMa,
+                          (parent) => parent.id,
+                        )
+                      : (minHeights.periodHeights[segment.id] ?? 0.0),
             ),
             _VerticalRowColumn(
               width: scaledWidth(TimelineTrack.epoch),
@@ -141,8 +175,19 @@ class TimelineVerticalColumns extends StatelessWidget {
                   palette.colorForKey(segment.colorKey),
               rotateLabel: false,
               horizontalPadding: 6,
-              minHeightForSegment: (segment, _) =>
-                  minHeights.epochHeights[segment.id] ?? 0.0,
+              minHeightForSegment: useFixedHeights
+                  ? null
+                  : (segment, _) => segment.isGap
+                      ? minHeightFromParentRange(
+                          segment.startMa,
+                          segment.endMa,
+                          layout.periodSegments,
+                          minHeights.periodHeights,
+                          (parent) => parent.startMa,
+                          (parent) => parent.endMa,
+                          (parent) => parent.id,
+                        )
+                      : (minHeights.epochHeights[segment.id] ?? 0.0),
             ),
             _VerticalRowColumn(
               width: scaledWidth(TimelineTrack.stage),
@@ -155,8 +200,19 @@ class TimelineVerticalColumns extends StatelessWidget {
                   palette.colorForKey(segment.colorKey),
               rotateLabel: false,
               horizontalPadding: 6,
-              minHeightForSegment: (segment, style) =>
-                  _minHeightForStageLabel(segment, style),
+              minHeightForSegment: useFixedHeights
+                  ? null
+                  : (segment, style) => segment.isGap
+                      ? minHeightFromParentRange(
+                          segment.startMa,
+                          segment.endMa,
+                          layout.epochSegments,
+                          minHeights.epochHeights,
+                          (parent) => parent.startMa,
+                          (parent) => parent.endMa,
+                          (parent) => parent.id,
+                        )
+                      : minHeightForStageLabel(segment, style),
             ),
             _VerticalRowColumn(
               width: scaledWidth(TimelineTrack.rlife),

@@ -15,21 +15,42 @@ class TimelineRowBuilder {
   }) {
     final segments = <TimelineBandSegment>[];
     GeologicDivision? current;
+    var currentStartMa = 0.0;
+    var currentEndMa = 0.0;
     var span = 0.0;
     for (final slot in slots) {
       final division = slot.divisionFor(rank);
+      final slotRange = _slotRangeForRank(slot, rank);
       if (division?.id != current?.id) {
         if (span > 0) {
-          segments.add(_bandFromDivision(current, span, rank));
+          segments.add(
+            _bandFromDivision(
+              current,
+              span,
+              rank,
+              startMa: currentStartMa,
+              endMa: currentEndMa,
+            ),
+          );
         }
         current = division;
+        currentStartMa = division?.startMa ?? slotRange.startMa;
+        currentEndMa = division?.endMa ?? slotRange.endMa;
         span = slot.weight;
       } else {
         span += slot.weight;
       }
     }
     if (span > 0) {
-      segments.add(_bandFromDivision(current, span, rank));
+      segments.add(
+        _bandFromDivision(
+          current,
+          span,
+          rank,
+          startMa: currentStartMa,
+          endMa: currentEndMa,
+        ),
+      );
     }
     return segments;
   }
@@ -40,22 +61,49 @@ class TimelineRowBuilder {
   }) {
     final segments = <TimelineRowSegment>[];
     GeologicDivision? current;
+    int? currentGapKey;
+    var currentStartMa = 0.0;
+    var currentEndMa = 0.0;
     var span = 0.0;
     for (final slot in slots) {
       final division = slot.divisionFor(rank);
+      final slotRange = _slotRangeForRank(slot, rank);
       final slotSpan = _slotSpanForRank(slot, rank);
-      if (division?.id != current?.id) {
+      final gapKey = division == null ? _gapKeyForRank(slot, rank) : null;
+      final shouldBreak =
+          division?.id != current?.id ||
+          (division == null && current == null && gapKey != currentGapKey);
+      if (shouldBreak) {
         if (span > 0) {
-          segments.add(_rowFromDivision(current, span, rank));
+          segments.add(
+            _rowFromDivision(
+              current,
+              span,
+              rank,
+              startMa: currentStartMa,
+              endMa: currentEndMa,
+            ),
+          );
         }
         current = division;
+        currentGapKey = gapKey;
+        currentStartMa = division?.startMa ?? slotRange.startMa;
+        currentEndMa = division?.endMa ?? slotRange.endMa;
         span = slotSpan;
       } else {
         span += slotSpan;
       }
     }
     if (span > 0) {
-      segments.add(_rowFromDivision(current, span, rank));
+      segments.add(
+        _rowFromDivision(
+          current,
+          span,
+          rank,
+          startMa: currentStartMa,
+          endMa: currentEndMa,
+        ),
+      );
     }
     return segments;
   }
@@ -77,11 +125,20 @@ class TimelineRowBuilder {
           0.0,
           (sum, slot) => sum + _slotSpanForRank(slot, GeologicRank.stage),
         );
-        segments.add(_rowFromDivision(null, totalWeight, GeologicRank.stage));
+        segments.add(
+          _rowFromDivision(
+            null,
+            totalWeight,
+            GeologicRank.stage,
+            startMa: currentEon.startMa,
+            endMa: currentEon.endMa,
+          ),
+        );
         continue;
       }
 
       for (final slot in eonSlots) {
+        final slotRange = _slotRangeForRank(slot, GeologicRank.stage);
         final epoch = slot.epoch;
         if (epoch == null) {
           segments.add(
@@ -89,6 +146,8 @@ class TimelineRowBuilder {
               null,
               _slotSpanForRank(slot, GeologicRank.stage),
               GeologicRank.stage,
+              startMa: slotRange.startMa,
+              endMa: slotRange.endMa,
             ),
           );
           continue;
@@ -100,6 +159,8 @@ class TimelineRowBuilder {
               null,
               _slotSpanForRank(slot, GeologicRank.stage),
               GeologicRank.stage,
+              startMa: slotRange.startMa,
+              endMa: slotRange.endMa,
             ),
           );
           continue;
@@ -128,15 +189,18 @@ class TimelineRowBuilder {
   TimelineBandSegment _bandFromDivision(
     GeologicDivision? division,
     double unitSpan,
-    GeologicRank rank,
+    GeologicRank rank, {
+    required double startMa,
+    required double endMa,
+  }
   ) {
     if (division == null) {
       return TimelineBandSegment(
         id: -1,
         label: '',
         rank: rank,
-        startMa: 0,
-        endMa: 0,
+        startMa: startMa,
+        endMa: endMa,
         colorKey: '',
         isGap: true,
         unitSpan: unitSpan,
@@ -159,15 +223,18 @@ class TimelineRowBuilder {
   TimelineRowSegment _rowFromDivision(
     GeologicDivision? division,
     double unitSpan,
-    GeologicRank rank,
+    GeologicRank rank, {
+    required double startMa,
+    required double endMa,
+  }
   ) {
     if (division == null) {
       return TimelineRowSegment(
         id: -1,
         label: '',
         rank: rank,
-        startMa: 0,
-        endMa: 0,
+        startMa: startMa,
+        endMa: endMa,
         colorKey: '',
         isGap: true,
         unitSpan: unitSpan,
@@ -206,6 +273,38 @@ class TimelineRowBuilder {
       case GeologicRank.era:
       case GeologicRank.age:
         return slot.weight;
+    }
+  }
+
+  GeologicDivision _slotRangeForRank(TimelineSlot slot, GeologicRank rank) {
+    switch (rank) {
+      case GeologicRank.eon:
+        return slot.eon;
+      case GeologicRank.era:
+        return slot.era ?? slot.eon;
+      case GeologicRank.period:
+        return slot.period ?? slot.era ?? slot.eon;
+      case GeologicRank.epoch:
+        return slot.epoch ?? slot.period ?? slot.era ?? slot.eon;
+      case GeologicRank.stage:
+        return slot.epoch ?? slot.period ?? slot.era ?? slot.eon;
+      case GeologicRank.age:
+        return slot.eon;
+    }
+  }
+
+  int _gapKeyForRank(TimelineSlot slot, GeologicRank rank) {
+    switch (rank) {
+      case GeologicRank.period:
+        return slot.era?.id ?? slot.eon.id;
+      case GeologicRank.epoch:
+        return slot.period?.id ?? slot.era?.id ?? slot.eon.id;
+      case GeologicRank.stage:
+        return slot.epoch?.id ?? slot.period?.id ?? slot.era?.id ?? slot.eon.id;
+      case GeologicRank.eon:
+      case GeologicRank.era:
+      case GeologicRank.age:
+        return slot.eon.id;
     }
   }
 }

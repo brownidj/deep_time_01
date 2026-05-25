@@ -229,7 +229,7 @@ class _DivisionNode {
   factory _DivisionNode.fromYaml(YamlMap map) {
     final name = map['name'] as String? ?? 'Unnamed';
     final rank = map['rank'] as String? ?? 'unknown';
-    final startMa = _parseDouble(map['end_ma']);
+    final startMa = _parseDouble(map['start_ma'] ?? map['end_ma']);
     final uncertaintyMa = _parseOptionalDouble(map['uncertainty_ma']);
     final explanation = map['explanation'] as String?;
     final children = TimelineSeeder._readNodes(map['children']);

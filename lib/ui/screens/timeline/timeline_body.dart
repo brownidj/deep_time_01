@@ -62,11 +62,14 @@ class TimelineBody extends StatelessWidget {
                   color: DeepTimePalette.darkLabel,
                   fontWeight: FontWeight.w700,
                 );
+            final maTextStyle = Theme.of(context).textTheme.labelSmall
+                ?.copyWith(color: Colors.white, fontWeight: FontWeight.w600);
             final config = _buildOrientationConfig(
               layout: layout,
               labelMode: labelMode,
               style: headerStyle,
               stageStyle: stageTextStyle,
+              maStyle: maTextStyle,
             );
             final minScrollHeight = _minScrollHeightForStages(
               layout,
@@ -109,6 +112,7 @@ class TimelineBody extends StatelessWidget {
     required TimeLabelMode labelMode,
     TextStyle? style,
     TextStyle? stageStyle,
+    TextStyle? maStyle,
   }) {
     final eonLabel = labelMode.labelForRank('eon');
     final eraLabel = labelMode.labelForRank('era');
@@ -140,8 +144,10 @@ class TimelineBody extends StatelessWidget {
     );
     final rlifeWidth =
         _minimalHorizontalLabelWidth('Representative life', style: style) * 1.5;
+    final maWidth = _maColumnWidth(layout, style: maStyle, padding: 20) + 20;
     return TimelineOrientationConfig(
       trackWidths: {
+        TimelineTrack.ma: maWidth,
         TimelineTrack.eon: eonWidth,
         TimelineTrack.era: eraWidth,
         TimelineTrack.period: periodWidth,
@@ -200,6 +206,42 @@ class TimelineBody extends StatelessWidget {
     return maxWidth;
   }
 
+  double _maColumnWidth(
+    TimelineLayoutSnapshot layout, {
+    TextStyle? style,
+    double padding = 12,
+  }) {
+    var maxWidth = _minimalHorizontalLabelWidth('Ma', style: style);
+    for (final segment in layout.eonSegments) {
+      if (segment.isGap) {
+        continue;
+      }
+      final width = _labelWidth(_formatMaLabel(segment.endMa), style: style);
+      if (width > maxWidth) {
+        maxWidth = width;
+      }
+    }
+    for (final segment in layout.eraSegments) {
+      if (segment.isGap) {
+        continue;
+      }
+      final width = _labelWidth(_formatMaLabel(segment.endMa), style: style);
+      if (width > maxWidth) {
+        maxWidth = width;
+      }
+    }
+    return maxWidth + padding;
+  }
+
+  double _labelWidth(String label, {TextStyle? style}) {
+    final painter = TextPainter(
+      text: TextSpan(text: label, style: style),
+      textDirection: TextDirection.ltr,
+      maxLines: 1,
+    )..layout();
+    return painter.width;
+  }
+
   double _minScrollHeightForStages(
     TimelineLayoutSnapshot layout, {
     TextStyle? style,
@@ -223,4 +265,12 @@ class TimelineBody extends StatelessWidget {
     }
     return total;
   }
+}
+
+String _formatMaLabel(double value) {
+  final rounded = value.roundToDouble();
+  if ((value - rounded).abs() < 0.01) {
+    return rounded.toStringAsFixed(0);
+  }
+  return value.toStringAsFixed(1);
 }

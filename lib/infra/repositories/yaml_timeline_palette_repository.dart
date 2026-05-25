@@ -39,19 +39,21 @@ class YamlTimelinePaletteRepository implements TimelinePaletteRepository {
   }) {
     final name = node['name'] as String?;
     final rank = node['rank'] as String?;
-    final endRaw = node['end_ma'];
+    final startRaw = node['start_ma'] ?? node['end_ma'];
     final color = node['color'] as String?;
 
-    if (name == null || rank == null || endRaw == null) {
-      throw StateError('Division node missing name/rank/end_ma in $assetPath');
+    if (name == null || rank == null || startRaw == null) {
+      throw StateError(
+        'Division node missing name/rank/start_ma in $assetPath',
+      );
     }
     if (color == null) {
       throw StateError('Division "$name" is missing color in $assetPath');
     }
 
-    final endMa = _parseDouble(endRaw);
-    if (endMa == null) {
-      throw StateError('Invalid end_ma for "$name" in $assetPath');
+    final startMa = _parseDouble(startRaw);
+    if (startMa == null) {
+      throw StateError('Invalid start_ma for "$name" in $assetPath');
     }
 
     final key = divisionColorKey(name: name, rank: rank, parentKey: parentKey);

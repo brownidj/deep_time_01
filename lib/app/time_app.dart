@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:screen_retriever/screen_retriever.dart';
 import 'package:window_manager/window_manager.dart';
@@ -33,7 +35,7 @@ class _BootstrapScreen extends StatefulWidget {
 }
 
 class _BootstrapScreenState extends State<_BootstrapScreen> {
-  static const _minimumSplashDuration = Duration(seconds: 5);
+  static const _minimumSplashDuration = Duration(seconds: 2);
   static const _splashWindowSize = Size(400, 400);
   static const _expandDuration = Duration(milliseconds: 500);
   late final Future<AppDependencies> _dependenciesFuture;
@@ -44,10 +46,29 @@ class _BootstrapScreenState extends State<_BootstrapScreen> {
   bool _ready = false;
   bool _firstFrameCommitted = false;
   int _buildCount = 0;
+  String _status = 'Starting';
+  DateTime _startTime = DateTime.now();
+  Duration _elapsed = Duration.zero;
+  Timer? _debugTimer;
 
   @override
   void initState() {
     super.initState();
+    _startTime = DateTime.now();
+    if (AppDebug.enabled) {
+      _debugTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+        if (!mounted) {
+          return;
+        }
+        if (_ready) {
+          _debugTimer?.cancel();
+          return;
+        }
+        setState(() {
+          _elapsed = DateTime.now().difference(_startTime);
+        });
+      });
+    }
     _dependenciesFuture = AppDependencies.build();
     _splashDelayFuture = Future<void>.delayed(_minimumSplashDuration);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -71,8 +92,20 @@ class _BootstrapScreenState extends State<_BootstrapScreen> {
     AppDebug.log('Splash: didUpdateWidget');
   }
 
+  @override
+  void dispose() {
+    _debugTimer?.cancel();
+    super.dispose();
+  }
+
+  void _setStatus(String value, {Object? error}) {
+    _status = value;
+    AppDebug.log('Splash: status=$_status', error: error);
+  }
+
   Future<void> _hideWindowWhileSizing() async {
     try {
+      _setStatus('Hiding window for sizing');
       AppDebug.log('Splash: hiding window for sizing');
       await windowManager.hide();
       final isVisible = await windowManager.isVisible();
@@ -85,6 +118,7 @@ class _BootstrapScreenState extends State<_BootstrapScreen> {
 
   Future<void> _showWindow() async {
     try {
+      _setStatus('Showing splash window');
       AppDebug.log('Splash: showing window after sizing');
       await windowManager.show();
       await windowManager.focus();
@@ -98,6 +132,7 @@ class _BootstrapScreenState extends State<_BootstrapScreen> {
 
   Future<void> _prepareApp() async {
     try {
+      _setStatus('Loading dependencies');
       AppDebug.log('Splash: start loading dependencies');
       final results = await Future.wait<Object?>([
         _dependenciesFuture,
@@ -106,6 +141,7 @@ class _BootstrapScreenState extends State<_BootstrapScreen> {
       if (!mounted) {
         return;
       }
+      _setStatus('Expanding window');
       AppDebug.log('Splash: dependencies + delay completed');
       _dependencies = results.first as AppDependencies;
       await _expandWindow();
@@ -113,6 +149,7 @@ class _BootstrapScreenState extends State<_BootstrapScreen> {
         return;
       }
       setState(() {
+        _setStatus('Ready');
         AppDebug.log('Splash: ready -> showing main screen');
         _ready = true;
       });
@@ -120,6 +157,7 @@ class _BootstrapScreenState extends State<_BootstrapScreen> {
       if (!mounted) {
         return;
       }
+      _setStatus('Failed to load', error: error);
       AppDebug.log('Splash: error while preparing app', error: error);
       setState(() {
         _loadError = error;
@@ -132,6 +170,7 @@ class _BootstrapScreenState extends State<_BootstrapScreen> {
       return;
     }
     try {
+      _setStatus('Sizing splash window');
       AppDebug.log('Splash: set window size to 400x400');
       await windowManager.setMinimumSize(_splashWindowSize);
       await windowManager.setMaximumSize(_splashWindowSize);
@@ -148,6 +187,7 @@ class _BootstrapScreenState extends State<_BootstrapScreen> {
     }
     _windowExpanded = true;
     try {
+      _setStatus('Expanding to main window');
       AppDebug.log('Splash: expanding window for main screen');
       await windowManager.setMinimumSize(const Size(300, 300));
       await windowManager.setMaximumSize(const Size(10000, 10000));
@@ -223,7 +263,13 @@ class _BootstrapScreenState extends State<_BootstrapScreen> {
     }
     if (!_ready || _dependencies == null) {
       AppDebug.log('Splash: showing splash (_ready=$_ready)');
-      return const Scaffold(body: _AppSplash());
+      return Scaffold(
+        body: _AppSplash(
+          debugStatus: _status,
+          elapsed: _elapsed,
+          showDebug: AppDebug.enabled,
+        ),
+      );
     }
     AppDebug.log('Splash: building main screen');
     return TimelineScreen(
@@ -234,7 +280,15 @@ class _BootstrapScreenState extends State<_BootstrapScreen> {
 }
 
 class _AppSplash extends StatelessWidget {
-  const _AppSplash();
+  const _AppSplash({
+    this.debugStatus,
+    this.elapsed,
+    this.showDebug = false,
+  });
+
+  final String? debugStatus;
+  final Duration? elapsed;
+  final bool showDebug;
 
   @override
   Widget build(BuildContext context) {
@@ -270,6 +324,15 @@ class _AppSplash extends StatelessWidget {
                     context,
                   ).textTheme.bodyMedium?.copyWith(color: Colors.black54),
                 ),
+                if (showDebug && debugStatus != null) ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    '${debugStatus!} (${elapsed?.inSeconds ?? 0}s)',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Colors.black45,
+                    ),
+                  ),
+                ],
               ],
             ),
           ),

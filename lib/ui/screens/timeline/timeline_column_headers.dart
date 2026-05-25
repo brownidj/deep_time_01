@@ -24,6 +24,7 @@ class TimelineColumnHeaders extends StatelessWidget {
       builder: (context, constraints) {
         final scale = _widthScale(constraints.maxWidth);
         final cappedTracks = <TimelineTrack>{
+          TimelineTrack.ma,
           TimelineTrack.eon,
           TimelineTrack.era,
           TimelineTrack.period,
@@ -47,7 +48,11 @@ class TimelineColumnHeaders extends StatelessWidget {
                       border: Border.all(color: DeepTimePalette.frameBorder),
                     ),
                     child: Center(
-                      child: Text(_labelFor(track), style: labelStyle),
+                      child: Text(
+                        _labelFor(track),
+                        style: labelStyle,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
                 ),
@@ -85,6 +90,10 @@ class TimelineColumnHeaders extends StatelessWidget {
         return 'Extinctions';
       case TimelineTrack.clades:
         return 'Clades';
+      case TimelineTrack.ma:
+        return 'Ma\n4567';
+      default:
+        return '';
     }
   }
 

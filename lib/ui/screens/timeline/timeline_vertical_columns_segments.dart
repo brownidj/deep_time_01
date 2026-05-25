@@ -86,6 +86,7 @@ class _VerticalBandColumn extends StatelessWidget {
         label: segment.label,
         rotateLabel: rotateLabel,
         horizontalPadding: horizontalPadding,
+        debugLabel: AppDebug.enabled ? segment.unitSpan.toStringAsFixed(1) : null,
       );
       if (segment.isGap) {
         children.add(content);
@@ -204,6 +205,7 @@ class _VerticalRowColumn extends StatelessWidget {
         label: segment.label,
         rotateLabel: rotateLabel,
         horizontalPadding: horizontalPadding,
+        debugLabel: AppDebug.enabled ? segment.unitSpan.toStringAsFixed(1) : null,
       );
       if (segment.isGap) {
         children.add(content);
@@ -245,6 +247,7 @@ class _VerticalSegmentTile extends StatelessWidget {
     required this.label,
     required this.rotateLabel,
     required this.horizontalPadding,
+    this.debugLabel,
   });
 
   final double width;
@@ -254,6 +257,7 @@ class _VerticalSegmentTile extends StatelessWidget {
   final String label;
   final bool rotateLabel;
   final double horizontalPadding;
+  final String? debugLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -282,16 +286,32 @@ class _VerticalSegmentTile extends StatelessWidget {
           color: color,
           border: Border.all(color: borderColor, width: 1),
         ),
-        child: Padding(
+        child: Stack(
+          children: [
+            Padding(
           padding: EdgeInsets.symmetric(
             horizontal: horizontalPadding,
-            vertical: 4,
+            vertical: 8,
           ),
-          child: Center(
-            child: rotateLabel
-                ? RotatedBox(quarterTurns: 3, child: textWidget)
-                : textWidget,
-          ),
+              child: Center(
+                child: rotateLabel
+                    ? RotatedBox(quarterTurns: 3, child: textWidget)
+                    : textWidget,
+              ),
+            ),
+            if (debugLabel != null && debugLabel!.isNotEmpty)
+              Positioned(
+                top: 2,
+                right: 4,
+                child: Text(
+                  debugLabel!,
+                  style: const TextStyle(
+                    fontSize: 9,
+                    color: Color(0xAAFFFFFF),
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
     );
