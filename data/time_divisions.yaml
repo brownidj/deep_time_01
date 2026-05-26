@@ -65,7 +65,7 @@ eons:
     that set the stage for the ensuing Proterozoic eon.
   rank: eon
   start_ma: 4031.0
-  uncertainty_ma: 3
+  uncertainty_ma: 3.0
   children:
   - name: Eoarchean
     explanation: |

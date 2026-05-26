@@ -41,7 +41,7 @@ events:
     short_label: Ediacaran
     type: bar
     start_ma: 575.0
-    end_ma: 539
+    end_ma: 538.8
   - label: Cambrian radiation
     explanation: |
       The Cambrian radiation, occurring approximately between 539 and 520 million
@@ -61,7 +61,7 @@ events:
       in contemporary fauna.
     short_label: Cambrian radiation
     type: bar
-    start_ma: 539.0
+    start_ma: 538.8
     end_ma: 520
   - label: Great Ordovician Biodiversification
     explanation: |
@@ -82,8 +82,8 @@ events:
       across Ordovician oceans.
     short_label: GOBE
     type: bar
-    start_ma: 485.0
-    end_ma: 445
+    start_ma: 485.4
+    end_ma: 443.1
   - label: First land plants
     explanation: |
       The first land plants emerged during the Paleozoic Era, approximately between
@@ -166,9 +166,9 @@ events:
       reconstruction during the late Paleozoic era.
     short_label: Coal swamps
     type: bar
-    start_ma: 359.0
-    end_ma: 299
-  - label: Pangaea assembled
+    start_ma: 358.86
+    end_ma: 298.9
+  - label: Pangea
     explanation: |
       The assembly of Pangaea, occurring approximately between 320 and 250 million
       years ago during the Late Carboniferous to Permian periods, represents a
@@ -187,8 +187,8 @@ events:
       Mesozoic breakup that shaped modern continental configurations.
     short_label: Pangaea
     type: bar
-    start_ma: 320.0
-    end_ma: 250
+    start_ma: 299
+    end_ma: 200
   - label: First dinosaurs
     explanation: |
       The "First dinosaurs" marker, dated approximately between 233 and 231 million
@@ -316,7 +316,7 @@ events:
     type: bar
     start_ma: 23.0
     end_ma: 5
-  - label: Quaternary glaciations
+  - label: Pleistocene glaciations
     explanation: |
       The Quaternary glaciations refer to a series of recurrent glacial and
       interglacial cycles occurring during the Quaternary Period, spanning
@@ -333,7 +333,7 @@ events:
       feedback mechanisms within the Earth system, including the carbon cycle and
       ocean circulation. Their study also informs predictions concerning future
       climate trajectories under anthropogenic forcing.
-    short_label: Quaternary glaciations
+    short_label: Pleistocene glaciations
     type: bar
     start_ma: 2.58
     end_ma: 0.0117
@@ -357,7 +357,7 @@ events:
       restructuring and the foundation for the Cambrian explosion of animal life.
     short_label: EET
     type: point
-    at_ma: 539
+    at_ma: 538.8
   - label: Ireviken event
     explanation: |
       The Ireviken event, occurring circa 433 million years ago during the early
@@ -377,7 +377,7 @@ events:
       dynamics.
     short_label: IE
     type: point
-    at_ma: 433
+    at_ma: 432.9
   - label: Lau event
     explanation: |
       The Lau Event, occurring near 420 million years ago during the Late Silurian,
@@ -398,7 +398,7 @@ events:
       crises.
     short_label: LE
     type: point
-    at_ma: 420
+    at_ma: 419.62
   - label: OAE2
     explanation: |
       OAE2, or Oceanic Anoxic Event 2, occurred during the Cenomanian-Turonian
@@ -419,7 +419,7 @@ events:
       studies.
     short_label: OAE2
     type: point
-    at_ma: 94
+    at_ma: 93.9
   - label: PETM biotic event
     explanation: |
       The Paleocene-Eocene Thermal Maximum (PETM) biotic event, occurring around 56
@@ -460,7 +460,7 @@ events:
       evolutionary history.
     short_label: EOT
     type: point
-    at_ma: 34
+    at_ma: 33.9
   - label: Antarctic glaciation
     explanation: |
       Antarctic glaciation denotes the progressive development and expansion of
@@ -652,7 +652,7 @@ extinctions:
     is_major: false
     anchor:
       type: ma
-      ma: 372
+      ma: 372.15
   - label: Hangenberg event
     explanation: |
       The Hangenberg event, occurring around 359 million years ago at the Devonian-
@@ -673,7 +673,7 @@ extinctions:
     is_major: false
     anchor:
       type: ma
-      ma: 359
+      ma: 358.86
   - label: Capitanian extinction
     explanation: |
       The Capitanian extinction, occurring approximately 262 million years ago during
@@ -705,7 +705,9 @@ extinctions:
       associated greenhouse gas emissions likely triggered widespread marine anoxia,
       disrupting oceanic nutrient cycles and resulting in a transient but notable
       extinction pulse affecting marine fauna, particularly ammonites and marine
-      invertebrates.  Although less severe than the larger Jurassic or Cretaceous
+      invertebrates.  
+      
+      Although less severe than the larger Jurassic or Cretaceous
       OAEs, the Toarcian OAE provides critical insight into the coupling between
       volcanic forcing, ocean chemistry, and biological crises. Its study elucidates
       the dynamics of Earth’s deep-time climate system and biotic resilience under
@@ -715,7 +717,7 @@ extinctions:
     is_major: false
     anchor:
       type: ma
-      ma: 183
+      ma: 183.0
   - label: Late Pleistocene megafaunal extinctions
     explanation: |
       The Late Pleistocene megafaunal extinctions, occurring around 0.05 Ma (50,000
