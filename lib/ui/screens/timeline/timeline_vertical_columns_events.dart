@@ -138,8 +138,10 @@ class _VerticalEventPoint extends StatelessWidget {
     const rowHeight = 20.0;
     final rowTop = (y - rowHeight / 2).clamp(0.0, height - rowHeight);
     final markerSize = 9.0;
-    final markerLeft = 6.0;
-    final lineRight = markerLeft;
+    final markerLeft = 0.0;
+    final markerTipX = markerLeft;
+    final lineStart = markerTipX;
+    final lineEnd = math.max(markerTipX, lineLeft);
     final textLeft = (markerLeft + markerSize + 6).clamp(0.0, width - 6);
     final textStyle = Theme.of(context).textTheme.labelSmall?.copyWith(
       color: DeepTimePalette.panelText,
@@ -166,10 +168,10 @@ class _VerticalEventPoint extends StatelessWidget {
                 ),
           child: Stack(
             children: [
-              if (lineRight > lineLeft)
+              if (lineEnd > lineStart)
                 Positioned(
-                  left: lineLeft,
-                  width: lineRight - lineLeft,
+                  left: lineStart,
+                  width: lineEnd - lineStart,
                   top: rowHeight / 2 - 0.5,
                   child: Container(height: 1, color: const Color(0xFFFFEB3B)),
                 ),
