@@ -21,6 +21,7 @@ DeepTimePalette testPalette() {
 
 TimelineLayoutSnapshot singleSpanLayout() {
   return TimelineLayoutSnapshot(
+    divisions: const [],
     eonSegments: const [
       TimelineBandSegment(
         id: 1,
@@ -101,6 +102,7 @@ TimelineLayoutSnapshot singleSpanLayout() {
 
 TimelineLayoutSnapshot splitPeriodLayout() {
   return TimelineLayoutSnapshot(
+    divisions: const [],
     eonSegments: const [
       TimelineBandSegment(
         id: 1,

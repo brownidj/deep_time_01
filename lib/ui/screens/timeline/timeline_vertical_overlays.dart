@@ -4,16 +4,21 @@ import 'package:deep_time/ui/screens/timeline/timeline_body_metrics_overlay.dart
 import 'package:deep_time/ui/screens/timeline/timeline_min_height_helpers.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_orientation.dart';
 import 'package:deep_time/ui/theme/deep_time_palette.dart';
+import 'package:deep_time/domain/models/timeline_marker_catalog.dart';
+import 'package:deep_time/ui/screens/timeline/timeline_vertical_overlays_helpers.dart';
+import 'package:deep_time/ui/screens/timeline/timeline_vertical_overlays_line.dart';
 
 class TimelineVerticalOverlays extends StatelessWidget {
   const TimelineVerticalOverlays({
     super.key,
     required this.metrics,
     required this.contentHeight,
+    required this.markers,
   });
 
   final TimelineBodyMetrics metrics;
   final double contentHeight;
+  final TimelineMarkerCatalog markers;
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +33,7 @@ class TimelineVerticalOverlays extends StatelessWidget {
           TimelineTrack.epoch,
           TimelineTrack.stage,
           TimelineTrack.rlife,
+          TimelineTrack.extinctions,
         };
         final labelStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
           color: DeepTimePalette.darkLabel,
@@ -102,6 +108,27 @@ class TimelineVerticalOverlays extends StatelessWidget {
         final eonStart = scaledX(metrics.trackX(TimelineTrack.eon));
         final eraStart = scaledX(metrics.trackX(TimelineTrack.era));
         final periodStart = scaledX(metrics.trackX(TimelineTrack.period));
+        final trackStarts = <TimelineTrack, double>{};
+        var trackCursor = 0.0;
+        for (final track in metrics.trackOrder) {
+          trackStarts[track] = trackCursor;
+          final width =
+              metrics.trackWidth(track) *
+              (cappedTracks.contains(track) ? 1.0 : scale);
+          trackCursor += width;
+        }
+        final eraRight =
+            (trackStarts[TimelineTrack.era] ?? 0.0) +
+            (metrics.trackWidth(TimelineTrack.era) *
+                (cappedTracks.contains(TimelineTrack.era) ? 1.0 : scale));
+        final rlifeRight =
+            (trackStarts[TimelineTrack.rlife] ?? 0.0) +
+            (metrics.trackWidth(TimelineTrack.rlife) *
+                (cappedTracks.contains(TimelineTrack.rlife) ? 1.0 : scale));
+        final eventsLeft = trackStarts[TimelineTrack.events] ?? 0.0;
+        final eventMarkerLeft = 6.0;
+        final extLineEnd = rlifeRight;
+        final eventLineEnd = eventsLeft + eventMarkerLeft;
 
         return IgnorePointer(
           child: Stack(
@@ -126,6 +153,29 @@ class TimelineVerticalOverlays extends StatelessWidget {
                   right: scaledX(metrics.periodOverlayRight(y)),
                   top: y,
                   contentHeight: contentHeight,
+                ),
+              for (final y in eventPointYs(
+                metrics.layout.eventSegments,
+                metrics.periodUnits,
+                contentHeight,
+              ))
+                OverlayLine(
+                  left: eraRight,
+                  right: eventLineEnd,
+                  top: y,
+                  color: const Color(0xFFFFEB3B),
+                ),
+              for (final y in extinctionYs(
+                markers.extinctions,
+                metrics.layout.periodSegments,
+                metrics.layout.stageSegments,
+                contentHeight,
+              ))
+                OverlayLine(
+                  left: eraRight,
+                  right: extLineEnd,
+                  top: y,
+                  color: const Color(0xFFFF6D00),
                 ),
             ],
           ),

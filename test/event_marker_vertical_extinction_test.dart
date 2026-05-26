@@ -13,6 +13,7 @@ void main() {
   testWidgets(
     'Vertical mode extinction marker opens explanation on long press',
     (tester) async {
+      await _setLargeSurface(tester);
       final palette = DeepTimePalette(
         const TimelinePalette(
           divisionColors: {
@@ -26,6 +27,7 @@ void main() {
         ),
       );
       final layout = TimelineLayoutSnapshot(
+        divisions: const [],
         eonSegments: const [
           TimelineBandSegment(
             id: 1,
@@ -120,13 +122,13 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: SizedBox(
-              width: 1200,
-              height: 900,
-              child: Column(
-                children: [
-                  TimelineBody(
+        home: Scaffold(
+          body: SizedBox(
+            width: 2000,
+            height: 1200,
+            child: Column(
+              children: [
+                TimelineBody(
                     layout: layout,
                     palette: palette,
                     markers: markers,
@@ -162,4 +164,11 @@ void main() {
       expect(find.text('Vertical extinction explanation.'), findsOneWidget);
     },
   );
+}
+
+Future<void> _setLargeSurface(WidgetTester tester) async {
+  await tester.binding.setSurfaceSize(const Size(2000, 1200));
+  addTearDown(() async {
+    await tester.binding.setSurfaceSize(null);
+  });
 }

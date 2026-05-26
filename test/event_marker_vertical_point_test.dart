@@ -13,6 +13,7 @@ void main() {
   testWidgets('Vertical mode point event opens explanation on long press', (
     tester,
   ) async {
+    await _setLargeSurface(tester);
     final palette = DeepTimePalette(
       const TimelinePalette(
         divisionColors: {
@@ -26,6 +27,7 @@ void main() {
       ),
     );
     final layout = TimelineLayoutSnapshot(
+      divisions: const [],
       eonSegments: const [
         TimelineBandSegment(
           id: 1,
@@ -120,8 +122,8 @@ void main() {
       MaterialApp(
         home: Scaffold(
           body: SizedBox(
-            width: 1200,
-            height: 900,
+            width: 2000,
+            height: 1200,
             child: Column(
               children: [
                 TimelineBody(
@@ -158,5 +160,12 @@ void main() {
     expect(find.byType(AlertDialog), findsOneWidget);
     expect(find.text('PETM biotic event'), findsOneWidget);
     expect(find.text('Vertical point explanation.'), findsOneWidget);
+  });
+}
+
+Future<void> _setLargeSurface(WidgetTester tester) async {
+  await tester.binding.setSurfaceSize(const Size(2000, 1200));
+  addTearDown(() async {
+    await tester.binding.setSurfaceSize(null);
   });
 }

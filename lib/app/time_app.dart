@@ -5,6 +5,7 @@ import 'package:screen_retriever/screen_retriever.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:deep_time/app/app_debug.dart';
 import 'package:deep_time/app/app_dependencies.dart';
+import 'package:deep_time/app/time_app_splash.dart';
 import 'package:deep_time/ui/screens/timeline_screen.dart';
 
 class TimeApp extends StatelessWidget {
@@ -73,9 +74,7 @@ class _BootstrapScreenState extends State<_BootstrapScreen> {
     _splashDelayFuture = Future<void>.delayed(_minimumSplashDuration);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _firstFrameCommitted = true;
-      await _hideWindowWhileSizing();
       await _setSplashWindowSize();
-      await _showWindow();
     });
     _prepareApp();
   }
@@ -101,33 +100,6 @@ class _BootstrapScreenState extends State<_BootstrapScreen> {
   void _setStatus(String value, {Object? error}) {
     _status = value;
     AppDebug.log('Splash: status=$_status', error: error);
-  }
-
-  Future<void> _hideWindowWhileSizing() async {
-    try {
-      _setStatus('Hiding window for sizing');
-      AppDebug.log('Splash: hiding window for sizing');
-      await windowManager.hide();
-      final isVisible = await windowManager.isVisible();
-      final size = await windowManager.getSize();
-      AppDebug.log(
-        'Splash: hidden? visible=$isVisible size=${size.width}x${size.height}',
-      );
-    } catch (_) {}
-  }
-
-  Future<void> _showWindow() async {
-    try {
-      _setStatus('Showing splash window');
-      AppDebug.log('Splash: showing window after sizing');
-      await windowManager.show();
-      await windowManager.focus();
-      final isVisible = await windowManager.isVisible();
-      final size = await windowManager.getSize();
-      AppDebug.log(
-        'Splash: shown? visible=$isVisible size=${size.width}x${size.height}',
-      );
-    } catch (_) {}
   }
 
   Future<void> _prepareApp() async {
@@ -264,7 +236,7 @@ class _BootstrapScreenState extends State<_BootstrapScreen> {
     if (!_ready || _dependencies == null) {
       AppDebug.log('Splash: showing splash (_ready=$_ready)');
       return Scaffold(
-        body: _AppSplash(
+        body: AppSplash(
           debugStatus: _status,
           elapsed: _elapsed,
           showDebug: AppDebug.enabled,
@@ -275,69 +247,6 @@ class _BootstrapScreenState extends State<_BootstrapScreen> {
     return TimelineScreen(
       dependencies: _dependencies!,
       enablePreferences: widget.enablePreferences,
-    );
-  }
-}
-
-class _AppSplash extends StatelessWidget {
-  const _AppSplash({
-    this.debugStatus,
-    this.elapsed,
-    this.showDebug = false,
-  });
-
-  final String? debugStatus;
-  final Duration? elapsed;
-  final bool showDebug;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      alignment: Alignment.center,
-      child: SizedBox(
-        width: 400,
-        height: 400,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(
-              color: Colors.black.withValues(alpha: 0.06),
-              width: 1,
-            ),
-          ),
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset(
-                  'assets/logos/logo2.png',
-                  width: 200,
-                  height: 200,
-                  fit: BoxFit.contain,
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  'Please wait...',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.copyWith(color: Colors.black54),
-                ),
-                if (showDebug && debugStatus != null) ...[
-                  const SizedBox(height: 12),
-                  Text(
-                    '${debugStatus!} (${elapsed?.inSeconds ?? 0}s)',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.black45,
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

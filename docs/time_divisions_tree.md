@@ -21,7 +21,7 @@ Proterozoic                            2500         Eon
 │       ├── Cryogenian                  720         Period
 │       └── Ediacaran                   635         Period
 Phanerozoic                           538.8    0.6  Eon
-    ├── Paleozoic                     541.0         Era
+    ├── Paleozoic                     538.8         Era
     │   ├── Cambrian                  538.8    0.6  Period
     │   │   ├── Terreneuvian          538.8    0.6  Epoch
     │   │   │   ├── Fortunian         538.8    0.6  Stage

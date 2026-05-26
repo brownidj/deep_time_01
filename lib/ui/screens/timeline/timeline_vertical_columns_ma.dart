@@ -24,24 +24,24 @@ class _MaColumn extends StatelessWidget {
     final seen = <String>{};
     final eonBoundaries = metrics.eonBoundaryYs;
     for (var i = 0; i < eonBoundaries.length; i++) {
-      final segment = layout.eonSegments[i];
-      final text = _formatMaLabel(segment.startMa);
+      final boundaryStartMa = layout.eonSegments[i + 1].startMa;
+      final text = _formatMaLabel(boundaryStartMa);
       if (seen.add(text)) {
         labels.add(_MaLabel(text: text, y: eonBoundaries[i]));
       }
     }
     final eraBoundaries = metrics.eraBoundaryYs;
     for (var i = 0; i < eraBoundaries.length; i++) {
-      final segment = layout.eraSegments[i];
-      final text = _formatMaLabel(segment.startMa);
+      final boundaryStartMa = layout.eraSegments[i + 1].startMa;
+      final text = _formatMaLabel(boundaryStartMa);
       if (seen.add(text)) {
         labels.add(_MaLabel(text: text, y: eraBoundaries[i]));
       }
     }
     final periodBoundaries = metrics.periodBoundaryYs;
     for (var i = 0; i < periodBoundaries.length; i++) {
-      final segment = layout.periodSegments[i];
-      final text = _formatMaLabel(segment.startMa);
+      final boundaryStartMa = layout.periodSegments[i + 1].startMa;
+      final text = _formatMaLabel(boundaryStartMa);
       if (seen.add(text)) {
         labels.add(_MaLabel(text: text, y: periodBoundaries[i]));
       }
@@ -133,9 +133,5 @@ List<_MaLabel> _resolveLabelCollisions(
 }
 
 String _formatMaLabel(double value) {
-  final rounded = value.roundToDouble();
-  if ((value - rounded).abs() < 0.01) {
-    return rounded.toStringAsFixed(0);
-  }
   return value.toStringAsFixed(1);
 }

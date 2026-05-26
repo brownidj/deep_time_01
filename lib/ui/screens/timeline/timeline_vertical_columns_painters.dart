@@ -1,7 +1,7 @@
 part of 'timeline_vertical_columns.dart';
 
-class _RightTrianglePainter extends CustomPainter {
-  const _RightTrianglePainter({required this.color});
+class _LeftTrianglePainter extends CustomPainter {
+  const _LeftTrianglePainter({required this.color});
 
   final Color color;
 
@@ -11,15 +11,15 @@ class _RightTrianglePainter extends CustomPainter {
       ..color = color
       ..style = PaintingStyle.fill;
     final path = Path()
-      ..moveTo(size.width, size.height / 2)
-      ..lineTo(0, 0)
-      ..lineTo(0, size.height)
+      ..moveTo(0, size.height / 2)
+      ..lineTo(size.width, 0)
+      ..lineTo(size.width, size.height)
       ..close();
     canvas.drawPath(path, paint);
   }
 
   @override
-  bool shouldRepaint(covariant _RightTrianglePainter oldDelegate) {
+  bool shouldRepaint(covariant _LeftTrianglePainter oldDelegate) {
     return oldDelegate.color != color;
   }
 }

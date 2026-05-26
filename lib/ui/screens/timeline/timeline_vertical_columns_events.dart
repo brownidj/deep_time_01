@@ -7,6 +7,7 @@ class _VerticalEventsColumn extends StatelessWidget {
     required this.events,
     required this.totalUnits,
     required this.palette,
+    required this.lineLeft,
   });
 
   final double width;
@@ -14,6 +15,7 @@ class _VerticalEventsColumn extends StatelessWidget {
   final List<TimelineEventSegment> events;
   final double totalUnits;
   final DeepTimePalette palette;
+  final double lineLeft;
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +51,7 @@ class _VerticalEventsColumn extends StatelessWidget {
                 width: width,
                 height: height,
                 totalUnits: totalUnits,
+                lineLeft: lineLeft,
               ),
           ],
         ),
@@ -120,12 +123,14 @@ class _VerticalEventPoint extends StatelessWidget {
     required this.width,
     required this.height,
     required this.totalUnits,
+    required this.lineLeft,
   });
 
   final TimelineEventSegment event;
   final double width;
   final double height;
   final double totalUnits;
+  final double lineLeft;
 
   @override
   Widget build(BuildContext context) {
@@ -133,10 +138,9 @@ class _VerticalEventPoint extends StatelessWidget {
     const rowHeight = 20.0;
     final rowTop = (y - rowHeight / 2).clamp(0.0, height - rowHeight);
     final markerSize = 9.0;
-    final markerRight = 6.0;
-    final markerLeft = width - markerRight - markerSize;
-    final lineLeft = 6.0;
-    final lineRight = markerLeft - 4;
+    final markerLeft = 6.0;
+    final lineRight = markerLeft;
+    final textLeft = (markerLeft + markerSize + 6).clamp(0.0, width - 6);
     final textStyle = Theme.of(context).textTheme.labelSmall?.copyWith(
       color: DeepTimePalette.panelText,
       fontWeight: FontWeight.w700,
@@ -165,26 +169,26 @@ class _VerticalEventPoint extends StatelessWidget {
               if (lineRight > lineLeft)
                 Positioned(
                   left: lineLeft,
-                  right: width - lineRight,
+                  width: lineRight - lineLeft,
                   top: rowHeight / 2 - 0.5,
                   child: Container(height: 1, color: const Color(0xFFFFEB3B)),
                 ),
               Positioned(
-                left: markerLeft.clamp(0.0, width - markerSize),
+                left: markerLeft,
                 top: rowHeight / 2 - markerSize / 2,
                 child: SizedBox(
                   width: markerSize,
                   height: markerSize,
                   child: CustomPaint(
-                    painter: _RightTrianglePainter(
+                    painter: _LeftTrianglePainter(
                       color: const Color(0xFFFFEB3B),
                     ),
                   ),
                 ),
               ),
               Positioned(
-                left: 6,
-                right: markerSize + 16,
+                left: textLeft,
+                right: 6,
                 top: 2,
                 child: Text(
                   event.shortLabel,

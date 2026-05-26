@@ -7,6 +7,7 @@ class _VerticalExtinctionColumn extends StatelessWidget {
     required this.periodSegments,
     required this.stageSegments,
     required this.extinctions,
+    required this.lineLeft,
   });
 
   final double width;
@@ -14,6 +15,7 @@ class _VerticalExtinctionColumn extends StatelessWidget {
   final List<TimelineRowSegment> periodSegments;
   final List<TimelineRowSegment> stageSegments;
   final List<ExtinctionDefinition> extinctions;
+  final double lineLeft;
 
   @override
   Widget build(BuildContext context) {
@@ -35,12 +37,14 @@ class _VerticalExtinctionColumn extends StatelessWidget {
           border: Border.all(color: DeepTimePalette.periodDivider, width: 1),
         ),
         child: Stack(
+          clipBehavior: Clip.none,
           children: [
             for (final marker in markers)
               _VerticalExtinctionMarker(
                 marker: marker,
                 width: width,
                 height: height,
+                lineLeft: lineLeft,
               ),
           ],
         ),
@@ -172,19 +176,19 @@ class _VerticalExtinctionMarker extends StatelessWidget {
     required this.marker,
     required this.width,
     required this.height,
+    required this.lineLeft,
   });
 
   final _VerticalExtinctionLayout marker;
   final double width;
   final double height;
+  final double lineLeft;
 
   @override
   Widget build(BuildContext context) {
     final markerSize = marker.isMajor ? 13.0 : 9.0;
-    final markerRight = 6.0;
-    final markerLeft = width - markerRight - markerSize;
-    final lineLeft = 6.0;
-    final lineRight = markerLeft - 4;
+    final markerLeft = lineLeft;
+    final textLeft = (markerLeft + markerSize + 6).clamp(0.0, width - 6);
     final labelStyle = Theme.of(context).textTheme.labelSmall?.copyWith(
       color: const Color(0xFFFF6D00),
       fontWeight: FontWeight.w700,
@@ -195,7 +199,6 @@ class _VerticalExtinctionMarker extends StatelessWidget {
     final maxTop = math.max(0.0, height - rowHeight);
     final rowTop = (y - rowHeight / 2).clamp(0.0, maxTop);
     final localY = (y - rowTop).clamp(0.0, rowHeight);
-    final lineTop = (localY - 0.5).clamp(0.0, rowHeight);
     final markerTop = (localY - markerSize / 2).clamp(
       0.0,
       rowHeight - markerSize,
@@ -223,32 +226,25 @@ class _VerticalExtinctionMarker extends StatelessWidget {
                 ),
           child: Stack(
             children: [
-              if (lineRight > lineLeft)
-                Positioned(
-                  left: lineLeft,
-                  right: width - lineRight,
-                  top: lineTop,
-                  child: Container(height: 1, color: const Color(0xFFFF6D00)),
-                ),
               Positioned(
-                left: markerLeft.clamp(0.0, width - markerSize),
+                left: markerLeft,
                 top: markerTop,
                 child: SizedBox(
                   width: markerSize,
                   height: markerSize,
                   child: CustomPaint(
-                    painter: _RightTrianglePainter(
+                    painter: _LeftTrianglePainter(
                       color: const Color(0xFFFF6D00),
                     ),
                   ),
                 ),
               ),
               Positioned(
-                left: 6,
-                right: markerSize + 16,
+                left: textLeft,
+                right: 6,
                 top: textTop,
                 child: Text(
-                  marker.isMajor ? marker.label : marker.shortLabel,
+                  marker.shortLabel,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: labelStyle,

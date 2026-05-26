@@ -35,7 +35,7 @@ eons:
     theoretical frameworks, thereby deepening insight into planetary formation and early
     Earth dynamics.
   rank: eon
-  start_ma: 4567
+  start_ma: 4567.0
   color: "#A4348B"
 - name: Archean
   explanation: |
@@ -64,7 +64,7 @@ eons:
     planetary differentiation, crust-mantle interactions, and the atmospheric evolution
     that set the stage for the ensuing Proterozoic eon.
   rank: eon
-  start_ma: 4031
+  start_ma: 4031.0
   uncertainty_ma: 3
   children:
   - name: Eoarchean
@@ -92,7 +92,7 @@ eons:
       conditions and processes governing Earth’s primordial environment and initial
       planetary differentiation.
     rank: era
-    start_ma: 4031
+    start_ma: 4031.0
     uncertainty_ma: 3
     color: "#B94494"
   - name: Paleoarchean
@@ -118,7 +118,7 @@ eons:
       the emergence of stable continental lithosphere and potential habitats for
       primitive life on early Earth.
     rank: era
-    start_ma: 3600
+    start_ma: 3600.0
     color: "#C4689D"
   - name: Mesoarchean
     explanation: |
@@ -152,7 +152,7 @@ eons:
       reconstructing Archean Earth systems and elucidating the conditions that
       precipitated subsequent biological and geochemical innovations.
     rank: era
-    start_ma: 3200
+    start_ma: 3200.0
     color: "#CC7599"
   - name: Neoarchean
     explanation: |
@@ -182,7 +182,7 @@ eons:
       Great Oxygenation Event. Its study informs models of Archean geodynamics, crustal
       evolution, and the co-evolution of Earth’s surface environments.
     rank: era
-    start_ma: 2800
+    start_ma: 2800.0
     color: "#D16E8C"
   color: "#C773A0"
 - name: Proterozoic
@@ -214,7 +214,7 @@ eons:
     strata offers insights into early life’s environmental constraints and the interplay
     between Earth system processes that shaped the biosphere’s trajectory.
   rank: eon
-  start_ma: 2500
+  start_ma: 2500.0
   children:
   - name: Paleoproterozoic
     explanation: |
@@ -246,7 +246,7 @@ eons:
       foundation for investigating the co-evolution of Earth’s geosphere and biosphere
       during a formative period in Earth history.
     rank: era
-    start_ma: 2500
+    start_ma: 2500.0
     children:
     - name: Siderian
       explanation: |
@@ -273,7 +273,7 @@ eons:
         the Siderian is essential for reconstructing the early Earth system’s transition
         from Archean anoxia to a more oxygenated environment.
       rank: period
-      start_ma: 2500
+      start_ma: 2500.0
       color: "#D26E88"
     - name: Rhyacian
       explanation: |
@@ -302,7 +302,7 @@ eons:
         interactions, continental crust maturation, and the interplay of tectonics and
         climate in the Paleoproterozoic.
       rank: period
-      start_ma: 2300
+      start_ma: 2300.0
       color: "#CF768E"
     - name: Orosirian
       explanation: |
@@ -334,7 +334,7 @@ eons:
         oxygenation, and early biospheric complexity, thereby representing a pivotal
         chapter in the Precambrian geological narrative.
       rank: period
-      start_ma: 2050
+      start_ma: 2050.0
       color: "#CC7F94"
     - name: Statherian
       explanation: |
@@ -367,7 +367,7 @@ eons:
         biosphere’s development, making it a focal interval for understanding
         Precambrian Earth dynamics.
       rank: period
-      start_ma: 1800
+      start_ma: 1800.0
       color: "#CD8B95"
     color: "#CD7A91"
   - name: Mesoproterozoic
@@ -400,7 +400,7 @@ eons:
       represents a pivotal geochronological framework that underpins models of
       continental growth, biospheric innovation, and planetary redox evolution.
     rank: era
-    start_ma: 1600
+    start_ma: 1600.0
     children:
     - name: Calymmian
       explanation: |
@@ -430,7 +430,7 @@ eons:
         tectonics and supports interpretations of Earth's evolving atmosphere,
         biosphere, and lithosphere interplay during a formative geologic interval.
       rank: period
-      start_ma: 1600
+      start_ma: 1600.0
       color: "#D39B90"
     - name: Ectasian
       explanation: |
@@ -464,7 +464,7 @@ eons:
         Consequently, the Ectasian is indispensable for studying the interplay between
         tectonics, sedimentation, and biospheric evolution during the Proterozoic.
       rank: period
-      start_ma: 1400
+      start_ma: 1400.0
       color: "#D8AB8B"
     - name: Stenian
       explanation: |
@@ -494,7 +494,7 @@ eons:
         This period thus serves as a crucial interval for unraveling Mesoproterozoic
         tectonometamorphic events and prelude ecosystems.
       rank: period
-      start_ma: 1200
+      start_ma: 1200.0
       color: "#DEBB86"
     color: "#D8AB8B"
   - name: Neoproterozoic
@@ -527,7 +527,7 @@ eons:
       of Earth system dynamics, biological innovation, and the interplay between
       geosphere and biosphere prior to the Paleozoic radiation.
     rank: era
-    start_ma: 1000
+    start_ma: 1000.0
     children:
     - name: Tonian
       explanation: |
@@ -562,7 +562,7 @@ eons:
         evolution, and the precursors to the dramatic Cryogenian glaciations and
         Neoproterozoic biotic radiations.
       rank: period
-      start_ma: 1000
+      start_ma: 1000.0
       color: "#C8B981"
     - name: Cryogenian
       explanation: |
@@ -590,7 +590,7 @@ eons:
         explosion, making it a pivotal period for understanding early metazoan evolution
         and Earth system dynamics.
       rank: period
-      start_ma: 720
+      start_ma: 720.0
       color: "#A7AD7D"
     - name: Ediacaran
       explanation: |
@@ -621,7 +621,7 @@ eons:
         reconstructing the origins of animal life and the conditions that enabled the
         emergence of modern ecosystems.
       rank: period
-      start_ma: 635
+      start_ma: 635.0
       color: "#96A67B"
     color: "#B8B37F"
   color: "#D29990"
@@ -688,7 +688,7 @@ eons:
       tectonostratigraphic frameworks pivotal for resource exploration and evolutionary
       biology.
     rank: era
-    start_ma: 541.0
+    start_ma: 538.8
     children:
     - name: Cambrian
       explanation: |
@@ -3266,7 +3266,8 @@ eons:
       understanding macroevolutionary patterns, paleoclimatic shifts, and the interplay
       of tectonics and life through deep time.
     rank: era
-    start_ma: 252.17
+    start_ma: 251.902
+    uncertainty_ma: 0.024
     children:
     - name: Triassic
       explanation: |
@@ -3536,7 +3537,7 @@ eons:
           high-resolution stratigraphic models essential for both academic research and
           applied earth sciences.
         rank: epoch
-        start_ma: 237
+        start_ma: 237.0
         children:
         - name: Carnian
           explanation: |
@@ -3568,7 +3569,7 @@ eons:
             both climatic perturbations and faunal innovations during the Triassic
             recovery after the Permian extinction.
           rank: stage
-          start_ma: 237
+          start_ma: 237.0
           color: "#6F78AB"
         - name: Norian
           explanation: |

@@ -31,6 +31,7 @@ class TimelineColumnHeaders extends StatelessWidget {
           TimelineTrack.epoch,
           TimelineTrack.stage,
           TimelineTrack.rlife,
+          TimelineTrack.extinctions,
         };
         double scaledWidth(TimelineTrack track) =>
             metrics.trackWidth(track) *
@@ -87,13 +88,11 @@ class TimelineColumnHeaders extends StatelessWidget {
       case TimelineTrack.events:
         return 'Events';
       case TimelineTrack.extinctions:
-        return 'Extinctions';
+        return 'Ext.';
       case TimelineTrack.clades:
         return 'Clades';
       case TimelineTrack.ma:
         return 'Ma\n4567';
-      default:
-        return '';
     }
   }
 

@@ -21,8 +21,8 @@ const List<TimelineTrack> kDefaultTimelineTrackOrder = <TimelineTrack>[
   TimelineTrack.epoch,
   TimelineTrack.stage,
   TimelineTrack.rlife,
-  TimelineTrack.events,
   TimelineTrack.extinctions,
+  TimelineTrack.events,
   TimelineTrack.clades,
 ];
 

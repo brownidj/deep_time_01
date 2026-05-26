@@ -19,7 +19,7 @@ events:
       habitability and biogeochemical cycling.
     short_label: GOE
     type: bar
-    start_ma: 2400
+    start_ma: 2400.0
     end_ma: 2100
   - label: Ediacaran biota
     explanation: |
@@ -40,7 +40,7 @@ events:
       organisms in Earth’s history.
     short_label: Ediacaran
     type: bar
-    start_ma: 575
+    start_ma: 575.0
     end_ma: 539
   - label: Cambrian radiation
     explanation: |
@@ -61,7 +61,7 @@ events:
       in contemporary fauna.
     short_label: Cambrian radiation
     type: bar
-    start_ma: 539
+    start_ma: 539.0
     end_ma: 520
   - label: Great Ordovician Biodiversification
     explanation: |
@@ -82,7 +82,7 @@ events:
       across Ordovician oceans.
     short_label: GOBE
     type: bar
-    start_ma: 485
+    start_ma: 485.0
     end_ma: 445
   - label: First land plants
     explanation: |
@@ -101,7 +101,7 @@ events:
       impacting Earth’s climate and biology during the Silurian and Devonian periods.
     short_label: First land plants
     type: bar
-    start_ma: 470
+    start_ma: 470.0
     end_ma: 430
   - label: First forests
     explanation: |
@@ -123,7 +123,7 @@ events:
       subsequent terrestrial ecosystem expansion.
     short_label: First forests
     type: bar
-    start_ma: 390
+    start_ma: 390.0
     end_ma: 370
   - label: First tetrapods
     explanation: |
@@ -144,7 +144,7 @@ events:
       and evolutionary trajectories.
     short_label: Tetrapods
     type: bar
-    start_ma: 375
+    start_ma: 375.0
     end_ma: 365
   - label: Coal swamps
     explanation: |
@@ -166,7 +166,7 @@ events:
       reconstruction during the late Paleozoic era.
     short_label: Coal swamps
     type: bar
-    start_ma: 359
+    start_ma: 359.0
     end_ma: 299
   - label: Pangaea assembled
     explanation: |
@@ -187,7 +187,7 @@ events:
       Mesozoic breakup that shaped modern continental configurations.
     short_label: Pangaea
     type: bar
-    start_ma: 320
+    start_ma: 320.0
     end_ma: 250
   - label: First dinosaurs
     explanation: |
@@ -210,7 +210,7 @@ events:
       Triassic landscape.
     short_label: Dinosaurs
     type: bar
-    start_ma: 233
+    start_ma: 233.0
     end_ma: 231
   - label: First mammals
     explanation: |
@@ -230,7 +230,7 @@ events:
       the Mesozoic and Cenozoic eras.
     short_label: First Mammals
     type: bar
-    start_ma: 225
+    start_ma: 225.0
     end_ma: 200
   - label: First birds
     explanation: |
@@ -250,7 +250,7 @@ events:
       ecological niches inhabited by basal birds.
     short_label: Birds
     type: bar
-    start_ma: 160
+    start_ma: 160.0
     end_ma: 150
   - label: Flowering plants
     explanation: |
@@ -272,7 +272,7 @@ events:
       marking the origin of the dominant flora present in most modern ecosystems.
     short_label: Angiosperms
     type: bar
-    start_ma: 135
+    start_ma: 135.0
     end_ma: 125
   - label: Rise of mammals
     explanation: |
@@ -292,7 +292,7 @@ events:
       biodiversity and ecosystem structure.
     short_label: Rise of mammals
     type: bar
-    start_ma: 66
+    start_ma: 66.0
     end_ma: 23
   - label: Grassland expansion
     explanation: |
@@ -314,7 +314,7 @@ events:
       understanding of Cenozoic terrestrial biotic change.
     short_label: Grasslands
     type: bar
-    start_ma: 23
+    start_ma: 23.0
     end_ma: 5
   - label: Quaternary glaciations
     explanation: |

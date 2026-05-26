@@ -8,6 +8,7 @@ import 'package:deep_time/ui/models/clade_view_mode.dart';
 import 'package:deep_time/ui/models/time_label_mode.dart';
 import 'package:deep_time/ui/theme/deep_time_palette.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_body_content.dart';
+import 'package:deep_time/ui/screens/timeline/timeline_body_helpers.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_body_metrics.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_orientation.dart';
 
@@ -66,12 +67,13 @@ class TimelineBody extends StatelessWidget {
                 ?.copyWith(color: Colors.white, fontWeight: FontWeight.w600);
             final config = _buildOrientationConfig(
               layout: layout,
+              markers: markers,
               labelMode: labelMode,
               style: headerStyle,
               stageStyle: stageTextStyle,
               maStyle: maTextStyle,
             );
-            final minScrollHeight = _minScrollHeightForStages(
+            final minScrollHeight = minScrollHeightForStages(
               layout,
               style: stageTextStyle,
               verticalPadding: 4,
@@ -109,6 +111,7 @@ class TimelineBody extends StatelessWidget {
 
   TimelineOrientationConfig _buildOrientationConfig({
     required TimelineLayoutSnapshot layout,
+    required TimelineMarkerCatalog markers,
     required TimeLabelMode labelMode,
     TextStyle? style,
     TextStyle? stageStyle,
@@ -118,33 +121,46 @@ class TimelineBody extends StatelessWidget {
     final eraLabel = labelMode.labelForRank('era');
     final periodLabel = labelMode.divisionRowLabel();
     final epochLabel = labelMode.seriesRowLabel();
-    final maxEpochLabelWidth = _segmentLabelWidth(
+    final maxEpochLabelWidth = segmentLabelWidth(
       layout.epochSegments,
       style: style,
       horizontalPadding: 12,
     );
-    final eonWidth = _minimalHorizontalLabelWidth(eonLabel, style: style);
-    final eraWidth = _minimalHorizontalLabelWidth(eraLabel, style: style);
+    final eonWidth = minimalHorizontalLabelWidth(eonLabel, style: style);
+    final eraWidth = minimalHorizontalLabelWidth(eraLabel, style: style);
     final periodWidth = math.max(
-      _minimalVerticalLabelWidth(periodLabel, style: style),
-      _minimalHorizontalLabelWidth(periodLabel, style: style),
+      minimalVerticalLabelWidth(periodLabel, style: style),
+      minimalHorizontalLabelWidth(periodLabel, style: style),
     );
     final epochWidth = math.max(
-      _minimalHorizontalLabelWidth(epochLabel, style: style),
+      minimalHorizontalLabelWidth(epochLabel, style: style),
       maxEpochLabelWidth,
     );
-    final maxStageLabelWidth = _segmentLabelWidth(
+    final maxStageLabelWidth = segmentLabelWidth(
       layout.stageSegments,
       style: stageStyle,
       horizontalPadding: 12,
     );
     final stageWidth = math.max(
-      _minimalHorizontalLabelWidth(labelMode.stageRowLabel(), style: style),
+      minimalHorizontalLabelWidth(labelMode.stageRowLabel(), style: style),
       maxStageLabelWidth,
     );
+    const extinctionMarkerLeft = 0.0;
+    const extinctionMarkerSize = 13.0;
+    const extinctionLabelGap = 6.0;
+    const extinctionRightPadding = 6.0;
+    final extinctionsWidth = extinctionsTrackWidthForLabels(
+      [for (final extinction in markers.extinctions) extinction.shortLabel],
+      style: style,
+      markerLeft: extinctionMarkerLeft,
+      markerSize: extinctionMarkerSize,
+      labelGap: extinctionLabelGap,
+      rightPadding: extinctionRightPadding,
+      fallbackLabel: 'Ext.',
+    );
     final rlifeWidth =
-        _minimalHorizontalLabelWidth('Representative life', style: style) * 1.5;
-    final maWidth = _maColumnWidth(layout, style: maStyle, padding: 20) + 20;
+        minimalHorizontalLabelWidth('Representative life', style: style) * 1.5;
+    final maWidth = maColumnWidth(layout, style: maStyle, padding: 20) + 20;
     return TimelineOrientationConfig(
       trackWidths: {
         TimelineTrack.ma: maWidth,
@@ -154,123 +170,10 @@ class TimelineBody extends StatelessWidget {
         TimelineTrack.epoch: epochWidth,
         TimelineTrack.stage: stageWidth,
         TimelineTrack.rlife: rlifeWidth,
+        TimelineTrack.extinctions: extinctionsWidth,
+        TimelineTrack.events: rlifeWidth,
       },
     );
   }
 
-  double _minimalHorizontalLabelWidth(String label, {TextStyle? style}) {
-    if (label.trim().isEmpty) {
-      return 40.0;
-    }
-    final painter = TextPainter(
-      text: TextSpan(text: label, style: style),
-      textDirection: TextDirection.ltr,
-      maxLines: 1,
-    )..layout();
-    return painter.width + 16;
-  }
-
-  double _minimalVerticalLabelWidth(String label, {TextStyle? style}) {
-    if (label.trim().isEmpty) {
-      return 36.0;
-    }
-    final painter = TextPainter(
-      text: TextSpan(text: label, style: style),
-      textDirection: TextDirection.ltr,
-      maxLines: 1,
-    )..layout();
-    return painter.height + 12;
-  }
-
-  double _segmentLabelWidth(
-    List<TimelineRowSegment> segments, {
-    TextStyle? style,
-    double horizontalPadding = 12,
-  }) {
-    var maxWidth = 0.0;
-    for (final segment in segments) {
-      final label = segment.label.trim();
-      if (label.isEmpty) {
-        continue;
-      }
-      final painter = TextPainter(
-        text: TextSpan(text: label, style: style),
-        textDirection: TextDirection.ltr,
-        maxLines: 1,
-      )..layout();
-      final width = painter.width + horizontalPadding;
-      if (width > maxWidth) {
-        maxWidth = width;
-      }
-    }
-    return maxWidth;
-  }
-
-  double _maColumnWidth(
-    TimelineLayoutSnapshot layout, {
-    TextStyle? style,
-    double padding = 12,
-  }) {
-    var maxWidth = _minimalHorizontalLabelWidth('Ma', style: style);
-    for (final segment in layout.eonSegments) {
-      if (segment.isGap) {
-        continue;
-      }
-      final width = _labelWidth(_formatMaLabel(segment.endMa), style: style);
-      if (width > maxWidth) {
-        maxWidth = width;
-      }
-    }
-    for (final segment in layout.eraSegments) {
-      if (segment.isGap) {
-        continue;
-      }
-      final width = _labelWidth(_formatMaLabel(segment.endMa), style: style);
-      if (width > maxWidth) {
-        maxWidth = width;
-      }
-    }
-    return maxWidth + padding;
-  }
-
-  double _labelWidth(String label, {TextStyle? style}) {
-    final painter = TextPainter(
-      text: TextSpan(text: label, style: style),
-      textDirection: TextDirection.ltr,
-      maxLines: 1,
-    )..layout();
-    return painter.width;
-  }
-
-  double _minScrollHeightForStages(
-    TimelineLayoutSnapshot layout, {
-    TextStyle? style,
-    double verticalPadding = 4,
-  }) {
-    final segments = layout.stageSegments;
-    if (segments.isEmpty) {
-      return 0.0;
-    }
-    var total = 0.0;
-    for (final segment in segments) {
-      if (segment.isGap || segment.label.trim().isEmpty) {
-        continue;
-      }
-      final painter = TextPainter(
-        text: TextSpan(text: segment.label, style: style),
-        textDirection: TextDirection.ltr,
-        maxLines: 1,
-      )..layout();
-      total += painter.height + (verticalPadding * 2);
-    }
-    return total;
-  }
-}
-
-String _formatMaLabel(double value) {
-  final rounded = value.roundToDouble();
-  if ((value - rounded).abs() < 0.01) {
-    return rounded.toStringAsFixed(0);
-  }
-  return value.toStringAsFixed(1);
 }

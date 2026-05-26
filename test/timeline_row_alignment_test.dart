@@ -16,6 +16,7 @@ void main() {
   testWidgets('Timeline shows top column headers and vertical columns', (
     tester,
   ) async {
+    await _setLargeSurface(tester);
     final palette = testPalette();
     final layout = singleSpanLayout();
     const markers = TimelineMarkerCatalog(events: [], extinctions: []);
@@ -24,8 +25,8 @@ void main() {
       MaterialApp(
         home: Scaffold(
           body: SizedBox(
-            width: 1200,
-            height: 900,
+            width: 2000,
+            height: 1200,
             child: Column(
               children: [
                 TimelineBody(
@@ -70,6 +71,7 @@ void main() {
   testWidgets('Vertical mode renders clade bars and taps spotlight callback', (
     tester,
   ) async {
+    await _setLargeSurface(tester);
     final palette = testPalette();
     final layout = splitPeriodLayout();
     const markers = TimelineMarkerCatalog(events: [], extinctions: []);
@@ -91,8 +93,8 @@ void main() {
       MaterialApp(
         home: Scaffold(
           body: SizedBox(
-            width: 1200,
-            height: 900,
+            width: 2000,
+            height: 1200,
             child: Column(
               children: [
                 TimelineBody(
@@ -138,6 +140,7 @@ void main() {
   testWidgets('Vertical mode clade bars map to vertical time span', (
     tester,
   ) async {
+    await _setLargeSurface(tester);
     final palette = testPalette();
     final layout = splitPeriodLayout();
     const markers = TimelineMarkerCatalog(events: [], extinctions: []);
@@ -158,8 +161,8 @@ void main() {
       MaterialApp(
         home: Scaffold(
           body: SizedBox(
-            width: 1200,
-            height: 900,
+            width: 2000,
+            height: 1200,
             child: Column(
               children: [
                 TimelineBody(
@@ -197,5 +200,12 @@ void main() {
 
     expect((barRect.top - columnRect.top).abs(), lessThan(2.0));
     expect((barRect.height - (columnRect.height / 2)).abs(), lessThan(4.0));
+  });
+}
+
+Future<void> _setLargeSurface(WidgetTester tester) async {
+  await tester.binding.setSurfaceSize(const Size(2000, 1200));
+  addTearDown(() async {
+    await tester.binding.setSurfaceSize(null);
   });
 }

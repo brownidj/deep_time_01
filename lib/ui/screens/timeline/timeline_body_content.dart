@@ -95,6 +95,7 @@ class TimelineBodyContent extends StatelessWidget {
                 child: TimelineVerticalOverlays(
                   metrics: metrics,
                   contentHeight: contentHeight,
+                  markers: markers,
                 ),
               ),
             ],
