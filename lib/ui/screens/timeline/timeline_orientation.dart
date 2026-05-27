@@ -8,8 +8,9 @@ enum TimelineTrack {
   epoch,
   stage,
   rlife,
-  events,
   extinctions,
+  continents,
+  events,
   clades,
 }
 
@@ -20,6 +21,7 @@ const List<TimelineTrack> kDefaultTimelineTrackOrder = <TimelineTrack>[
   TimelineTrack.period,
   TimelineTrack.epoch,
   TimelineTrack.stage,
+  TimelineTrack.continents,
   TimelineTrack.rlife,
   TimelineTrack.extinctions,
   TimelineTrack.events,

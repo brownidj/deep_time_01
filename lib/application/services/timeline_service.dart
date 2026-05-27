@@ -7,6 +7,7 @@ import 'package:deep_time/domain/models/timeline_palette.dart';
 import 'package:deep_time/domain/repositories/geologic_division_repository.dart';
 import 'package:deep_time/domain/repositories/paleontology_repository.dart';
 import 'package:deep_time/domain/repositories/clade_repository.dart';
+import 'package:deep_time/domain/repositories/continent_repository.dart';
 import 'package:deep_time/domain/repositories/timeline_marker_repository.dart';
 import 'package:deep_time/domain/repositories/timeline_palette_repository.dart';
 
@@ -17,6 +18,7 @@ class TimelineSnapshot {
     required this.ranges,
     required this.palette,
     required this.markers,
+    required this.continents,
     required this.clades,
   });
 
@@ -25,34 +27,38 @@ class TimelineSnapshot {
   final List<FossilRange> ranges;
   final TimelinePalette palette;
   final TimelineMarkerCatalog markers;
+  final List<TimelineEventDefinition> continents;
   final List<Clade> clades;
 }
 
 class TimelineService {
   TimelineService({
-    required this._divisionRepository,
-    required this._paleontologyRepository,
-    required this._paletteRepository,
-    required this._markerRepository,
-    required this._cladeRepository,
+    required this.divisionRepository,
+    required this.paleontologyRepository,
+    required this.paletteRepository,
+    required this.markerRepository,
+    required this.cladeRepository,
+    required this.continentRepository,
   });
 
-  final GeologicDivisionRepository _divisionRepository;
-  final PaleontologyRepository _paleontologyRepository;
-  final TimelinePaletteRepository _paletteRepository;
-  final TimelineMarkerRepository _markerRepository;
-  final CladeRepository _cladeRepository;
+  final GeologicDivisionRepository divisionRepository;
+  final PaleontologyRepository paleontologyRepository;
+  final TimelinePaletteRepository paletteRepository;
+  final TimelineMarkerRepository markerRepository;
+  final CladeRepository cladeRepository;
+  final ContinentRepository continentRepository;
 
   Future<TimelineSnapshot> loadSnapshot() async {
-    final divisions = await _divisionRepository.fetchAll();
-    final taxa = await _paleontologyRepository.fetchAllTaxa();
-    final ranges = await _paleontologyRepository.fetchRangesOverlapping(
+    final divisions = await divisionRepository.fetchAll();
+    final taxa = await paleontologyRepository.fetchAllTaxa();
+    final ranges = await paleontologyRepository.fetchRangesOverlapping(
       divisions.isEmpty ? 0 : divisions.first.startMa,
       0,
     );
-    final palette = await _paletteRepository.fetchPalette();
-    final markers = await _markerRepository.fetchMarkers();
-    final clades = await _cladeRepository.fetchAll();
+    final palette = await paletteRepository.fetchPalette();
+    final markers = await markerRepository.fetchMarkers();
+    final continents = await continentRepository.fetchContinents();
+    final clades = await cladeRepository.fetchAll();
     _validatePaletteCoverage(palette, divisions);
     return TimelineSnapshot(
       divisions: divisions,
@@ -60,12 +66,13 @@ class TimelineService {
       ranges: ranges,
       palette: palette,
       markers: markers,
+      continents: continents,
       clades: clades,
     );
   }
 
   Future<List<FossilRange>> rangesForDivision(GeologicDivision division) async {
-    return _paleontologyRepository.fetchRangesOverlapping(
+    return paleontologyRepository.fetchRangesOverlapping(
       division.startMa,
       division.endMa,
     );

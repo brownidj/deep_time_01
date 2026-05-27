@@ -7,6 +7,7 @@ import 'package:deep_time/domain/repositories/clade_representative_repository.da
 import 'package:deep_time/infra/repositories/sqlite_geologic_division_repository.dart';
 import 'package:deep_time/infra/repositories/sqlite_paleontology_repository.dart';
 import 'package:deep_time/infra/repositories/yaml_clade_repository.dart';
+import 'package:deep_time/infra/repositories/yaml_continent_repository.dart';
 import 'package:deep_time/infra/repositories/yaml_clade_display_group_repository.dart';
 import 'package:deep_time/infra/repositories/yaml_clade_representative_repository.dart';
 import 'package:deep_time/infra/repositories/yaml_timeline_marker_repository.dart';
@@ -47,12 +48,16 @@ class AppDependencies {
       final cladeRepository = YamlCladeRepository(
         assetPath: 'data/clades.yaml',
       );
+      final continentRepository = YamlContinentRepository(
+        assetPath: 'data/continents.yaml',
+      );
       final timelineService = TimelineService(
         divisionRepository: divisionRepository,
         paleontologyRepository: paleontologyRepository,
         paletteRepository: paletteRepository,
         markerRepository: markerRepository,
         cladeRepository: cladeRepository,
+        continentRepository: continentRepository,
       );
       return AppDependencies(
         database: database,

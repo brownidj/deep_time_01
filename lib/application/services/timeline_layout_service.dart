@@ -9,8 +9,9 @@ class TimelineLayoutService {
   TimelineLayoutSnapshot build(
     List<GeologicDivision> divisions,
     TimelineMarkerCatalog markers,
+    List<TimelineEventDefinition> continents,
   ) {
     final builder = TimelineLayoutBuilder();
-    return builder.build(divisions, markers);
+    return builder.build(divisions, markers, continents);
   }
 }

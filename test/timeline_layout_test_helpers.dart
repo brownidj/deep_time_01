@@ -68,6 +68,7 @@ TimelineLayoutSnapshot layoutWithLongStage() {
     ],
     rlifeSegments: [],
     eventSegments: [],
+    continentSegments: [],
     oldestMa: 260,
     youngestMa: 0,
   );
@@ -116,6 +117,7 @@ TimelineLayoutSnapshot precambrianPeriodLayout() {
     stageSegments: [],
     rlifeSegments: [],
     eventSegments: [],
+    continentSegments: [],
     oldestMa: 635,
     youngestMa: 0,
   );

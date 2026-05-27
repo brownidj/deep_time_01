@@ -1,5 +1,18 @@
 import 'package:deep_time/domain/models/timeline_marker_catalog.dart';
 import 'package:deep_time/application/services/timeline_layout_models.dart';
+import 'dart:math' as math;
+
+class OverlayConnectorLine {
+  const OverlayConnectorLine({
+    required this.y,
+    required this.leftX,
+    required this.anchorX,
+  });
+
+  final double y;
+  final double leftX;
+  final double anchorX;
+}
 
 List<double> eventPointYs(
   List<TimelineEventSegment> events,
@@ -106,4 +119,15 @@ List<double> extinctionYs(
     }
   }
   return ys;
+}
+
+List<OverlayConnectorLine> buildConnectorLines({
+  required List<double> ys,
+  required double leftBoundaryX,
+  required double anchorX,
+}) {
+  final leftX = math.min(leftBoundaryX, anchorX);
+  return [
+    for (final y in ys) OverlayConnectorLine(y: y, leftX: leftX, anchorX: anchorX),
+  ];
 }

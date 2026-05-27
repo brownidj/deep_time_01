@@ -62,22 +62,11 @@ class TimelineVerticalColumns extends StatelessWidget {
           TimelineTrack.stage,
           TimelineTrack.rlife,
           TimelineTrack.extinctions,
+          TimelineTrack.continents,
         };
         double scaledWidth(TimelineTrack track) =>
             metrics.trackWidth(track) *
             (cappedTracks.contains(track) ? 1.0 : scale);
-        final columnLayout = buildVerticalColumnsLayout(
-          trackOrder: metrics.trackOrder,
-          scaledWidth: scaledWidth,
-          trackWidth: metrics.trackWidth,
-          useFixedHeights: useFixedHeights,
-        );
-        final trackStarts = <TimelineTrack, double>{};
-        var trackCursor = 0.0;
-        for (final track in metrics.trackOrder) {
-          trackStarts[track] = trackCursor;
-          trackCursor += scaledWidth(track);
-        }
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -203,6 +192,16 @@ class TimelineVerticalColumns extends StatelessWidget {
                         )
                       : minHeightForStageLabel(segment, style),
             ),
+            _VerticalEventsColumn(
+              width: scaledWidth(TimelineTrack.continents),
+              height: columnHeight,
+              events: layout.continentSegments,
+              totalUnits: metrics.periodUnits,
+              palette: palette,
+              horizontalPadding: 12,
+              laneGap: 6,
+              showPoints: false,
+            ),
             _VerticalRowColumn(
               width: scaledWidth(TimelineTrack.rlife),
               height: columnHeight,
@@ -222,7 +221,6 @@ class TimelineVerticalColumns extends StatelessWidget {
               periodSegments: layout.periodSegments,
               stageSegments: layout.stageSegments,
               extinctions: markers.extinctions,
-              lineLeft: columnLayout.extinctionLineLeft,
             ),
             _VerticalEventsColumn(
               width: scaledWidth(TimelineTrack.events),
@@ -230,7 +228,6 @@ class TimelineVerticalColumns extends StatelessWidget {
               events: layout.eventSegments,
               totalUnits: metrics.periodUnits,
               palette: palette,
-              lineLeft: columnLayout.eventLineLeft,
             ),
             _VerticalCladeColumn(
               width: scaledWidth(TimelineTrack.clades),

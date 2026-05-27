@@ -77,7 +77,7 @@ void main() {
       ];
 
       final service = TimelineLayoutService();
-      final layout = service.build(divisions, _testMarkers());
+      final layout = service.build(divisions, _testMarkers(), const []);
       final epochLabels = layout.epochSegments
           .where((segment) => !segment.isGap)
           .map((segment) {
@@ -151,7 +151,7 @@ void main() {
     ];
 
     final service = TimelineLayoutService();
-    final layout = service.build(divisions, _testMarkers());
+    final layout = service.build(divisions, _testMarkers(), const []);
     final periodLabels = layout.periodSegments
         .where((segment) => !segment.isGap)
         .map((segment) => segment.label)
@@ -197,7 +197,7 @@ void main() {
     ];
 
     final service = TimelineLayoutService();
-    final layout = service.build(divisions, _testMarkers());
+    final layout = service.build(divisions, _testMarkers(), const []);
     final eonLabels = layout.eonSegments
         .where((segment) => !segment.isGap)
         .map((segment) => segment.label)
@@ -243,7 +243,7 @@ void main() {
     ];
 
     final service = TimelineLayoutService();
-    final layout = service.build(divisions, _testMarkers());
+    final layout = service.build(divisions, _testMarkers(), const []);
 
     expect(layout.eventSegments, isNotEmpty);
 

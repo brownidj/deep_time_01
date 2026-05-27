@@ -7,7 +7,6 @@ class _VerticalExtinctionColumn extends StatelessWidget {
     required this.periodSegments,
     required this.stageSegments,
     required this.extinctions,
-    required this.lineLeft,
   });
 
   final double width;
@@ -15,7 +14,6 @@ class _VerticalExtinctionColumn extends StatelessWidget {
   final List<TimelineRowSegment> periodSegments;
   final List<TimelineRowSegment> stageSegments;
   final List<ExtinctionDefinition> extinctions;
-  final double lineLeft;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +42,6 @@ class _VerticalExtinctionColumn extends StatelessWidget {
                 marker: marker,
                 width: width,
                 height: height,
-                lineLeft: lineLeft,
               ),
           ],
         ),
@@ -176,18 +173,16 @@ class _VerticalExtinctionMarker extends StatelessWidget {
     required this.marker,
     required this.width,
     required this.height,
-    required this.lineLeft,
   });
 
   final _VerticalExtinctionLayout marker;
   final double width;
   final double height;
-  final double lineLeft;
 
   @override
   Widget build(BuildContext context) {
     final markerSize = marker.isMajor ? 13.0 : 9.0;
-    final markerLeft = lineLeft;
+    final markerLeft = 0.0;
     final textLeft = (markerLeft + markerSize + 6).clamp(0.0, width - 6);
     final labelStyle = Theme.of(context).textTheme.labelSmall?.copyWith(
       color: const Color(0xFFFF6D00),
