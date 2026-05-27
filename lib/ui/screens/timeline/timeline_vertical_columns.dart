@@ -25,6 +25,7 @@ part 'timeline_vertical_columns_events.dart';
 part 'timeline_vertical_columns_extinctions.dart';
 part 'timeline_vertical_columns_painters.dart';
 part 'timeline_vertical_columns_clades.dart';
+part 'timeline_vertical_columns_continent_gradients.dart';
 
 Color _darken(Color color, double amount) {
   final hsl = HSLColor.fromColor(color);

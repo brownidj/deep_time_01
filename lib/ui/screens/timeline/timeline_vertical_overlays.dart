@@ -153,6 +153,20 @@ class TimelineVerticalOverlays extends StatelessWidget {
             'firstEventLine=${eventLines.isEmpty ? 'none' : '${eventLines.first.leftX.toStringAsFixed(2)}->${eventLines.first.anchorX.toStringAsFixed(2)} @y ${eventLines.first.y.toStringAsFixed(2)}'} '
             'firstExtLine=${extinctionLines.isEmpty ? 'none' : '${extinctionLines.first.leftX.toStringAsFixed(2)}->${extinctionLines.first.anchorX.toStringAsFixed(2)} @y ${extinctionLines.first.y.toStringAsFixed(2)}'}',
           );
+          if (eventLines.isNotEmpty) {
+            AppDebug.log(
+              'Event line extent X range: '
+              '${eventLines.map((l) => l.leftX).reduce((a, b) => a < b ? a : b).toStringAsFixed(2)} '
+              'to ${eventLines.map((l) => l.anchorX).reduce((a, b) => a > b ? a : b).toStringAsFixed(2)}',
+            );
+          }
+          if (extinctionLines.isNotEmpty) {
+            AppDebug.log(
+              'Extinction line extent X range: '
+              '${extinctionLines.map((l) => l.leftX).reduce((a, b) => a < b ? a : b).toStringAsFixed(2)} '
+              'to ${extinctionLines.map((l) => l.anchorX).reduce((a, b) => a > b ? a : b).toStringAsFixed(2)}',
+            );
+          }
         }
         return IgnorePointer(
           child: Stack(
@@ -212,6 +226,23 @@ class TimelineVerticalOverlays extends StatelessWidget {
                   child: Container(width: 1, color: Colors.deepOrangeAccent),
                 ),
               ],
+              if (kDebugMode && AppDebug.showTimelineConnectorExtents) ...[
+                _DebugBoundaryLabel(
+                  x: periodStart,
+                  text: 'Era|Period',
+                  color: Colors.cyanAccent,
+                ),
+                _DebugBoundaryLabel(
+                  x: eventAnchorX,
+                  text: 'Events tip',
+                  color: Colors.yellowAccent,
+                ),
+                _DebugBoundaryLabel(
+                  x: extinctionAnchorX,
+                  text: 'Ext tip',
+                  color: Colors.deepOrangeAccent,
+                ),
+              ],
             ],
           ),
         );
@@ -224,6 +255,34 @@ class TimelineVerticalOverlays extends StatelessWidget {
       return 1.0;
     }
     return maxWidth / metrics.trackColumnsWidth;
+  }
+}
+
+class _DebugBoundaryLabel extends StatelessWidget {
+  const _DebugBoundaryLabel({
+    required this.x,
+    required this.text,
+    required this.color,
+  });
+
+  final double x;
+  final String text;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      left: x + 2,
+      top: 2,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+        color: Colors.black87,
+        child: Text(
+          text,
+          style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.w700),
+        ),
+      ),
+    );
   }
 }
 

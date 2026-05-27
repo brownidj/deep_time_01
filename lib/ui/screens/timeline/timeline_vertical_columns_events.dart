@@ -7,6 +7,7 @@ class _VerticalEventsColumn extends StatelessWidget {
     required this.events,
     required this.totalUnits,
     required this.palette,
+    this.barGradientForEvent,
     this.horizontalPadding = 3.0,
     this.laneGap = 4.0,
     this.showPoints = true,
@@ -17,6 +18,7 @@ class _VerticalEventsColumn extends StatelessWidget {
   final List<TimelineEventSegment> events;
   final double totalUnits;
   final DeepTimePalette palette;
+  final Gradient Function(TimelineEventSegment event)? barGradientForEvent;
   final double horizontalPadding;
   final double laneGap;
   final bool showPoints;
@@ -75,6 +77,7 @@ class _VerticalEventsColumn extends StatelessWidget {
                 left: laneFrames[layout.lane]?.$1 ?? 0,
                 barWidth: laneFrames[layout.lane]?.$2 ?? 3,
                 palette: palette,
+                gradient: barGradientForEvent?.call(layout.event),
                 textStyle: barTextStyle,
               ),
             if (showPoints)
@@ -229,6 +232,7 @@ class _VerticalEventBar extends StatelessWidget {
     required this.left,
     required this.barWidth,
     required this.palette,
+    this.gradient,
     required this.textStyle,
   });
 
@@ -236,6 +240,7 @@ class _VerticalEventBar extends StatelessWidget {
   final double left;
   final double barWidth;
   final DeepTimePalette palette;
+  final Gradient? gradient;
   final TextStyle? textStyle;
 
   @override
@@ -265,7 +270,8 @@ class _VerticalEventBar extends StatelessWidget {
                 ),
           child: DecoratedBox(
             decoration: BoxDecoration(
-              color: fillColor,
+              color: gradient == null ? fillColor : null,
+              gradient: gradient,
               borderRadius: BorderRadius.circular(4),
               border: Border.all(color: DeepTimePalette.periodDivider),
             ),
