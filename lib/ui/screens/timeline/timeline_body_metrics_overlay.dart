@@ -80,62 +80,53 @@ extension TimelineBodyMetricsOverlay on TimelineBodyMetrics {
   }
 
   double eonOverlayRight(double y) {
+    final ageRight = _columnRight(TimelineTrack.stage);
     final hasEra = hasBandContentAtY(layout.eraSegments, eraTotalUnits, y);
     if (!hasEra) {
-      return _columnRight(TimelineTrack.eon);
+      return _columnRight(TimelineTrack.eon).clamp(0.0, ageRight);
     }
     final hasPeriod = hasRowContentAtY(layout.periodSegments, periodUnits, y);
     if (!hasPeriod) {
-      return _columnRight(TimelineTrack.era);
+      return _columnRight(TimelineTrack.era).clamp(0.0, ageRight);
     }
     final hasEpoch = hasRowContentAtY(layout.epochSegments, epochTotalUnits, y);
     if (!hasEpoch) {
-      return _columnRight(TimelineTrack.period);
+      return _columnRight(TimelineTrack.period).clamp(0.0, ageRight);
     }
     final hasStage = hasRowContentAtY(layout.stageSegments, stageTotalUnits, y);
     if (!hasStage) {
-      return _columnRight(TimelineTrack.epoch);
+      return _columnRight(TimelineTrack.epoch).clamp(0.0, ageRight);
     }
-    final hasRlife = hasRowContentAtY(layout.rlifeSegments, rlifeTotalUnits, y);
-    if (!hasRlife) {
-      return _columnRight(TimelineTrack.stage);
-    }
-    return _columnRight(TimelineTrack.rlife);
+    return ageRight;
   }
 
   double eraOverlayRight(double y) {
+    final ageRight = _columnRight(TimelineTrack.stage);
     final hasPeriod = hasRowContentAtY(layout.periodSegments, periodUnits, y);
     if (!hasPeriod) {
-      return _columnRight(TimelineTrack.era);
+      return _columnRight(TimelineTrack.era).clamp(0.0, ageRight);
     }
     final hasEpoch = hasRowContentAtY(layout.epochSegments, epochTotalUnits, y);
     if (!hasEpoch) {
-      return _columnRight(TimelineTrack.period);
+      return _columnRight(TimelineTrack.period).clamp(0.0, ageRight);
     }
     final hasStage = hasRowContentAtY(layout.stageSegments, stageTotalUnits, y);
     if (!hasStage) {
-      return _columnRight(TimelineTrack.epoch);
+      return _columnRight(TimelineTrack.epoch).clamp(0.0, ageRight);
     }
-    final hasRlife = hasRowContentAtY(layout.rlifeSegments, rlifeTotalUnits, y);
-    if (!hasRlife) {
-      return _columnRight(TimelineTrack.stage);
-    }
-    return _columnRight(TimelineTrack.rlife);
+    return ageRight;
   }
 
   double periodOverlayRight(double y) {
+    final ageRight = _columnRight(TimelineTrack.stage);
     final hasEpoch = hasRowContentAtY(layout.epochSegments, epochTotalUnits, y);
     if (!hasEpoch) {
-      return _columnRight(TimelineTrack.period);
+      return _columnRight(TimelineTrack.period).clamp(0.0, ageRight);
     }
     final hasStage = hasRowContentAtY(layout.stageSegments, stageTotalUnits, y);
     if (!hasStage) {
-      return _columnRight(TimelineTrack.epoch);
+      return _columnRight(TimelineTrack.epoch).clamp(0.0, ageRight);
     }
-    final hasRlife = hasRowContentAtY(layout.rlifeSegments, rlifeTotalUnits, y);
-    if (!hasRlife) {
-      return _columnRight(TimelineTrack.stage);
-    }
-    return _columnRight(TimelineTrack.rlife);
+    return ageRight;
   }
 }

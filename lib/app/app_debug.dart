@@ -10,6 +10,7 @@ class AppDebug {
   static double timelineScale = 3.4;
   static const bool showTimelineConnectorAnchors = false;
   static const bool logTimelineConnectorGeometry = true;
+  static const bool showTimelineConnectorExtents = true;
 
   static bool get enabled => (_appDebug || _overrideEnabled) && kDebugMode;
 

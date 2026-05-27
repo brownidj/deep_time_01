@@ -198,6 +198,32 @@ class TimelineVerticalColumns extends StatelessWidget {
               events: layout.continentSegments,
               totalUnits: metrics.periodUnits,
               palette: palette,
+              barGradientForEvent: (event) => _buildContinentBlockGradient(
+                event: event,
+                fallbackColor: _safeColorForKey(event.colorKey, palette),
+                leftColumns: [
+                  _LeftColorColumn(
+                    ranges: _rangesFromRowSegments(layout.stageSegments),
+                    colorForKey: palette.colorForKey,
+                  ),
+                  _LeftColorColumn(
+                    ranges: _rangesFromRowSegments(layout.epochSegments),
+                    colorForKey: palette.colorForKey,
+                  ),
+                  _LeftColorColumn(
+                    ranges: _rangesFromRowSegments(layout.periodSegments),
+                    colorForKey: palette.colorForKey,
+                  ),
+                  _LeftColorColumn(
+                    ranges: _rangesFromBandSegments(layout.eraSegments),
+                    colorForKey: palette.colorForKey,
+                  ),
+                  _LeftColorColumn(
+                    ranges: _rangesFromBandSegments(layout.eonSegments),
+                    colorForKey: palette.colorForKey,
+                  ),
+                ],
+              ),
               horizontalPadding: 12,
               laneGap: 6,
               showPoints: false,
