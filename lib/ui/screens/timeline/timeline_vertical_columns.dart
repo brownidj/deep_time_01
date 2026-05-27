@@ -9,7 +9,6 @@ import 'package:deep_time/domain/models/clade.dart';
 import 'package:deep_time/domain/models/timeline_marker_catalog.dart';
 import 'package:deep_time/ui/models/clade_view_mode.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_body_metrics.dart';
-import 'package:deep_time/ui/screens/timeline/timeline_vertical_columns_layout.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_min_height_helpers.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_orientation.dart';
 import 'package:deep_time/ui/theme/deep_time_palette.dart';

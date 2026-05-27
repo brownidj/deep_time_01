@@ -10,6 +10,7 @@ class TimelineLayoutBuilder {
   TimelineLayoutSnapshot build(
     List<GeologicDivision> divisions,
     TimelineMarkerCatalog markers,
+    List<TimelineEventDefinition> continents,
   ) {
     if (divisions.isEmpty) {
       return const TimelineLayoutSnapshot(
@@ -21,6 +22,7 @@ class TimelineLayoutBuilder {
         stageSegments: [],
         rlifeSegments: [],
         eventSegments: [],
+        continentSegments: [],
         oldestMa: 0,
         youngestMa: 0,
         fixedHeight: null,
@@ -54,6 +56,7 @@ class TimelineLayoutBuilder {
         stageSegments: [],
         rlifeSegments: [],
         eventSegments: [],
+        continentSegments: [],
         oldestMa: 0,
         youngestMa: 0,
         fixedHeight: null,
@@ -79,6 +82,11 @@ class TimelineLayoutBuilder {
       periodSegments: layout.periodSegments,
       eraSegments: layout.eraSegments,
     );
+    final continentsBuilder = TimelineEventsBuilder(definitions: continents);
+    final continentSegments = continentsBuilder.buildEventsRow(
+      periodSegments: layout.periodSegments,
+      eraSegments: layout.eraSegments,
+    );
 
     return TimelineLayoutSnapshot(
       divisions: divisions,
@@ -89,10 +97,10 @@ class TimelineLayoutBuilder {
       stageSegments: layout.stageSegments,
       rlifeSegments: rlifeSegments,
       eventSegments: eventSegments,
+      continentSegments: continentSegments,
       oldestMa: oldestMa,
       youngestMa: youngestMa,
       fixedHeight: layout.fixedHeight,
     );
   }
 }
-

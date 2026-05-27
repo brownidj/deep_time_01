@@ -8,6 +8,7 @@ import 'package:deep_time/domain/models/fossil_range.dart';
 import 'package:deep_time/domain/models/timeline_marker_catalog.dart';
 import 'package:deep_time/domain/models/timeline_palette.dart';
 import 'package:deep_time/domain/repositories/clade_repository.dart';
+import 'package:deep_time/domain/repositories/continent_repository.dart';
 import 'package:deep_time/domain/repositories/geologic_division_repository.dart';
 import 'package:deep_time/domain/repositories/paleontology_repository.dart';
 import 'package:deep_time/domain/repositories/timeline_marker_repository.dart';
@@ -141,6 +142,15 @@ class _FakeCladeRepository implements CladeRepository {
   Future<List<Clade>> fetchAll() async => _clades;
 }
 
+class _FakeContinentRepository implements ContinentRepository {
+  _FakeContinentRepository(this._continents);
+
+  final List<TimelineEventDefinition> _continents;
+
+  @override
+  Future<List<TimelineEventDefinition>> fetchContinents() async => _continents;
+}
+
 extension<T> on Iterable<T> {
   T? get firstOrNull {
     final iterator = this.iterator;
@@ -186,6 +196,7 @@ void main() {
         const TimelineMarkerCatalog(events: [], extinctions: []),
       ),
       cladeRepository: _FakeCladeRepository(const []),
+      continentRepository: _FakeContinentRepository(const []),
     );
 
     final snapshot = await service.loadSnapshot();
@@ -218,6 +229,7 @@ void main() {
         const TimelineMarkerCatalog(events: [], extinctions: []),
       ),
       cladeRepository: _FakeCladeRepository(const []),
+      continentRepository: _FakeContinentRepository(const []),
     );
 
     final results = await service.rangesForDivision(division);

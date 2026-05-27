@@ -233,6 +233,7 @@ TimelineLayoutSnapshot _cascadeLayout() {
     ],
     rlifeSegments: [],
     eventSegments: [],
+    continentSegments: [],
     oldestMa: 600,
     youngestMa: 0,
   );

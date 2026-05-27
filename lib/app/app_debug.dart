@@ -8,6 +8,8 @@ class AppDebug {
   static const double minTimelineScale = 1.0;
   static const double maxTimelineScale = 4.0;
   static double timelineScale = 3.4;
+  static const bool showTimelineConnectorAnchors = false;
+  static const bool logTimelineConnectorGeometry = true;
 
   static bool get enabled => (_appDebug || _overrideEnabled) && kDebugMode;
 
@@ -16,7 +18,7 @@ class AppDebug {
   }
 
   static void log(Object message, {Object? error, StackTrace? stackTrace}) {
-    if (!enabled) {
+    if (!enabled && !logTimelineConnectorGeometry) {
       return;
     }
     debugPrint('[APP_DEBUG] $message');

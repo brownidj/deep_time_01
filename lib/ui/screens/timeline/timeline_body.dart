@@ -160,6 +160,17 @@ class TimelineBody extends StatelessWidget {
     );
     final rlifeWidth =
         minimalHorizontalLabelWidth('Representative life', style: style) * 1.5;
+    const continentLaneCount = 3;
+    const continentLaneGap = 6.0;
+    const continentHorizontalPadding = 12.0;
+    final continentLaneWidth = math.max(
+      3.0,
+      ((style?.fontSize ?? 14.0) * (style?.height ?? 1.0)) + 14.0,
+    );
+    final continentsWidth =
+        (continentLaneCount * continentLaneWidth) +
+        ((continentLaneCount - 1) * continentLaneGap) +
+        (continentHorizontalPadding * 2);
     final maWidth = maColumnWidth(layout, style: maStyle, padding: 20) + 20;
     return TimelineOrientationConfig(
       trackWidths: {
@@ -171,6 +182,7 @@ class TimelineBody extends StatelessWidget {
         TimelineTrack.stage: stageWidth,
         TimelineTrack.rlife: rlifeWidth,
         TimelineTrack.extinctions: extinctionsWidth,
+        TimelineTrack.continents: continentsWidth,
         TimelineTrack.events: rlifeWidth,
       },
     );

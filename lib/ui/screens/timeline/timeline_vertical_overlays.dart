@@ -1,12 +1,14 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:deep_time/app/app_debug.dart';
+import 'package:deep_time/domain/models/timeline_marker_catalog.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_body_metrics.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_body_metrics_overlay.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_min_height_helpers.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_orientation.dart';
-import 'package:deep_time/ui/theme/deep_time_palette.dart';
-import 'package:deep_time/domain/models/timeline_marker_catalog.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_vertical_overlays_helpers.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_vertical_overlays_line.dart';
+import 'package:deep_time/ui/theme/deep_time_palette.dart';
 
 class TimelineVerticalOverlays extends StatelessWidget {
   const TimelineVerticalOverlays({
@@ -34,6 +36,7 @@ class TimelineVerticalOverlays extends StatelessWidget {
           TimelineTrack.stage,
           TimelineTrack.rlife,
           TimelineTrack.extinctions,
+          TimelineTrack.continents,
         };
         final labelStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
           color: DeepTimePalette.darkLabel,
@@ -117,19 +120,40 @@ class TimelineVerticalOverlays extends StatelessWidget {
               (cappedTracks.contains(track) ? 1.0 : scale);
           trackCursor += width;
         }
-        final eraRight =
-            (trackStarts[TimelineTrack.era] ?? 0.0) +
-            (metrics.trackWidth(TimelineTrack.era) *
-                (cappedTracks.contains(TimelineTrack.era) ? 1.0 : scale));
-        final rlifeRight =
-            (trackStarts[TimelineTrack.rlife] ?? 0.0) +
-            (metrics.trackWidth(TimelineTrack.rlife) *
-                (cappedTracks.contains(TimelineTrack.rlife) ? 1.0 : scale));
-        final eventsLeft = trackStarts[TimelineTrack.events] ?? 0.0;
-        final eventMarkerLeft = 6.0;
-        final extLineEnd = rlifeRight;
-        final eventLineEnd = eventsLeft + eventMarkerLeft;
-
+        final eraPeriodBoundaryX = periodStart;
+        final eventAnchorX = trackStarts[TimelineTrack.events] ?? 0.0;
+        final extinctionAnchorX = trackStarts[TimelineTrack.extinctions] ?? 0.0;
+        final eventLines = buildConnectorLines(
+          ys: eventPointYs(
+            metrics.layout.eventSegments,
+            metrics.periodUnits,
+            contentHeight,
+          ),
+          leftBoundaryX: eraPeriodBoundaryX,
+          anchorX: eventAnchorX,
+        );
+        final extinctionLines = buildConnectorLines(
+          ys: extinctionYs(
+            markers.extinctions,
+            metrics.layout.periodSegments,
+            metrics.layout.stageSegments,
+            contentHeight,
+          ),
+          leftBoundaryX: eraPeriodBoundaryX,
+          anchorX: extinctionAnchorX,
+        );
+        if (kDebugMode && AppDebug.logTimelineConnectorGeometry) {
+          AppDebug.log(
+            'Connector geometry: '
+            'periodStart=${periodStart.toStringAsFixed(2)} '
+            'eventAnchor=${eventAnchorX.toStringAsFixed(2)} '
+            'extAnchor=${extinctionAnchorX.toStringAsFixed(2)} '
+            'eventLines=${eventLines.length} '
+            'extLines=${extinctionLines.length} '
+            'firstEventLine=${eventLines.isEmpty ? 'none' : '${eventLines.first.leftX.toStringAsFixed(2)}->${eventLines.first.anchorX.toStringAsFixed(2)} @y ${eventLines.first.y.toStringAsFixed(2)}'} '
+            'firstExtLine=${extinctionLines.isEmpty ? 'none' : '${extinctionLines.first.leftX.toStringAsFixed(2)}->${extinctionLines.first.anchorX.toStringAsFixed(2)} @y ${extinctionLines.first.y.toStringAsFixed(2)}'}',
+          );
+        }
         return IgnorePointer(
           child: Stack(
             children: [
@@ -154,29 +178,40 @@ class TimelineVerticalOverlays extends StatelessWidget {
                   top: y,
                   contentHeight: contentHeight,
                 ),
-              for (final y in eventPointYs(
-                metrics.layout.eventSegments,
-                metrics.periodUnits,
-                contentHeight,
-              ))
+              for (final line in eventLines)
                 OverlayLine(
-                  left: eraRight,
-                  right: eventLineEnd,
-                  top: y,
+                  left: line.leftX,
+                  right: line.anchorX,
+                  top: line.y,
                   color: const Color(0xFFFFEB3B),
                 ),
-              for (final y in extinctionYs(
-                markers.extinctions,
-                metrics.layout.periodSegments,
-                metrics.layout.stageSegments,
-                contentHeight,
-              ))
+              for (final line in extinctionLines)
                 OverlayLine(
-                  left: eraRight,
-                  right: extLineEnd,
-                  top: y,
+                  left: line.leftX,
+                  right: line.anchorX,
+                  top: line.y,
                   color: const Color(0xFFFF6D00),
                 ),
+              if (kDebugMode && AppDebug.showTimelineConnectorAnchors) ...[
+                Positioned(
+                  left: periodStart - 0.5,
+                  top: 0,
+                  bottom: 0,
+                  child: Container(width: 1, color: Colors.cyanAccent),
+                ),
+                Positioned(
+                  left: eventAnchorX - 0.5,
+                  top: 0,
+                  bottom: 0,
+                  child: Container(width: 1, color: Colors.yellowAccent),
+                ),
+                Positioned(
+                  left: extinctionAnchorX - 0.5,
+                  top: 0,
+                  bottom: 0,
+                  child: Container(width: 1, color: Colors.deepOrangeAccent),
+                ),
+              ],
             ],
           ),
         );

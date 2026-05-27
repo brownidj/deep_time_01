@@ -101,6 +101,7 @@ void main() {
           ),
         ],
         eventSegments: const [],
+        continentSegments: const [],
         oldestMa: 100,
         youngestMa: 0,
       );

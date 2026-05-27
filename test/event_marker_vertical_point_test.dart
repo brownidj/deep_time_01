@@ -113,6 +113,7 @@ void main() {
           colorKey: '',
         ),
       ],
+      continentSegments: const [],
       oldestMa: 100,
       youngestMa: 0,
     );

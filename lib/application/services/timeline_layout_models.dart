@@ -91,6 +91,7 @@ class TimelineLayoutSnapshot {
     required this.stageSegments,
     required this.rlifeSegments,
     required this.eventSegments,
+    required this.continentSegments,
     required this.oldestMa,
     required this.youngestMa,
     this.fixedHeight,
@@ -104,6 +105,7 @@ class TimelineLayoutSnapshot {
   final List<TimelineRowSegment> stageSegments;
   final List<TimelineRowSegment> rlifeSegments;
   final List<TimelineEventSegment> eventSegments;
+  final List<TimelineEventSegment> continentSegments;
   final double oldestMa;
   final double youngestMa;
   final double? fixedHeight;
