@@ -201,6 +201,7 @@ class _VerticalExtinctionMarker extends StatelessWidget {
     final textTop = (localY - 8).clamp(0.0, rowHeight - 16);
 
     return Positioned(
+      key: ValueKey('vertical-extinction-marker-${marker.shortLabel}'),
       left: 0,
       right: 0,
       top: rowTop,

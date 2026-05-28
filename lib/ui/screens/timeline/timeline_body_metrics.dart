@@ -38,6 +38,7 @@ class TimelineBodyMetrics {
     required this.trackOrder,
     required this.trackWidths,
     required this.trackStartXs,
+    required this.trackLeadingGaps,
     required this.trackTrailingGaps,
     required this.trackColumnsWidth,
     required this.extinctionLayouts,
@@ -110,10 +111,15 @@ class TimelineBodyMetrics {
         track: config.trackWidthFor(track),
     };
     final trackStartXs = <TimelineTrack, double>{};
+    final trackLeadingGaps = <TimelineTrack, double>{};
     final trackTrailingGaps = <TimelineTrack, double>{};
     var trackCursor = 0.0;
     for (var i = 0; i < resolvedTrackOrder.length; i += 1) {
       final track = resolvedTrackOrder[i];
+      final isFirst = i == 0;
+      final leadingGap = leadingGapForTrack(track, isFirstVisible: isFirst);
+      trackLeadingGaps[track] = leadingGap;
+      trackCursor += leadingGap;
       trackStartXs[track] = trackCursor;
       final isLast = i == resolvedTrackOrder.length - 1;
       final gap = trailingGapForTrack(track, isLastVisible: isLast);
@@ -216,6 +222,7 @@ class TimelineBodyMetrics {
       trackOrder: List.unmodifiable(resolvedTrackOrder),
       trackWidths: Map.unmodifiable(trackWidths),
       trackStartXs: Map.unmodifiable(trackStartXs),
+      trackLeadingGaps: Map.unmodifiable(trackLeadingGaps),
       trackTrailingGaps: Map.unmodifiable(trackTrailingGaps),
       trackColumnsWidth: trackColumnsWidth,
       extinctionLayouts: extinctionLayouts,
@@ -261,6 +268,7 @@ class TimelineBodyMetrics {
   final List<TimelineTrack> trackOrder;
   final Map<TimelineTrack, double> trackWidths;
   final Map<TimelineTrack, double> trackStartXs;
+  final Map<TimelineTrack, double> trackLeadingGaps;
   final Map<TimelineTrack, double> trackTrailingGaps;
   final double trackColumnsWidth;
   final List<ExtinctionMarkerLayout> extinctionLayouts;

@@ -39,5 +39,6 @@ void main() {
 
     expect(layout.eventLineLeft.isFinite, isTrue);
     expect(layout.extinctionLineLeft.isFinite, isTrue);
+    expect(layout.extinctionLineLeft, 0);
   });
 }

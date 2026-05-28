@@ -43,6 +43,8 @@ class TimelineColumnHeaders extends StatelessWidget {
           child: Row(
             children: [
               for (final track in metrics.trackOrder) ...[
+                if (metrics.gapBefore(track) > 0)
+                  SizedBox(width: metrics.gapBefore(track)),
                 SizedBox(
                   width: scaledWidth(track),
                   child: DecoratedBox(
@@ -89,6 +91,7 @@ class TimelineColumnHeaders extends StatelessWidget {
     var scalable = 0.0;
     for (final track in metrics.trackOrder) {
       final width = metrics.trackWidth(track);
+      fixed += metrics.gapBefore(track);
       if (cappedTracks.contains(track)) {
         fixed += width;
       } else {

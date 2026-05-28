@@ -3006,8 +3006,8 @@ eons:
       - name: Guadalupian
         explanation: |
           The Guadalupian Epoch, situated within the Middle Permian Series, spans
-          approximately from 272 to 260 million years ago. Its name derives from the
-          Guadalupe Mountains in west Texas and southeastern New Mexico, where
+          approximately from 273.01 to 259.51 million years ago. Its name derives from
+          the Guadalupe Mountains in west Texas and southeastern New Mexico, where
           characteristic fossil assemblages and distinctive stratigraphic sequences were
           first studied in detail. The Guadalupian encompasses three globally recognized
           stages: the Roadian, Wordian, and Capitanian.
@@ -3029,13 +3029,13 @@ eons:
           mechanisms of end-Permian biotic turnovers and broader Phanerozoic extinction
           dynamics.
         rank: epoch
-        start_ma: 268.9
-        uncertainty_ma: 0.4
+        start_ma: 273.01
+        uncertainty_ma: 0.14
         children:
         - name: Roadian
           explanation: |
             The Roadian represents the earliest stage of the Middle Permian Epoch,
-            spanning approximately from 273.01 to 272.95 million years ago, according to
+            spanning approximately from 273.01 to 266.9 million years ago, according to
             the International Chronostratigraphic Chart.
 
             This stage derives its name from the Road Canyon Formation in West Texas,
@@ -3063,13 +3063,13 @@ eons:
             complex biotic recoveries and radiations preceding the terminal Permian mass
             extinction.
           rank: stage
-          start_ma: 268.9
-          uncertainty_ma: 0.4
+          start_ma: 273.01
+          uncertainty_ma: 0.14
           color: "#965F80"
         - name: Wordian
           explanation: |
             The Wordian stage constitutes a formal geochronological interval within the
-            Middle Permian epoch, spanning approximately from 268.8 to 265.1 million
+            Middle Permian epoch, spanning approximately from 266.9 to 264.28 million
             years ago. It succeeds the Roadian stage and precedes the Capitanian,
             representing the second subdivision of the Guadalupian series. The Wordian
             derives its name from the Word Formation, a sequence of sedimentary deposits
@@ -3093,14 +3093,14 @@ eons:
             understanding of evolutionary patterns and extinction mechanisms during the
             late Paleozoic Era.
           rank: stage
-          start_ma: 264.28
-          uncertainty_ma: 0.16
+          start_ma: 266.9
+          uncertainty_ma: 0.4
           color: "#8F5D87"
         - name: Capitanian
           explanation: |
             The Capitanian is a geologic stage within the Middle Permian epoch,
             specifically situated in the Guadalupian series, spanning approximately from
-            265.1 to 259.1 million years ago. It derives its name from the Guadalupe
+            264.28 to 259.51 million years ago. It derives its name from the Guadalupe
             Mountains of Texas and New Mexico, notably from the Capitan Reef, a
             fossil-rich carbonate platform that provides a well-preserved stratigraphic
             record crucial for correlating marine sediments globally.
@@ -3128,14 +3128,14 @@ eons:
             deep time, critical for reconstructing Earth system responses to sustained
             environmental stress.
           rank: stage
-          start_ma: 259.51
-          uncertainty_ma: 0.21
+          start_ma: 264.28
+          uncertainty_ma: 0.16
           color: "#8B5D8A"
         color: "#925E84"
       - name: Lopingian
         explanation: |
           The Lopingian epoch, constituting the terminal subdivision of the Permian
-          period, spans approximately 259.1 to 251.9 million years ago. Its nomenclature
+          period, spans approximately 259.51 to 251.902 million years ago. Its nomenclature
           derives from the Loping Formation of South China, where characteristic
           stratigraphic sequences typifying this epoch were first extensively studied
           and formally defined. As the uppermost subdivision within the Permian, the
@@ -3168,7 +3168,7 @@ eons:
         - name: Wuchiapingian
           explanation: |
             The Wuchiapingian is a formal stage within the Late Permian epoch, spanning
-            approximately 259.9 to 254.2 million years ago. It directly follows the
+            approximately 259.51 to 254.14 million years ago. It directly follows the
             Capitanian and precedes the Changhsingian stages.
 
             This stage corresponds broadly to the latter part of the
@@ -3198,14 +3198,14 @@ eons:
             Consequently, it holds profound implications for refining models of mass
             extinction causality and recovery trajectories.
           rank: stage
-          start_ma: 254.14
-          uncertainty_ma: 0.07
+          start_ma: 259.51
+          uncertainty_ma: 0.21
           color: "#815A94"
         - name: Changhsingian
           explanation: |
             The Changhsingian stage constitutes the terminal subdivision of the Permian
             Period, specifically the uppermost stage of the Lopingian Epoch, spanning
-            approximately 254.14 to 251.9 million years ago. It immediately precedes the
+            approximately 254.14 to 251.902 million years ago. It immediately precedes the
             Permian-Triassic boundary, making it critically significant in stratigraphy
             and palaeobiology.
 
@@ -3232,8 +3232,8 @@ eons:
             end-Permian biosphere destabilization and the subsequent Triassic biotic
             radiation.
           rank: stage
-          start_ma: 251.902
-          uncertainty_ma: 0.024
+          start_ma: 254.14
+          uncertainty_ma: 0.07
           color: "#7F5A95"
         color: "#855B90"
       color: "#A46273"

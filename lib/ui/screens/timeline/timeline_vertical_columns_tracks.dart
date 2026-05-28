@@ -145,7 +145,8 @@ Widget _buildVerticalTrack({
                       (parent) => parent.endMa,
                       (parent) => parent.id,
                     )
-                  : minHeightForStageLabel(segment, style),
+                  : (minHeights.stageHeights[segment.id] ??
+                        minHeightForStageLabel(segment, style)),
       );
     case TimelineTrack.continents:
       return _VerticalEventsColumn(
@@ -180,7 +181,7 @@ Widget _buildVerticalTrack({
             ),
           ],
         ),
-        horizontalPadding: 12,
+        horizontalPadding: 0,
         laneGap: 6,
         showPoints: false,
         fillLaneWidths: true,

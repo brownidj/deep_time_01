@@ -20,20 +20,32 @@ TimelineVerticalColumnsLayout buildVerticalColumnsLayout({
 }) {
   final trackStarts = <TimelineTrack, double>{};
   var trackCursor = 0.0;
-  for (final track in trackOrder) {
+  for (var i = 0; i < trackOrder.length; i += 1) {
+    final track = trackOrder[i];
+    final isFirst = i == 0;
+    trackCursor += leadingGapForTrack(track, isFirstVisible: isFirst);
     trackStarts[track] = trackCursor;
     final isLast = track == trackOrder.last;
     trackCursor +=
         scaledWidth(track) + trailingGapForTrack(track, isLastVisible: isLast);
   }
-  final eraRight =
-      (trackStarts[TimelineTrack.era] ?? 0.0) + scaledWidth(TimelineTrack.era);
-  final rlifeRight =
-      (trackStarts[TimelineTrack.rlife] ?? 0.0) +
-      scaledWidth(TimelineTrack.rlife);
+  double trackRight(TimelineTrack track) =>
+      (trackStarts[track] ?? 0.0) + scaledWidth(track);
+
+  double previousTrackRight(TimelineTrack track) {
+    final index = trackOrder.indexOf(track);
+    if (index <= 0) {
+      return trackStarts[track] ?? 0.0;
+    }
+    final previous = trackOrder[index - 1];
+    return trackRight(previous);
+  }
+
+  final eraRight = trackRight(TimelineTrack.era);
   final extLeft = trackStarts[TimelineTrack.extinctions] ?? 0.0;
   final eventsLeft = trackStarts[TimelineTrack.events] ?? 0.0;
-  final extinctionLineLeft = rlifeRight - extLeft;
+  final extinctionLineLeft =
+      previousTrackRight(TimelineTrack.extinctions) - extLeft;
   final eventLineLeft = eraRight - eventsLeft;
   return TimelineVerticalColumnsLayout(
     useFixedHeights: useFixedHeights,

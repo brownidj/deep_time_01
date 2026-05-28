@@ -167,6 +167,20 @@ class _TimelineSettingsDialogState extends State<TimelineSettingsDialog> {
                 );
               },
             ),
+            _VisibilitySwitchTile(
+              title: 'Representative life',
+              value: _localVisibleTracks.contains(TimelineTrack.rlife),
+              onChanged: (value) {
+                setState(() {
+                  if (value) {
+                    _localVisibleTracks.add(TimelineTrack.rlife);
+                  } else {
+                    _localVisibleTracks.remove(TimelineTrack.rlife);
+                  }
+                });
+                widget.onTrackVisibilityChanged(TimelineTrack.rlife, value);
+              },
+            ),
           ],
         ),
       ),

@@ -1,5 +1,6 @@
 import 'package:deep_time/domain/models/paleo_ecology_entry.dart';
 import 'package:deep_time/domain/repositories/paleo_ecology_repository.dart';
+import 'package:deep_time/domain/models/geologic_rank.dart';
 import 'package:flutter/services.dart';
 import 'package:yaml/yaml.dart';
 
@@ -11,8 +12,12 @@ class YamlPaleoEcologyRepository implements PaleoEcologyRepository {
   @override
   Future<List<PaleoEcologyEntry>> fetchEntries() async {
     final yamlText = await rootBundle.loadString(assetPath);
+    return parseEntries(yamlText);
+  }
+
+  List<PaleoEcologyEntry> parseEntries(String yamlText) {
     final document = loadYaml(yamlText) as YamlMap;
-    final list = document['palaeo_ecology'];
+    final list = document['paleo_ecology'];
     if (list is! YamlList) {
       return const [];
     }
@@ -20,15 +25,53 @@ class YamlPaleoEcologyRepository implements PaleoEcologyRepository {
   }
 
   PaleoEcologyEntry _parseEntry(YamlMap map) {
+    final metrics = _readMetrics(map);
     return PaleoEcologyEntry(
-      stage: _requireString(map, 'stage'),
-      avgTempDeltaC: _requireDouble(map, 'avg_temp_delta_c'),
-      avgHumidityDeltaPercent: _requireDouble(
-        map,
-        'avg_humidity_delta_percent',
-      ),
-      avgCo2Ppm: _requireDouble(map, 'avg_co2_ppm'),
-      seaLevelDeltaM: _requireDouble(map, 'sea_level_delta_m'),
+      rank: _requireRank(map),
+      name: _requireString(map, 'name'),
+      path: _requireStringList(map, 'path'),
+      avgTempDeltaC: metrics.avgTempDeltaC,
+      avgHumidityDeltaPercent: metrics.avgHumidityDeltaPercent,
+      avgCo2Ppm: metrics.avgCo2Ppm,
+      seaLevelDeltaM: metrics.seaLevelDeltaM,
+    );
+  }
+
+  GeologicRank _requireRank(YamlMap map) {
+    final value = _requireString(map, 'rank');
+    for (final rank in GeologicRank.values) {
+      if (rank.name == value) {
+        return rank;
+      }
+    }
+    throw StateError('Invalid rank "$value" in $assetPath');
+  }
+
+  List<String> _requireStringList(YamlMap map, String key) {
+    final value = map[key];
+    if (value is! YamlList) {
+      throw StateError('Missing required string list "$key" in $assetPath');
+    }
+    final out = [
+      for (final item in value)
+        if (item is String && item.trim().isNotEmpty) item.trim(),
+    ];
+    if (out.length != value.length || out.isEmpty) {
+      throw StateError('Invalid string list "$key" in $assetPath');
+    }
+    return out;
+  }
+
+  _PaleoEcologyMetrics _readMetrics(YamlMap map) {
+    final temp = _readDouble(map['avg_temp_delta_c']);
+    final humidity = _readDouble(map['avg_humidity_delta_percent']);
+    final co2 = _readDouble(map['avg_co2_ppm']);
+    final seaLevel = _readDouble(map['sea_level_delta_m']);
+    return _PaleoEcologyMetrics(
+      avgTempDeltaC: temp,
+      avgHumidityDeltaPercent: humidity,
+      avgCo2Ppm: co2,
+      seaLevelDeltaM: seaLevel,
     );
   }
 
@@ -40,14 +83,6 @@ class YamlPaleoEcologyRepository implements PaleoEcologyRepository {
     throw StateError('Missing required string "$key" in $assetPath');
   }
 
-  double _requireDouble(YamlMap map, String key) {
-    final value = _readDouble(map[key]);
-    if (value == null) {
-      throw StateError('Missing required number "$key" in $assetPath');
-    }
-    return value;
-  }
-
   double? _readDouble(Object? value) {
     if (value is num) {
       return value.toDouble();
@@ -57,4 +92,18 @@ class YamlPaleoEcologyRepository implements PaleoEcologyRepository {
     }
     return null;
   }
+}
+
+class _PaleoEcologyMetrics {
+  const _PaleoEcologyMetrics({
+    required this.avgTempDeltaC,
+    required this.avgHumidityDeltaPercent,
+    required this.avgCo2Ppm,
+    required this.seaLevelDeltaM,
+  });
+
+  final double? avgTempDeltaC;
+  final double? avgHumidityDeltaPercent;
+  final double? avgCo2Ppm;
+  final double? seaLevelDeltaM;
 }

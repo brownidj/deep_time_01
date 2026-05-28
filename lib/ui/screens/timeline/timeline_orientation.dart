@@ -32,28 +32,33 @@ const List<TimelineTrack> kDefaultTimelineTrackOrder = <TimelineTrack>[
 
 const double kTimelineStandardInterColumnGap = 10.0;
 
-double trailingGapForTrack(TimelineTrack track, {required bool isLastVisible}) {
-  if (isLastVisible) {
+double leadingGapForTrack(TimelineTrack track, {required bool isFirstVisible}) {
+  if (isFirstVisible) {
     return 0.0;
   }
   switch (track) {
+    case TimelineTrack.continents:
+    case TimelineTrack.paleoEcology:
+    case TimelineTrack.rlife:
+      return kTimelineStandardInterColumnGap;
+    case TimelineTrack.ma:
     case TimelineTrack.eon:
     case TimelineTrack.era:
     case TimelineTrack.period:
     case TimelineTrack.epoch:
-      return 0.0;
-    case TimelineTrack.ma:
-      return 0.0;
     case TimelineTrack.stage:
-    case TimelineTrack.continents:
-    case TimelineTrack.paleoEcology:
-      return kTimelineStandardInterColumnGap;
-    case TimelineTrack.rlife:
     case TimelineTrack.extinctions:
     case TimelineTrack.events:
     case TimelineTrack.clades:
       return 0.0;
   }
+}
+
+double trailingGapForTrack(TimelineTrack track, {required bool isLastVisible}) {
+  if (isLastVisible) {
+    return 0.0;
+  }
+  return 0.0;
 }
 
 @immutable

@@ -89,13 +89,13 @@ Phanerozoic                           538.8    0.6  Eon
     │       │   ├── Sakmarian        293.52   0.17  Stage
     │       │   ├── Artinskian        290.1   0.26  Stage
     │       │   └── Kungurian         283.3    0.6  Stage
-    │       ├── Guadalupian           268.9    0.4  Epoch
-    │       │   ├── Roadian           268.9    0.4  Stage
-    │       │   ├── Wordian          264.28   0.16  Stage
-    │       │   └── Capitanian       259.51   0.21  Stage
+    │       ├── Guadalupian          273.01   0.14  Epoch
+    │       │   ├── Roadian          273.01   0.14  Stage
+    │       │   ├── Wordian           266.9    0.4  Stage
+    │       │   └── Capitanian       264.28   0.16  Stage
     │       └── Lopingian            259.51   0.21  Epoch
-    │           ├── Wuchiapingian    254.14   0.07  Stage
-    │           └── Changhsingian   251.902  0.024  Stage
+    │           ├── Wuchiapingian    259.51   0.21  Stage
+    │           └── Changhsingian    254.14   0.07  Stage
     ├── Mesozoic                     252.17         Era
     │   ├── Triassic                251.902  0.024  Period
     │   │   ├── Lower               251.902  0.024  Epoch

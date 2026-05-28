@@ -1,5 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:deep_time/application/services/timeline_layout_models.dart';
+import 'package:deep_time/domain/models/geologic_division.dart';
+import 'package:deep_time/domain/models/paleo_ecology_entry.dart';
+import 'package:deep_time/ui/screens/timeline/timeline_min_height_helpers_paleo.dart';
 
 double minHeightForStageLabel(
   TimelineRowSegment segment,
@@ -70,15 +73,76 @@ Map<int, double> buildStageMinHeights(
   List<TimelineRowSegment> stages,
   TextStyle? style, {
   double verticalPadding = 4,
+  List<GeologicDivision> divisions = const [],
+  List<PaleoEcologyEntry> paleoEcology = const [],
+  double paleoWidth = 0,
+  TextStyle? paleoStyle,
 }) {
+  final divisionById = {
+    for (final division in divisions) division.id: division,
+  };
+  final entriesByKey = {
+    for (final entry in paleoEcology) entry.lookupKey: entry,
+  };
   return {
     for (final segment in stages)
-      segment.id: minHeightForStageLabel(
+      segment.id: _stageMinHeight(
         segment,
         style,
         verticalPadding: verticalPadding,
+        divisionById: divisionById,
+        entriesByKey: entriesByKey,
+        paleoWidth: paleoWidth,
+        paleoStyle: paleoStyle ?? style,
       ),
   };
+}
+
+double _stageMinHeight(
+  TimelineRowSegment segment,
+  TextStyle? style, {
+  required double verticalPadding,
+  required Map<int, GeologicDivision> divisionById,
+  required Map<String, PaleoEcologyEntry> entriesByKey,
+  required double paleoWidth,
+  required TextStyle? paleoStyle,
+}) {
+  final labelHeight = minHeightForStageLabel(
+    segment,
+    style,
+    verticalPadding: verticalPadding,
+  );
+  if (segment.isGap || paleoWidth <= 0) {
+    return labelHeight;
+  }
+  final path = _pathForDivision(segment.id, divisionById) ?? [segment.label];
+  final key = PaleoEcologyEntry.lookupKeyFor(rank: segment.rank, path: path);
+  final entry = entriesByKey[key];
+  final summary = entry == null ? null : paleoEcologySummaryText(entry);
+  if (summary == null) {
+    return labelHeight;
+  }
+  final painter = TextPainter(
+    text: TextSpan(text: summary, style: paleoStyle),
+    textDirection: TextDirection.ltr,
+  )..layout(maxWidth: (paleoWidth - 22).clamp(1.0, double.infinity));
+  return labelHeight > painter.height + (verticalPadding * 2)
+      ? labelHeight
+      : painter.height + (verticalPadding * 2);
+}
+
+List<String>? _pathForDivision(
+  int id,
+  Map<int, GeologicDivision> divisionById,
+) {
+  final path = <String>[];
+  var current = divisionById[id];
+  while (current != null) {
+    path.add(current.name);
+    final parentId = current.parentId;
+    current = parentId == null ? null : divisionById[parentId];
+  }
+  return path.isEmpty ? null : path.reversed.toList(growable: false);
 }
 
 Map<int, double> buildEpochHeights(

@@ -24,7 +24,7 @@ void main() {
           onCladeViewModeChanged: (_) {},
           onCladeCategoryChanged: (_) {},
           visibleTracks: {...kDefaultTimelineTrackOrder},
-          onTrackVisibilityChanged: (_, __) {},
+          onTrackVisibilityChanged: (_, _) {},
         ),
       ),
     );

@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:deep_time/application/services/timeline_layout_models.dart';
+import 'package:deep_time/domain/models/paleo_ecology_entry.dart';
+import 'package:deep_time/ui/screens/timeline/timeline_min_height_helpers_calculations.dart';
 
 const double _fallbackWidth = 40.0;
 
@@ -114,23 +116,30 @@ double maxLabelWidth(
 double minScrollHeightForStages(
   TimelineLayoutSnapshot layout, {
   TextStyle? style,
+  List<PaleoEcologyEntry> paleoEcology = const [],
+  double paleoWidth = 0,
+  TextStyle? paleoStyle,
   double verticalPadding = 4,
 }) {
   final segments = layout.stageSegments;
   if (segments.isEmpty) {
     return 0.0;
   }
+  final stageHeights = buildStageMinHeights(
+    segments,
+    style,
+    verticalPadding: verticalPadding,
+    divisions: layout.divisions,
+    paleoEcology: paleoEcology,
+    paleoWidth: paleoWidth,
+    paleoStyle: paleoStyle ?? style,
+  );
   var total = 0.0;
   for (final segment in segments) {
     if (segment.isGap || segment.label.trim().isEmpty) {
       continue;
     }
-    final painter = TextPainter(
-      text: TextSpan(text: segment.label, style: style),
-      textDirection: TextDirection.ltr,
-      maxLines: 1,
-    )..layout();
-    total += painter.height + (verticalPadding * 2);
+    total += stageHeights[segment.id] ?? 0.0;
   }
   return total;
 }

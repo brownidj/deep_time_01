@@ -131,41 +131,39 @@ class _MaLabelWidget extends StatelessWidget {
     final uncertaintyPainter = label.uncertaintyText == null
         ? null
         : (TextPainter(
-            text: TextSpan(text: label.uncertaintyText, style: uncertaintyStyle),
+            text: TextSpan(
+              text: label.uncertaintyText,
+              style: uncertaintyStyle,
+            ),
             textDirection: TextDirection.ltr,
             maxLines: 1,
           )..layout());
-    final blockHeight = painter.height + (uncertaintyPainter == null ? 0 : uncertaintyPainter.height + 1);
+    final blockHeight =
+        painter.height +
+        (uncertaintyPainter == null ? 0 : uncertaintyPainter.height + 1);
     final top = (label.y - (blockHeight / 2)).clamp(0.0, height - blockHeight);
     return Positioned(
       top: top,
       width: width,
-      child: Padding(
-        padding: const EdgeInsets.only(right: 8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(label.text, style: style, textAlign: TextAlign.right),
-            if (label.uncertaintyText != null)
-              Text(
-                label.uncertaintyText!,
-                style: uncertaintyStyle,
-                textAlign: TextAlign.right,
-              ),
-          ],
-        ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Text(label.text, style: style, textAlign: TextAlign.right),
+          if (label.uncertaintyText != null)
+            Text(
+              label.uncertaintyText!,
+              style: uncertaintyStyle,
+              textAlign: TextAlign.right,
+            ),
+        ],
       ),
     );
   }
 }
 
 class _MaLabel {
-  const _MaLabel({
-    required this.text,
-    required this.y,
-    this.uncertaintyText,
-  });
+  const _MaLabel({required this.text, required this.y, this.uncertaintyText});
 
   final String text;
   final double y;

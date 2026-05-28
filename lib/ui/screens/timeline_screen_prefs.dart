@@ -31,6 +31,7 @@ mixin _TimelineScreenPreferences on State<TimelineScreen> {
       final storedPaleoEcologyVisible = prefs.getBool(
         _paleoEcologyColumnVisibleKey,
       );
+      final storedRLifeVisible = prefs.getBool(_rlifeColumnVisibleKey);
       if (!mounted) {
         return;
       }
@@ -54,6 +55,13 @@ mixin _TimelineScreenPreferences on State<TimelineScreen> {
           final nextVisible = Set<TimelineTrack>.from(_visibleTracks);
           if (!storedPaleoEcologyVisible) {
             nextVisible.remove(TimelineTrack.paleoEcology);
+          }
+          _visibleTracks = nextVisible;
+        }
+        if (storedRLifeVisible != null) {
+          final nextVisible = Set<TimelineTrack>.from(_visibleTracks);
+          if (!storedRLifeVisible) {
+            nextVisible.remove(TimelineTrack.rlife);
           }
           _visibleTracks = nextVisible;
         }
@@ -117,6 +125,9 @@ mixin _TimelineScreenPreferences on State<TimelineScreen> {
             }
             if (track == TimelineTrack.paleoEcology) {
               _savePaleoEcologyColumnVisible(visible);
+            }
+            if (track == TimelineTrack.rlife) {
+              _saveRLifeColumnVisible(visible);
             }
           },
         );

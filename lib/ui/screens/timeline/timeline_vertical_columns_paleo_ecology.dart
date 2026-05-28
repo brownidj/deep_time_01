@@ -16,7 +16,6 @@ class _VerticalPaleoEcologyColumn extends StatelessWidget {
   final List<PaleoEcologyEntry> entries;
   final DeepTimePalette palette;
   final List<double> stageHeights;
-  static const double _rightGutter = 10.0;
 
   @override
   Widget build(BuildContext context) {
@@ -28,17 +27,7 @@ class _VerticalPaleoEcologyColumn extends StatelessWidget {
       stageHeights: stageHeights,
       columnHeight: height,
     );
-    final entriesByStage = {for (final entry in entries) entry.stage: entry};
-    final entriesByStageNormalized = {
-      for (final entry in entries) _normalizeStageKey(entry.stage): entry,
-    };
-    PaleoEcologyEntry? resolveEntry(String? stageLabel) {
-      if (stageLabel == null || stageLabel.trim().isEmpty) {
-        return null;
-      }
-      return entriesByStage[stageLabel] ??
-          entriesByStageNormalized[_normalizeStageKey(stageLabel)];
-    }
+    final entriesByKey = {for (final entry in entries) entry.lookupKey: entry};
 
     return SizedBox(
       width: width,
@@ -49,8 +38,8 @@ class _VerticalPaleoEcologyColumn extends StatelessWidget {
             _buildBlock(
               context,
               block: block,
-              width: width - _rightGutter,
-              entry: resolveEntry(block.stageLabel),
+              width: width,
+              entry: entriesByKey[block.sourceKey],
               palette: palette,
             ),
         ],
@@ -70,25 +59,35 @@ class _VerticalPaleoEcologyColumn extends StatelessWidget {
       fontWeight: FontWeight.w600,
       height: 1.15,
     );
-    final isVisibleAgeBlock = block.stageLabel != null;
-    final summary = entry == null
-        ? null
-        : 'Temp:\u00A0${_withSign(entry.avgTempDeltaC)}\u00B0C; '
-              'CO2\u00A0${_formatUnsigned(entry.avgCo2Ppm)}ppm; '
-              'RH:\u00A0${_withSign(entry.avgHumidityDeltaPercent)}%; '
-              'SL\u00A0${_withSign(entry.seaLevelDeltaM)}m';
-    final backgroundColor = !isVisibleAgeBlock
+    final isVisibleBlock = block.sourceKey != null;
+    final summary = entry == null ? null : paleoEcologySummaryText(entry);
+    if (entry != null &&
+        const {
+          'Greenlandian',
+          'Northgrippian',
+          'Meghalayan',
+        }.contains(entry.name)) {
+      AppDebug.log(
+        'Paleo ecology block ${entry.name}: '
+        'height=${block.height.toStringAsFixed(2)} '
+        'range=${block.startMa}->${block.endMa} summary=$summary',
+      );
+    }
+    final backgroundColor = !isVisibleBlock
         ? Colors.transparent
         : block.colorKey == null
         ? DeepTimePalette.timelineGapBackground
         : _safeColorForKey(block.colorKey!, palette);
     return SizedBox(
+      key: block.sourceKey == null
+          ? null
+          : ValueKey('paleo-ecology-block-${block.sourceKey}'),
       width: width,
       height: block.height,
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: backgroundColor,
-          border: isVisibleAgeBlock
+          border: isVisibleBlock
               ? Border(
                   right: BorderSide(color: DeepTimePalette.periodDivider),
                   bottom: BorderSide(color: DeepTimePalette.periodDivider),
@@ -114,47 +113,19 @@ class _VerticalPaleoEcologyColumn extends StatelessWidget {
   }
 }
 
-String _normalizeStageKey(String value) {
-  final lower = value.toLowerCase().trim();
-  return lower.replaceAll(RegExp(r'[^a-z0-9]+'), '');
-}
-
-String _formatUnsigned(double value) {
-  final magnitude = value.abs();
-  if (magnitude == magnitude.roundToDouble()) {
-    return magnitude.toStringAsFixed(0);
-  }
-  return magnitude
-      .toStringAsFixed(2)
-      .replaceFirst(RegExp(r'0+$'), '')
-      .replaceFirst(RegExp(r'\.$'), '');
-}
-
-String _withSign(double value) {
-  final sign = value >= 0 ? '+' : '-';
-  final magnitude = value.abs();
-  final rounded = magnitude == magnitude.roundToDouble()
-      ? magnitude.toStringAsFixed(0)
-      : magnitude
-            .toStringAsFixed(2)
-            .replaceFirst(RegExp(r'0+$'), '')
-            .replaceFirst(RegExp(r'\.$'), '');
-  return '$sign$rounded';
-}
-
 class _PaleoBlock {
   const _PaleoBlock({
     required this.startMa,
     required this.endMa,
     required this.height,
-    required this.stageLabel,
+    required this.sourceKey,
     required this.colorKey,
   });
 
   final double startMa;
   final double endMa;
   final double height;
-  final String? stageLabel;
+  final String? sourceKey;
   final String? colorKey;
 }
 
@@ -163,14 +134,14 @@ class _RangeRef {
     required this.startMa,
     required this.endMa,
     required this.isGap,
-    this.stageLabel,
+    this.sourceKey,
     this.colorKey,
   });
 
   final double startMa;
   final double endMa;
   final bool isGap;
-  final String? stageLabel;
+  final String? sourceKey;
   final String? colorKey;
 
   bool contains(double ma) => ma <= startMa && ma >= endMa;
@@ -181,13 +152,32 @@ List<_PaleoBlock> _buildBlocks(
   required List<double> stageHeights,
   required double columnHeight,
 }) {
+  final divisionById = {
+    for (final division in layout.divisions) division.id: division,
+  };
+  String? sourceKeyForRow(TimelineRowSegment segment) {
+    if (segment.isGap) {
+      return null;
+    }
+    final path = _pathForDivision(segment.id, divisionById) ?? [segment.label];
+    return PaleoEcologyEntry.lookupKeyFor(rank: segment.rank, path: path);
+  }
+
+  String? sourceKeyForBand(TimelineBandSegment segment) {
+    if (segment.isGap) {
+      return null;
+    }
+    final path = _pathForDivision(segment.id, divisionById) ?? [segment.label];
+    return PaleoEcologyEntry.lookupKeyFor(rank: segment.rank, path: path);
+  }
+
   final stageRanges = [
     for (final segment in layout.stageSegments)
       _RangeRef(
         startMa: segment.startMa,
         endMa: segment.endMa,
         isGap: segment.isGap,
-        stageLabel: segment.isGap ? null : segment.label,
+        sourceKey: sourceKeyForRow(segment),
         colorKey: segment.isGap ? null : segment.colorKey,
       ),
   ];
@@ -199,6 +189,7 @@ List<_PaleoBlock> _buildBlocks(
           startMa: segment.startMa,
           endMa: segment.endMa,
           isGap: segment.isGap,
+          sourceKey: sourceKeyForRow(segment),
           colorKey: segment.isGap ? null : segment.colorKey,
         ),
     ],
@@ -208,6 +199,7 @@ List<_PaleoBlock> _buildBlocks(
           startMa: segment.startMa,
           endMa: segment.endMa,
           isGap: segment.isGap,
+          sourceKey: sourceKeyForRow(segment),
           colorKey: segment.isGap ? null : segment.colorKey,
         ),
     ],
@@ -217,6 +209,7 @@ List<_PaleoBlock> _buildBlocks(
           startMa: segment.startMa,
           endMa: segment.endMa,
           isGap: segment.isGap,
+          sourceKey: sourceKeyForBand(segment),
           colorKey: segment.isGap ? null : segment.colorKey,
         ),
     ],
@@ -226,6 +219,7 @@ List<_PaleoBlock> _buildBlocks(
           startMa: segment.startMa,
           endMa: segment.endMa,
           isGap: segment.isGap,
+          sourceKey: sourceKeyForBand(segment),
           colorKey: segment.isGap ? null : segment.colorKey,
         ),
     ],
@@ -262,26 +256,26 @@ List<_PaleoBlock> _buildBlocks(
     if (span <= 0) {
       continue;
     }
+    final mid = stage.startMa - (span / 2.0);
+    final source = firstNonGapAt(mid);
     if (stage.isGap) {
       blocks.add(
         _PaleoBlock(
           startMa: stage.startMa,
           endMa: stage.endMa,
           height: blockHeight,
-          stageLabel: null,
-          colorKey: null,
+          sourceKey: source?.sourceKey,
+          colorKey: source?.colorKey,
         ),
       );
       continue;
     }
-    final mid = stage.startMa - (span / 2.0);
-    final source = firstNonGapAt(mid);
     blocks.add(
       _PaleoBlock(
         startMa: stage.startMa,
         endMa: stage.endMa,
         height: blockHeight,
-        stageLabel: stage.label,
+        sourceKey: source?.sourceKey,
         colorKey: source?.colorKey ?? stage.colorKey,
       ),
     );

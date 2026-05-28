@@ -18,6 +18,7 @@ class _TimelineScreenState extends State<TimelineScreen>
   List<String> _cladeRepresentativeIds = const [];
   String _cladeSearchQuery = '';
   String? _cladeSpotlightId;
+  @override
   Set<TimelineTrack> _visibleTracks = Set<TimelineTrack>.from(
     kDefaultTimelineTrackOrder,
   );

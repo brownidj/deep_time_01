@@ -1,6 +1,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:deep_time/application/services/timeline_layout_models.dart';
+import 'package:deep_time/domain/models/geologic_division.dart';
+import 'package:deep_time/domain/models/paleo_ecology_entry.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_min_height_helpers_calculations.dart';
+export 'package:deep_time/ui/screens/timeline/timeline_min_height_helpers_paleo.dart';
 export 'package:deep_time/ui/screens/timeline/timeline_min_height_helpers_calculations.dart';
 
 class MinHeightMaps {
@@ -26,12 +29,20 @@ MinHeightMaps buildMinHeightMaps(
   TextStyle? periodStyle,
   TextStyle? eraStyle,
   TextStyle? eonStyle,
+  List<GeologicDivision> divisions = const [],
+  List<PaleoEcologyEntry> paleoEcology = const [],
+  double paleoWidth = 0,
+  TextStyle? paleoStyle,
   double verticalPadding = 4,
 }) {
   final stageHeights = buildStageMinHeights(
     layout.stageSegments,
     stageStyle,
     verticalPadding: verticalPadding,
+    divisions: divisions,
+    paleoEcology: paleoEcology,
+    paleoWidth: paleoWidth,
+    paleoStyle: paleoStyle,
   );
   final epochHeights = buildEpochHeights(
     layout.epochSegments,

@@ -3,331 +3,109 @@ paleo_ecology:
   name: Hadean
   path:
   - Hadean
-  avg_temp_delta_c: +80.0
-  avg_humidity_delta_percent: null
-  avg_co2_ppm: 100000
-  sea_level_delta_m: null
-  icehouse_greenhouse_state: hothouse
-  confidence: very_low
-  note: Hadean environmental values are highly speculative; Earth was forming, cooling, and
-    undergoing intense impacts and volcanism.
-  sources:
-  - Early Earth atmosphere and ocean formation synthesis
-  - Hadean climate synthesis
 - rank: eon
   name: Archean
   path:
   - Archean
-  avg_temp_delta_c: +20.0
-  avg_humidity_delta_percent: null
-  avg_co2_ppm: 50000
-  sea_level_delta_m: null
-  icehouse_greenhouse_state: hothouse
-  confidence: very_low
-  note: Archean estimates are highly uncertain; high greenhouse gas levels probably helped
-    compensate for the faint young Sun.
-  sources:
-  - Archean climate synthesis
-  - Faint young Sun palaeoclimate synthesis
 - rank: era
   name: Eoarchean
   path:
   - Archean
   - Eoarchean
-  avg_temp_delta_c: +30.0
-  avg_humidity_delta_percent: null
-  avg_co2_ppm: 80000
-  sea_level_delta_m: null
-  icehouse_greenhouse_state: hothouse
-  confidence: very_low
-  note: Eoarchean conditions are very poorly constrained; values represent an extremely broad
-    early Earth approximation.
-  sources:
-  - Archean climate synthesis
-  - Early Earth atmosphere and ocean formation synthesis
 - rank: era
   name: Paleoarchean
   path:
   - Archean
   - Paleoarchean
-  avg_temp_delta_c: +25.0
-  avg_humidity_delta_percent: null
-  avg_co2_ppm: 60000
-  sea_level_delta_m: null
-  icehouse_greenhouse_state: hothouse
-  confidence: very_low
-  note: Paleoarchean climate estimates are highly uncertain and represent broad greenhouse
-    conditions rather than precise stage averages.
-  sources:
-  - Archean climate synthesis
-  - Faint young Sun palaeoclimate synthesis
 - rank: era
   name: Mesoarchean
   path:
   - Archean
   - Mesoarchean
-  avg_temp_delta_c: +20.0
-  avg_humidity_delta_percent: null
-  avg_co2_ppm: 40000
-  sea_level_delta_m: null
-  icehouse_greenhouse_state: hothouse
-  confidence: very_low
-  note: Mesoarchean values are broad approximations for a warm greenhouse Earth with limited
-    continental land area.
-  sources:
-  - Archean climate synthesis
-  - Faint young Sun palaeoclimate synthesis
 - rank: era
   name: Neoarchean
   path:
   - Archean
   - Neoarchean
-  avg_temp_delta_c: +15.0
-  avg_humidity_delta_percent: null
-  avg_co2_ppm: 25000
-  sea_level_delta_m: null
-  icehouse_greenhouse_state: greenhouse
-  confidence: very_low
-  note: Neoarchean values are approximate; late Archean climate may have included cooler intervals
-    and early glaciation.
-  sources:
-  - Archean climate synthesis
-  - Late Archean glaciation synthesis
 - rank: eon
   name: Proterozoic
   path:
   - Proterozoic
-  avg_temp_delta_c: +5.0
-  avg_humidity_delta_percent: null
-  avg_co2_ppm: 5000
-  sea_level_delta_m: null
-  icehouse_greenhouse_state: transitional
-  confidence: very_low
-  note: Proterozoic values average several very different climate states, including greenhouse
-    intervals and major glaciations.
-  sources:
-  - Proterozoic climate synthesis
-  - Precambrian glaciation synthesis
 - rank: era
   name: Paleoproterozoic
   path:
   - Proterozoic
   - Paleoproterozoic
-  avg_temp_delta_c: +2.0
-  avg_humidity_delta_percent: null
-  avg_co2_ppm: 8000
-  sea_level_delta_m: null
-  icehouse_greenhouse_state: transitional
-  confidence: very_low
-  note: Paleoproterozoic values compress the Great Oxidation interval and major Huronian glaciations
-    into one broad estimate.
-  sources:
-  - Paleoproterozoic climate synthesis
-  - Great Oxidation Event synthesis
-  - Huronian glaciation synthesis
 - rank: period
   name: Siderian
   path:
   - Proterozoic
   - Paleoproterozoic
   - Siderian
-  avg_temp_delta_c: -5.0
-  avg_humidity_delta_percent: null
-  avg_co2_ppm: 5000
-  sea_level_delta_m: null
-  icehouse_greenhouse_state: icehouse
-  confidence: very_low
-  note: Values reflect broad Paleoproterozoic glacial influence during and after atmospheric
-    oxygenation.
-  sources:
-  - Great Oxidation Event synthesis
-  - Huronian glaciation synthesis
 - rank: period
   name: Rhyacian
   path:
   - Proterozoic
   - Paleoproterozoic
   - Rhyacian
-  avg_temp_delta_c: -5.0
-  avg_humidity_delta_percent: null
-  avg_co2_ppm: 5000
-  sea_level_delta_m: null
-  icehouse_greenhouse_state: icehouse
-  confidence: very_low
-  note: Values reflect broad Paleoproterozoic glacial influence during and after atmospheric
-    oxygenation.
-  sources:
-  - Great Oxidation Event synthesis
-  - Huronian glaciation synthesis
 - rank: period
   name: Orosirian
   path:
   - Proterozoic
   - Paleoproterozoic
   - Orosirian
-  avg_temp_delta_c: +5.0
-  avg_humidity_delta_percent: null
-  avg_co2_ppm: 8000
-  sea_level_delta_m: null
-  icehouse_greenhouse_state: greenhouse
-  confidence: very_low
-  note: Values represent broad post-Huronian greenhouse recovery and stabilisation of Proterozoic
-    environments.
-  sources:
-  - Paleoproterozoic climate synthesis
-  - Proterozoic atmosphere synthesis
 - rank: period
   name: Statherian
   path:
   - Proterozoic
   - Paleoproterozoic
   - Statherian
-  avg_temp_delta_c: +5.0
-  avg_humidity_delta_percent: null
-  avg_co2_ppm: 8000
-  sea_level_delta_m: null
-  icehouse_greenhouse_state: greenhouse
-  confidence: very_low
-  note: Values represent broad post-Huronian greenhouse recovery and stabilisation of Proterozoic
-    environments.
-  sources:
-  - Paleoproterozoic climate synthesis
-  - Proterozoic atmosphere synthesis
 - rank: era
   name: Mesoproterozoic
   path:
   - Proterozoic
   - Mesoproterozoic
-  avg_temp_delta_c: +6.0
-  avg_humidity_delta_percent: null
-  avg_co2_ppm: 6000
-  sea_level_delta_m: null
-  icehouse_greenhouse_state: greenhouse
-  confidence: very_low
-  note: Mesoproterozoic values are broad greenhouse estimates for the so-called boring billion
-    interval.
-  sources:
-  - Mesoproterozoic climate synthesis
-  - Proterozoic atmosphere synthesis
 - rank: period
   name: Calymmian
   path:
   - Proterozoic
   - Mesoproterozoic
   - Calymmian
-  avg_temp_delta_c: +6.0
-  avg_humidity_delta_percent: null
-  avg_co2_ppm: 6000
-  sea_level_delta_m: null
-  icehouse_greenhouse_state: greenhouse
-  confidence: very_low
-  note: Mesoproterozoic period-level values are broad greenhouse approximations with weak
-    stage-scale constraints.
-  sources:
-  - Mesoproterozoic climate synthesis
-  - Proterozoic atmosphere synthesis
 - rank: period
   name: Ectasian
   path:
   - Proterozoic
   - Mesoproterozoic
   - Ectasian
-  avg_temp_delta_c: +6.0
-  avg_humidity_delta_percent: null
-  avg_co2_ppm: 6000
-  sea_level_delta_m: null
-  icehouse_greenhouse_state: greenhouse
-  confidence: very_low
-  note: Mesoproterozoic period-level values are broad greenhouse approximations with weak
-    stage-scale constraints.
-  sources:
-  - Mesoproterozoic climate synthesis
-  - Proterozoic atmosphere synthesis
 - rank: period
   name: Stenian
   path:
   - Proterozoic
   - Mesoproterozoic
   - Stenian
-  avg_temp_delta_c: +6.0
-  avg_humidity_delta_percent: null
-  avg_co2_ppm: 6000
-  sea_level_delta_m: null
-  icehouse_greenhouse_state: greenhouse
-  confidence: very_low
-  note: Mesoproterozoic period-level values are broad greenhouse approximations with weak
-    stage-scale constraints.
-  sources:
-  - Mesoproterozoic climate synthesis
-  - Proterozoic atmosphere synthesis
 - rank: era
   name: Neoproterozoic
   path:
   - Proterozoic
   - Neoproterozoic
-  avg_temp_delta_c: +1.0
-  avg_humidity_delta_percent: null
-  avg_co2_ppm: 6000
-  sea_level_delta_m: null
-  icehouse_greenhouse_state: transitional
-  confidence: very_low
-  note: Neoproterozoic values average greenhouse intervals with Cryogenian snowball Earth
-    glaciations and late Ediacaran recovery.
-  sources:
-  - Neoproterozoic climate synthesis
-  - Snowball Earth synthesis
-  - Ediacaran environment synthesis
 - rank: period
   name: Tonian
   path:
   - Proterozoic
   - Neoproterozoic
   - Tonian
-  avg_temp_delta_c: +5.0
-  avg_humidity_delta_percent: null
-  avg_co2_ppm: 5000
-  sea_level_delta_m: null
-  icehouse_greenhouse_state: greenhouse
-  confidence: very_low
-  note: Tonian values represent broad pre-Cryogenian greenhouse conditions before major snowball
-    Earth glaciations.
-  sources:
-  - Neoproterozoic climate synthesis
-  - Proterozoic atmosphere synthesis
 - rank: period
   name: Cryogenian
   path:
   - Proterozoic
   - Neoproterozoic
   - Cryogenian
-  avg_temp_delta_c: -20.0
-  avg_humidity_delta_percent: -15.0
-  avg_co2_ppm: 8000
-  sea_level_delta_m: -100.0
-  icehouse_greenhouse_state: icehouse
-  confidence: low
-  note: Cryogenian values represent snowball Earth glacial intervals; CO2 may have varied
-    greatly between glacial buildup and deglaciation.
-  sources:
-  - Snowball Earth synthesis
-  - Neoproterozoic glaciation synthesis
 - rank: period
   name: Ediacaran
   path:
   - Proterozoic
   - Neoproterozoic
   - Ediacaran
-  avg_temp_delta_c: +4.0
-  avg_humidity_delta_percent: +2.0
-  avg_co2_ppm: 4000
-  sea_level_delta_m: +30.0
-  icehouse_greenhouse_state: greenhouse
-  confidence: low
-  note: Ediacaran values reflect post-Cryogenian greenhouse recovery, rising oxygenation,
-    and expansion of early animal ecosystems.
-  sources:
-  - Ediacaran environment synthesis
-  - Neoproterozoic climate synthesis
 - rank: eon
   name: Phanerozoic
   path:

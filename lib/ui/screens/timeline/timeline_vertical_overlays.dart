@@ -100,11 +100,15 @@ class TimelineVerticalOverlays extends StatelessWidget {
           ],
           unitSpan: (segment) => segment.unitSpan,
         );
-        final cappedWidth = cappedTracks.fold<double>(
-          0.0,
-          (sum, track) =>
-              sum + metrics.trackWidth(track) + metrics.gapAfter(track),
-        );
+        final cappedWidth = metrics.trackOrder.fold<double>(0.0, (sum, track) {
+          if (!cappedTracks.contains(track)) {
+            return sum;
+          }
+          return sum +
+              metrics.gapBefore(track) +
+              metrics.trackWidth(track) +
+              metrics.gapAfter(track);
+        });
         double scaledX(double x) {
           if (x <= cappedWidth) {
             return x;
@@ -118,6 +122,7 @@ class TimelineVerticalOverlays extends StatelessWidget {
         final trackStarts = <TimelineTrack, double>{};
         var trackCursor = 0.0;
         for (final track in metrics.trackOrder) {
+          trackCursor += metrics.gapBefore(track);
           trackStarts[track] = trackCursor;
           final width =
               metrics.trackWidth(track) *
@@ -234,23 +239,6 @@ class TimelineVerticalOverlays extends StatelessWidget {
                   child: Container(width: 1, color: Colors.deepOrangeAccent),
                 ),
               ],
-              if (kDebugMode && AppDebug.showTimelineConnectorExtents) ...[
-                _DebugBoundaryLabel(
-                  x: periodStart,
-                  text: 'Era|Period',
-                  color: Colors.cyanAccent,
-                ),
-                _DebugBoundaryLabel(
-                  x: eventAnchorX,
-                  text: 'Events tip',
-                  color: Colors.yellowAccent,
-                ),
-                _DebugBoundaryLabel(
-                  x: extinctionAnchorX,
-                  text: 'Ext tip',
-                  color: Colors.deepOrangeAccent,
-                ),
-              ],
             ],
           ),
         );
@@ -278,6 +266,7 @@ class TimelineVerticalOverlays extends StatelessWidget {
     var scalable = 0.0;
     for (final track in metrics.trackOrder) {
       final width = metrics.trackWidth(track);
+      fixed += metrics.gapBefore(track);
       if (cappedTracks.contains(track)) {
         fixed += width;
       } else {

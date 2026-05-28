@@ -53,6 +53,10 @@ class TimelineVerticalColumns extends StatelessWidget {
           layout,
           stageLabelStyle,
           periodStyle: periodLabelStyle,
+          divisions: layout.divisions,
+          paleoEcology: paleoEcology,
+          paleoWidth: metrics.trackWidth(TimelineTrack.paleoEcology),
+          paleoStyle: stageLabelStyle,
         );
         final scale = _widthScale(constraints.maxWidth);
         final stageHeightsForPaleo = useFixedHeights
@@ -78,7 +82,8 @@ class TimelineVerticalColumns extends StatelessWidget {
                             (parent) => parent.endMa,
                             (parent) => parent.id,
                           )
-                        : minHeightForStageLabel(segment, stageLabelStyle),
+                        : (minHeights.stageHeights[segment.id] ??
+                              minHeightForStageLabel(segment, stageLabelStyle)),
                 ],
                 unitSpan: (segment) => segment.unitSpan,
               );
@@ -101,6 +106,8 @@ class TimelineVerticalColumns extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             for (final track in metrics.trackOrder) ...[
+              if (metrics.gapBefore(track) > 0)
+                SizedBox(width: metrics.gapBefore(track)),
               _buildVerticalTrack(
                 track: track,
                 scaledWidth: scaledWidth,
@@ -154,6 +161,7 @@ class TimelineVerticalColumns extends StatelessWidget {
     var scalable = 0.0;
     for (final track in metrics.trackOrder) {
       final width = metrics.trackWidth(track);
+      fixed += metrics.gapBefore(track);
       if (cappedTracks.contains(track)) {
         fixed += width;
       } else {

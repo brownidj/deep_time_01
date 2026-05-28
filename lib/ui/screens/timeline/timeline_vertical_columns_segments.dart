@@ -86,7 +86,6 @@ class _VerticalBandColumn extends StatelessWidget {
         label: segment.label,
         rotateLabel: rotateLabel,
         horizontalPadding: horizontalPadding,
-        debugLabel: AppDebug.enabled ? segment.unitSpan.toStringAsFixed(1) : null,
       );
       if (segment.isGap) {
         children.add(content);
@@ -205,7 +204,6 @@ class _VerticalRowColumn extends StatelessWidget {
         label: segment.label,
         rotateLabel: rotateLabel,
         horizontalPadding: horizontalPadding,
-        debugLabel: AppDebug.enabled ? segment.unitSpan.toStringAsFixed(1) : null,
       );
       if (segment.isGap) {
         children.add(content);

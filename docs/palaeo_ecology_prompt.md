@@ -1,28 +1,29 @@
 # Palaeo-ecology data generation prompt
 
-Use the following JSON request to generate the contents of `data/palaeo_ecology.yaml`. Return only valid YAML matching the requested `yaml_shape`.
+Use the following JSON request to generate the contents of `data/paleo_ecology.yaml`. Return only valid YAML matching the requested `yaml_shape`.
 
 ```json
 {
-  "task": "Generate stage-level palaeo-ecology data for the geological Stages/Ages listed below.",
+  "task": "Generate paleo-ecology data for the geological divisions listed below.",
   "output_file": "data/paleo_ecology.yaml",
   "requirements": [
-    "Return YAML only, with root key palaeo_ecology.",
+    "Return YAML only, with root key paleo_ecology.",
     "Use current peer-reviewed synthesis values where possible.",
     "Return approximate values suitable for an educational deep-time timeline, not high-precision climate modelling.",
     "Use null where evidence is too uncertain rather than inventing precision.",
     "Express all numeric environmental fields as signed deltas from the present global baseline.",
     "Use Ma-aware stage context: values should represent average conditions across the Stage/Age, not a single boundary value.",
-    "Use avg_co2_delta_percent, not avg_co2_percent. CO2 must be expressed as a signed percentage-point delta from present atmospheric CO2.",
+    "Use avg_co2_ppm for atmospheric CO2 concentration in ppm.",
     "Include a concise confidence value: high, moderate, low, or very_low.",
     "Include a short note explaining major uncertainty or important palaeo-ecological context."
   ],
   "fields_to_return": {
-    "stage": "Stage/Age name exactly as supplied.",
+    "rank": "Geologic rank exactly as supplied.",
+    "name": "Division name exactly as supplied.",
     "path": "Full hierarchy path exactly as supplied.",
     "avg_temp_delta_c": "Signed average global surface temperature delta from present, in degrees Celsius. Example: +6.5.",
     "avg_humidity_delta_percent": "Signed average global humidity delta from present, in percent. Example: +8.0. Use null when not defensible.",
-    "avg_co2_delta_percent": "Signed atmospheric CO2 concentration delta from present, expressed as percentage points of the atmosphere. Present is about 0.04%, so 0.20% CO2 should be stored as +0.16.",
+    "avg_co2_ppm": "Average atmospheric CO2 concentration in ppm. Use null when not defensible.",
     "sea_level_delta_m": "Signed average eustatic sea-level delta from present, in metres. Example: +80.0 or -60.0.",
     "icehouse_greenhouse_state": "One of: icehouse, cool_greenhouse, greenhouse, hothouse, transitional, uncertain.",
     "dominant_ecology": "Brief phrase describing dominant global ecological setting.",
@@ -31,9 +32,10 @@ Use the following JSON request to generate the contents of `data/palaeo_ecology.
     "sources": "Short list of source names or DOI-style references used."
   },
   "yaml_shape": {
-    "palaeo_ecology": [
+    "paleo_ecology": [
       {
-        "stage": "Example Stage",
+        "rank": "stage",
+        "name": "Example Stage",
         "path": [
           "Eon",
           "Era",
@@ -43,7 +45,7 @@ Use the following JSON request to generate the contents of `data/palaeo_ecology.
         ],
         "avg_temp_delta_c": "+0.0",
         "avg_humidity_delta_percent": "+0.0",
-        "avg_co2_delta_percent": "+0.00",
+        "avg_co2_ppm": 400,
         "sea_level_delta_m": "+0.0",
         "icehouse_greenhouse_state": "uncertain",
         "dominant_ecology": "brief ecological summary",
@@ -56,7 +58,7 @@ Use the following JSON request to generate the contents of `data/palaeo_ecology.
       }
     ]
   },
-  "stages": [
+  "divisions": [
     {
       "name": "Fortunian",
       "rank": "stage",

@@ -31,6 +31,10 @@ extension TimelineBodyMetricsGeometry on TimelineBodyMetrics {
     return trackWidths[track] ?? defaultTrackWidth;
   }
 
+  double gapBefore(TimelineTrack track) {
+    return trackLeadingGaps[track] ?? 0.0;
+  }
+
   double gapAfter(TimelineTrack track) {
     return trackTrailingGaps[track] ?? 0.0;
   }

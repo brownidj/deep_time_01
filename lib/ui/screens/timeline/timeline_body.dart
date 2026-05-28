@@ -81,6 +81,13 @@ class TimelineBody extends StatelessWidget {
             final minScrollHeight = minScrollHeightForStages(
               layout,
               style: stageTextStyle,
+              paleoEcology: visibleTracks.contains(TimelineTrack.paleoEcology)
+                  ? paleoEcology
+                  : const [],
+              paleoWidth: visibleTracks.contains(TimelineTrack.paleoEcology)
+                  ? config.trackWidthFor(TimelineTrack.paleoEcology)
+                  : 0,
+              paleoStyle: stageTextStyle,
               verticalPadding: 4,
             );
             final metrics = TimelineBodyMetrics.fromLayout(
@@ -172,7 +179,7 @@ class TimelineBody extends StatelessWidget {
         minimalHorizontalLabelWidth('Representative life', style: style) * 1.5;
     const continentLaneCount = 3;
     const continentLaneGap = 6.0;
-    const continentHorizontalPadding = 12.0;
+    const continentHorizontalPadding = 0.0;
     final continentLaneWidth = math.max(
       3.0,
       ((style?.fontSize ?? 14.0) * (style?.height ?? 1.0)) + 14.0,
@@ -181,7 +188,7 @@ class TimelineBody extends StatelessWidget {
         (continentLaneCount * continentLaneWidth) +
         ((continentLaneCount - 1) * continentLaneGap) +
         (continentHorizontalPadding * 2);
-    final maWidth = maColumnWidth(layout, style: maStyle, padding: 20) + 20;
+    final maWidth = maColumnWidth(layout, style: maStyle, padding: 20);
     return TimelineOrientationConfig(
       trackWidths: {
         TimelineTrack.ma: maWidth,
