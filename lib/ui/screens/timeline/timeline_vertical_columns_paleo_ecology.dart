@@ -40,21 +40,6 @@ class _VerticalPaleoEcologyColumn extends StatelessWidget {
           entriesByStageNormalized[_normalizeStageKey(stageLabel)];
     }
 
-    var matched = 0;
-    var labelled = 0;
-    for (final block in blocks) {
-      if (block.stageLabel == null) {
-        continue;
-      }
-      labelled += 1;
-      if (resolveEntry(block.stageLabel) != null) {
-        matched += 1;
-      }
-    }
-    AppDebug.log(
-      'Paleo-ecology column: blocks=${blocks.length} '
-      'labelled=$labelled matched=$matched entries=${entries.length}',
-    );
     return SizedBox(
       width: width,
       height: height,

@@ -28,6 +28,8 @@ part 'timeline_vertical_columns_painters.dart';
 part 'timeline_vertical_columns_clades.dart';
 part 'timeline_vertical_columns_continent_gradients.dart';
 part 'timeline_vertical_columns_paleo_ecology.dart';
+part 'timeline_vertical_columns_tracks.dart';
+part 'timeline_vertical_columns_events_widgets.dart';
 
 Color _darken(Color color, double amount) {
   final hsl = HSLColor.fromColor(color);

@@ -10,6 +10,8 @@ import 'package:deep_time/ui/screens/timeline/timeline_vertical_overlays_helpers
 import 'package:deep_time/ui/screens/timeline/timeline_vertical_overlays_line.dart';
 import 'package:deep_time/ui/theme/deep_time_palette.dart';
 
+part 'timeline_vertical_overlays_widgets.dart';
+
 class TimelineVerticalOverlays extends StatelessWidget {
   const TimelineVerticalOverlays({
     super.key,
@@ -260,66 +262,33 @@ class TimelineVerticalOverlays extends StatelessWidget {
     if (!maxWidth.isFinite || maxWidth <= 0 || metrics.trackColumnsWidth <= 0) {
       return 1.0;
     }
-    return maxWidth / metrics.trackColumnsWidth;
-  }
-}
-
-class _DebugBoundaryLabel extends StatelessWidget {
-  const _DebugBoundaryLabel({
-    required this.x,
-    required this.text,
-    required this.color,
-  });
-
-  final double x;
-  final String text;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      left: x + 2,
-      top: 2,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-        color: Colors.black87,
-        child: Text(
-          text,
-          style: TextStyle(
-            color: color,
-            fontSize: 10,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _HorizontalBoundaryMarker extends StatelessWidget {
-  const _HorizontalBoundaryMarker({
-    required this.left,
-    required this.right,
-    required this.top,
-    required this.contentHeight,
-  });
-
-  final double left;
-  final double right;
-  final double top;
-  final double contentHeight;
-
-  @override
-  Widget build(BuildContext context) {
-    final width = right - left;
-    if (width <= 0) {
-      return const SizedBox.shrink();
+    const cappedTracks = {
+      TimelineTrack.ma,
+      TimelineTrack.eon,
+      TimelineTrack.era,
+      TimelineTrack.period,
+      TimelineTrack.epoch,
+      TimelineTrack.stage,
+      TimelineTrack.paleoEcology,
+      TimelineTrack.rlife,
+      TimelineTrack.extinctions,
+      TimelineTrack.continents,
+    };
+    var fixed = 0.0;
+    var scalable = 0.0;
+    for (final track in metrics.trackOrder) {
+      final width = metrics.trackWidth(track);
+      if (cappedTracks.contains(track)) {
+        fixed += width;
+      } else {
+        scalable += width;
+      }
+      fixed += metrics.gapAfter(track);
     }
-    return Positioned(
-      left: left,
-      top: (top - 1.5).clamp(0.0, contentHeight - 3),
-      width: width,
-      child: Container(height: 3, color: DeepTimePalette.periodDivider),
-    );
+    if (scalable <= 0) {
+      return 1.0;
+    }
+    final available = (maxWidth - fixed).clamp(0.0, double.infinity);
+    return available / scalable;
   }
 }

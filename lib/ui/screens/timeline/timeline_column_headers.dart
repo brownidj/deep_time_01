@@ -73,7 +73,34 @@ class TimelineColumnHeaders extends StatelessWidget {
     if (!maxWidth.isFinite || maxWidth <= 0 || metrics.trackColumnsWidth <= 0) {
       return 1.0;
     }
-    return maxWidth / metrics.trackColumnsWidth;
+    final cappedTracks = <TimelineTrack>{
+      TimelineTrack.ma,
+      TimelineTrack.eon,
+      TimelineTrack.era,
+      TimelineTrack.period,
+      TimelineTrack.epoch,
+      TimelineTrack.stage,
+      TimelineTrack.paleoEcology,
+      TimelineTrack.rlife,
+      TimelineTrack.extinctions,
+      TimelineTrack.continents,
+    };
+    var fixed = 0.0;
+    var scalable = 0.0;
+    for (final track in metrics.trackOrder) {
+      final width = metrics.trackWidth(track);
+      if (cappedTracks.contains(track)) {
+        fixed += width;
+      } else {
+        scalable += width;
+      }
+      fixed += metrics.gapAfter(track);
+    }
+    if (scalable <= 0) {
+      return 1.0;
+    }
+    final available = (maxWidth - fixed).clamp(0.0, double.infinity);
+    return available / scalable;
   }
 
   String _labelFor(TimelineTrack track) {

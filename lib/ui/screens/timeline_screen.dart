@@ -23,6 +23,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 part 'timeline_screen_state.dart';
 part 'timeline_screen_prefs.dart';
+part 'timeline_screen_prefs_storage.dart';
 
 const String _labelModeKey = 'time_label_mode';
 const String _timelineScaleKey = 'timeline_scale';

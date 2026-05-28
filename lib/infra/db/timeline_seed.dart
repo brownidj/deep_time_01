@@ -5,6 +5,8 @@ import 'package:deep_time/app/app_debug.dart';
 import 'package:sqlite3/sqlite3.dart';
 import 'package:yaml/yaml.dart';
 
+part 'timeline_seed_helpers.dart';
+
 class TimelineSeeder {
   const TimelineSeeder._();
   static const int _maPrecision = 3;
@@ -52,15 +54,13 @@ class TimelineSeeder {
     }
   }
 
-  static Future<int> _expectedDivisionCount() async {
-    final eons = await _loadNormalizedEons();
-    return _countNodes(eons);
-  }
+  static Future<int> _expectedDivisionCount() async =>
+      _countDivisionNodes(await _loadNormalizedEons());
 
   static Future<String> _currentYamlHash() async {
     final eons = await _loadNormalizedEons();
     final canonical = jsonEncode(_canonicalNodeList(eons));
-    return _stableHash(canonical);
+    return _stableFNVHash(canonical);
   }
 
   static String? _readSeedHash(Database db) {
@@ -68,10 +68,7 @@ class TimelineSeeder {
       'SELECT value FROM app_meta WHERE key = ? LIMIT 1',
       const ['timeline_seed_hash'],
     );
-    if (rows.isEmpty) {
-      return null;
-    }
-    return rows.first['value'] as String?;
+    return rows.isEmpty ? null : rows.first['value'] as String?;
   }
 
   static void _writeSeedHash(Database db, String hash) {
@@ -81,35 +78,8 @@ class TimelineSeeder {
     ]);
   }
 
-  static int _countNodes(Object? value) {
-    if (value is! YamlList) {
-      return 0;
-    }
-    var count = 0;
-    for (final entry in value) {
-      if (entry is! YamlMap) {
-        continue;
-      }
-      count += 1;
-      count += _countNodes(entry['children']);
-    }
-    return count;
-  }
-
-  static String _stableHash(String value) {
-    const int fnvOffset = 0x811c9dc5;
-    const int fnvPrime = 0x01000193;
-    var hash = fnvOffset;
-    for (final byte in utf8.encode(value)) {
-      hash ^= byte;
-      hash = (hash * fnvPrime) & 0xffffffff;
-    }
-    return hash.toRadixString(16).padLeft(8, '0');
-  }
-
   static Future<void> _seedDivisionsFromYaml(Database db) async {
     final eons = await _loadNormalizedEons();
-
     db.execute('BEGIN');
     final insertDivision = db.prepare('''
 INSERT INTO geologic_divisions (
@@ -229,7 +199,9 @@ INSERT INTO geologic_divisions (
     }
   }
 
-  static List<Map<String, Object?>> _canonicalNodeList(List<_DivisionNode> nodes) {
+  static List<Map<String, Object?>> _canonicalNodeList(
+    List<_DivisionNode> nodes,
+  ) {
     final out = <Map<String, Object?>>[];
     for (final node in nodes) {
       out.add({
@@ -252,7 +224,8 @@ INSERT INTO geologic_divisions (
 SELECT name, rank, start_ma, end_ma, start_ma_uncertainty
 FROM geologic_divisions
 ''');
-    final currentByKey = <String, ({double start, double end, double? uncertainty})>{};
+    final currentByKey =
+        <String, ({double start, double end, double? uncertainty})>{};
     for (final row in currentRows) {
       final key = '${row['rank']}::${row['name']}';
       currentByKey[key] = (
@@ -265,7 +238,8 @@ FROM geologic_divisions
     }
 
     final nextEons = await _loadNormalizedEons();
-    final nextByKey = <String, ({double start, double end, double? uncertainty})>{};
+    final nextByKey =
+        <String, ({double start, double end, double? uncertainty})>{};
     void collect(List<_DivisionNode> nodes) {
       for (final node in nodes) {
         nextByKey['${node.rank}::${node.name}'] = (
@@ -285,7 +259,8 @@ FROM geologic_divisions
       if (before == null) {
         continue;
       }
-      final changed = before.start != after.start ||
+      final changed =
+          before.start != after.start ||
           before.end != after.end ||
           before.uncertainty != after.uncertainty;
       if (changed) {
@@ -299,9 +274,8 @@ FROM geologic_divisions
     }
   }
 
-  static double _normMa(double value) {
-    return double.parse(value.toStringAsFixed(_maPrecision));
-  }
+  static double _normMa(double value) =>
+      double.parse(value.toStringAsFixed(_maPrecision));
 
   static void _insertNode(
     Database db,
@@ -322,69 +296,5 @@ FROM geologic_divisions
     for (final child in node.children) {
       _insertNode(db, stmt, child, parentId: nodeId);
     }
-  }
-}
-
-class _DivisionNode {
-  _DivisionNode({
-    required this.name,
-    required this.rank,
-    required this.startMa,
-    required this.uncertaintyMa,
-    required this.children,
-    required this.explanation,
-  });
-
-  factory _DivisionNode.fromYaml(YamlMap map) {
-    final name = map['name'] as String? ?? 'Unnamed';
-    final rank = map['rank'] as String? ?? 'unknown';
-    final startMa = _parseDouble(map['start_ma'] ?? map['end_ma']);
-    final uncertaintyMa = _parseOptionalDouble(map['uncertainty_ma']);
-    final explanation = map['explanation'] as String?;
-    final children = TimelineSeeder._readNodes(map['children']);
-
-    return _DivisionNode(
-      name: name,
-      rank: rank,
-      startMa: TimelineSeeder._normMa(startMa),
-      uncertaintyMa: uncertaintyMa,
-      explanation: explanation,
-      children: children,
-    );
-  }
-
-  final String name;
-  final String rank;
-  final double startMa;
-  final double? uncertaintyMa;
-  final List<_DivisionNode> children;
-  final String? explanation;
-  double endMa = 0.0;
-
-  static double _parseDouble(Object? value) {
-    if (value is num) {
-      return value.toDouble();
-    }
-    if (value is String) {
-      final parsed = double.tryParse(value);
-      if (parsed != null) {
-        return parsed;
-      }
-    }
-    throw StateError('Invalid numeric value for start/end Ma: $value');
-  }
-
-  static double? _parseOptionalDouble(Object? value) {
-    if (value == null) {
-      return null;
-    }
-    if (value is num) {
-      return value.toDouble();
-    }
-    if (value is String) {
-      final parsed = double.tryParse(value);
-      return parsed == null ? null : TimelineSeeder._normMa(parsed);
-    }
-    return null;
   }
 }
