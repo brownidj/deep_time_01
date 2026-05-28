@@ -31,6 +31,10 @@ extension TimelineBodyMetricsGeometry on TimelineBodyMetrics {
     return trackWidths[track] ?? defaultTrackWidth;
   }
 
+  double gapAfter(TimelineTrack track) {
+    return trackTrailingGaps[track] ?? 0.0;
+  }
+
   Rect columnRectForTrack(
     TimelineTrack track, {
     double top = 0.0,

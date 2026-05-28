@@ -34,6 +34,14 @@ class TimelineSettingsDialog extends StatefulWidget {
 }
 
 class _TimelineSettingsDialogState extends State<TimelineSettingsDialog> {
+  late Set<TimelineTrack> _localVisibleTracks;
+
+  @override
+  void initState() {
+    super.initState();
+    _localVisibleTracks = Set<TimelineTrack>.from(widget.visibleTracks);
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -126,9 +134,16 @@ class _TimelineSettingsDialogState extends State<TimelineSettingsDialog> {
               ),
             ),
             _VisibilitySwitchTile(
-              title: 'Land masses',
-              value: widget.visibleTracks.contains(TimelineTrack.continents),
+              title: 'Landmasses',
+              value: _localVisibleTracks.contains(TimelineTrack.continents),
               onChanged: (value) {
+                setState(() {
+                  if (value) {
+                    _localVisibleTracks.add(TimelineTrack.continents);
+                  } else {
+                    _localVisibleTracks.remove(TimelineTrack.continents);
+                  }
+                });
                 widget.onTrackVisibilityChanged(
                   TimelineTrack.continents,
                   value,
@@ -137,8 +152,15 @@ class _TimelineSettingsDialogState extends State<TimelineSettingsDialog> {
             ),
             _VisibilitySwitchTile(
               title: 'Paleo-ecology',
-              value: widget.visibleTracks.contains(TimelineTrack.paleoEcology),
+              value: _localVisibleTracks.contains(TimelineTrack.paleoEcology),
               onChanged: (value) {
+                setState(() {
+                  if (value) {
+                    _localVisibleTracks.add(TimelineTrack.paleoEcology);
+                  } else {
+                    _localVisibleTracks.remove(TimelineTrack.paleoEcology);
+                  }
+                });
                 widget.onTrackVisibilityChanged(
                   TimelineTrack.paleoEcology,
                   value,

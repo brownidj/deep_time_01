@@ -22,11 +22,12 @@ TimelineVerticalColumnsLayout buildVerticalColumnsLayout({
   var trackCursor = 0.0;
   for (final track in trackOrder) {
     trackStarts[track] = trackCursor;
-    trackCursor += scaledWidth(track);
+    final isLast = track == trackOrder.last;
+    trackCursor +=
+        scaledWidth(track) + trailingGapForTrack(track, isLastVisible: isLast);
   }
   final eraRight =
-      (trackStarts[TimelineTrack.era] ?? 0.0) +
-      scaledWidth(TimelineTrack.era);
+      (trackStarts[TimelineTrack.era] ?? 0.0) + scaledWidth(TimelineTrack.era);
   final rlifeRight =
       (trackStarts[TimelineTrack.rlife] ?? 0.0) +
       scaledWidth(TimelineTrack.rlife);

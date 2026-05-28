@@ -42,7 +42,7 @@ class TimelineColumnHeaders extends StatelessWidget {
           height: metrics.headerHeight,
           child: Row(
             children: [
-              for (final track in metrics.trackOrder)
+              for (final track in metrics.trackOrder) ...[
                 SizedBox(
                   width: scaledWidth(track),
                   child: DecoratedBox(
@@ -59,6 +59,9 @@ class TimelineColumnHeaders extends StatelessWidget {
                     ),
                   ),
                 ),
+                if (metrics.gapAfter(track) > 0)
+                  SizedBox(width: metrics.gapAfter(track)),
+              ],
             ],
           ),
         );
@@ -94,7 +97,7 @@ class TimelineColumnHeaders extends StatelessWidget {
       case TimelineTrack.extinctions:
         return 'Ext.';
       case TimelineTrack.continents:
-        return 'Land masses';
+        return 'Landmasses';
       case TimelineTrack.clades:
         return 'Clades';
       case TimelineTrack.ma:

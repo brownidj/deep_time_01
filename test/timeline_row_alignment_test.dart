@@ -46,9 +46,8 @@ void main() {
                   cladeSearchQuery: '',
                   cladeSpotlightId: null,
                   onCladeSpotlight: (_) {},
-                  visibleTracks: Set<TimelineTrack>.from(
-                    kDefaultTimelineTrackOrder,
-                  ),
+                  visibleTracks: {...kDefaultTimelineTrackOrder}
+                    ..remove(TimelineTrack.paleoEcology),
                   paleoEcology: const [],
                 ),
               ],
@@ -118,9 +117,8 @@ void main() {
                   cladeSearchQuery: '',
                   cladeSpotlightId: null,
                   onCladeSpotlight: (clade) => tappedId = clade.id,
-                  visibleTracks: Set<TimelineTrack>.from(
-                    kDefaultTimelineTrackOrder,
-                  ),
+                  visibleTracks: {...kDefaultTimelineTrackOrder}
+                    ..remove(TimelineTrack.paleoEcology),
                   paleoEcology: const [],
                 ),
               ],
@@ -190,9 +188,8 @@ void main() {
                   cladeSearchQuery: '',
                   cladeSpotlightId: null,
                   onCladeSpotlight: (_) {},
-                  visibleTracks: Set<TimelineTrack>.from(
-                    kDefaultTimelineTrackOrder,
-                  ),
+                  visibleTracks: {...kDefaultTimelineTrackOrder}
+                    ..remove(TimelineTrack.paleoEcology),
                   paleoEcology: const [],
                 ),
               ],

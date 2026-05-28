@@ -16,6 +16,7 @@ class _VerticalPaleoEcologyColumn extends StatelessWidget {
   final List<PaleoEcologyEntry> entries;
   final DeepTimePalette palette;
   final List<double> stageHeights;
+  static const double _rightGutter = 10.0;
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +64,7 @@ class _VerticalPaleoEcologyColumn extends StatelessWidget {
             _buildBlock(
               context,
               block: block,
-              width: width,
+              width: width - _rightGutter,
               entry: resolveEntry(block.stageLabel),
               palette: palette,
             ),

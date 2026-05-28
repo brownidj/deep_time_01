@@ -100,7 +100,8 @@ class TimelineVerticalOverlays extends StatelessWidget {
         );
         final cappedWidth = cappedTracks.fold<double>(
           0.0,
-          (sum, track) => sum + metrics.trackWidth(track),
+          (sum, track) =>
+              sum + metrics.trackWidth(track) + metrics.gapAfter(track),
         );
         double scaledX(double x) {
           if (x <= cappedWidth) {
@@ -119,7 +120,7 @@ class TimelineVerticalOverlays extends StatelessWidget {
           final width =
               metrics.trackWidth(track) *
               (cappedTracks.contains(track) ? 1.0 : scale);
-          trackCursor += width;
+          trackCursor += width + metrics.gapAfter(track);
         }
         final eraPeriodBoundaryX = periodStart;
         final eventAnchorX =

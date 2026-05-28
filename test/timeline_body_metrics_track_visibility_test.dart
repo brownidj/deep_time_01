@@ -54,7 +54,38 @@ void main() {
       expect(
         metrics.trackX(TimelineTrack.rlife),
         metrics.trackX(TimelineTrack.stage) +
-            metrics.trackWidth(TimelineTrack.stage),
+            metrics.trackWidth(TimelineTrack.stage) +
+            metrics.gapAfter(TimelineTrack.stage),
+      );
+    },
+  );
+
+  test(
+    'gap policy keeps eon-era-period-epoch tight and age-to-hideable spaced',
+    () {
+      final layout = layoutWithLongStage();
+      const markers = TimelineMarkerCatalog(events: [], extinctions: []);
+      final metrics = TimelineBodyMetrics.fromLayout(
+        layout: layout,
+        markers: markers,
+        constraints: const BoxConstraints.tightFor(width: 1200, height: 800),
+      );
+
+      expect(metrics.gapAfter(TimelineTrack.eon), 0);
+      expect(metrics.gapAfter(TimelineTrack.era), 0);
+      expect(metrics.gapAfter(TimelineTrack.period), 0);
+      expect(metrics.gapAfter(TimelineTrack.epoch), 0);
+      expect(
+        metrics.gapAfter(TimelineTrack.stage),
+        kTimelineStandardInterColumnGap,
+      );
+      expect(
+        metrics.gapAfter(TimelineTrack.continents),
+        kTimelineStandardInterColumnGap,
+      );
+      expect(
+        metrics.gapAfter(TimelineTrack.paleoEcology),
+        kTimelineStandardInterColumnGap,
       );
     },
   );

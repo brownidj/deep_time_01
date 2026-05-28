@@ -11,6 +11,7 @@ class _VerticalEventsColumn extends StatelessWidget {
     this.horizontalPadding = 3.0,
     this.laneGap = 4.0,
     this.showPoints = true,
+    this.fillLaneWidths = false,
   });
 
   final double width;
@@ -22,6 +23,7 @@ class _VerticalEventsColumn extends StatelessWidget {
   final double horizontalPadding;
   final double laneGap;
   final bool showPoints;
+  final bool fillLaneWidths;
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +61,7 @@ class _VerticalEventsColumn extends StatelessWidget {
       leftInset: barLeftInset,
       horizontalPadding: horizontalPadding,
       laneGap: laneGap,
+      fillLaneWidths: fillLaneWidths,
     );
     return SizedBox(
       width: width,
@@ -152,6 +155,7 @@ class _VerticalEventsColumn extends StatelessWidget {
     required double leftInset,
     required double horizontalPadding,
     required double laneGap,
+    required bool fillLaneWidths,
   }) {
     final laneMaxWidth = <int, double>{};
     for (final layout in layouts) {
@@ -174,17 +178,24 @@ class _VerticalEventsColumn extends StatelessWidget {
     if (lanes.isEmpty) {
       return const {};
     }
-    final rawWidths = [for (final lane in lanes) laneMaxWidth[lane] ?? 3.0];
     final usable = math.max(
       0.0,
       availableWidth - leftInset - (horizontalPadding * 2),
     );
     final gaps = laneGap * math.max(0, lanes.length - 1);
     final widthBudget = math.max(0.0, usable - gaps);
+    final rawWidths = fillLaneWidths
+        ? List<double>.filled(
+            lanes.length,
+            lanes.isEmpty ? 0.0 : (widthBudget / lanes.length),
+          )
+        : [for (final lane in lanes) laneMaxWidth[lane] ?? 3.0];
     final rawTotal = rawWidths.fold<double>(0.0, (a, b) => a + b);
-    final scale = rawTotal > widthBudget && rawTotal > 0
-        ? widthBudget / rawTotal
-        : 1.0;
+    final scale = fillLaneWidths
+        ? 1.0
+        : (rawTotal > widthBudget && rawTotal > 0
+              ? widthBudget / rawTotal
+              : 1.0);
 
     final frames = <int, (double, double)>{};
     var cursor = leftInset + horizontalPadding;
@@ -252,6 +263,7 @@ class _VerticalEventBar extends StatelessWidget {
     final explanation = event.explanation;
 
     return Positioned(
+      key: ValueKey('vertical-event-bar-${event.shortLabel}-${layout.lane}'),
       left: left,
       top: top,
       width: barWidth,

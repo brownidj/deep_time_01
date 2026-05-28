@@ -38,6 +38,7 @@ class TimelineBodyMetrics {
     required this.trackOrder,
     required this.trackWidths,
     required this.trackStartXs,
+    required this.trackTrailingGaps,
     required this.trackColumnsWidth,
     required this.extinctionLayouts,
     required this.eventsRowTop,
@@ -98,22 +99,26 @@ class TimelineBodyMetrics {
       0.0,
       (sum, segment) => sum + segment.unitSpan,
     );
-    final scale =
-        AppDebug.timelineScale
-            .clamp(AppDebug.minTimelineScale, AppDebug.maxTimelineScale)
-            .toDouble();
-    final resolvedTrackOrder =
-        (trackOrder == null || trackOrder.isEmpty)
+    final scale = AppDebug.timelineScale
+        .clamp(AppDebug.minTimelineScale, AppDebug.maxTimelineScale)
+        .toDouble();
+    final resolvedTrackOrder = (trackOrder == null || trackOrder.isEmpty)
         ? List<TimelineTrack>.from(kDefaultTimelineTrackOrder)
         : List<TimelineTrack>.from(trackOrder);
     final trackWidths = <TimelineTrack, double>{
-      for (final track in resolvedTrackOrder) track: config.trackWidthFor(track),
+      for (final track in resolvedTrackOrder)
+        track: config.trackWidthFor(track),
     };
     final trackStartXs = <TimelineTrack, double>{};
+    final trackTrailingGaps = <TimelineTrack, double>{};
     var trackCursor = 0.0;
-    for (final track in resolvedTrackOrder) {
+    for (var i = 0; i < resolvedTrackOrder.length; i += 1) {
+      final track = resolvedTrackOrder[i];
       trackStartXs[track] = trackCursor;
-      trackCursor += trackWidths[track]!;
+      final isLast = i == resolvedTrackOrder.length - 1;
+      final gap = trailingGapForTrack(track, isLastVisible: isLast);
+      trackTrailingGaps[track] = gap;
+      trackCursor += trackWidths[track]! + gap;
     }
     final trackColumnsWidth = trackCursor;
     final scrollWidth = math.max(
@@ -211,6 +216,7 @@ class TimelineBodyMetrics {
       trackOrder: List.unmodifiable(resolvedTrackOrder),
       trackWidths: Map.unmodifiable(trackWidths),
       trackStartXs: Map.unmodifiable(trackStartXs),
+      trackTrailingGaps: Map.unmodifiable(trackTrailingGaps),
       trackColumnsWidth: trackColumnsWidth,
       extinctionLayouts: extinctionLayouts,
       eventsRowTop: eventsRowTop,
@@ -255,6 +261,7 @@ class TimelineBodyMetrics {
   final List<TimelineTrack> trackOrder;
   final Map<TimelineTrack, double> trackWidths;
   final Map<TimelineTrack, double> trackStartXs;
+  final Map<TimelineTrack, double> trackTrailingGaps;
   final double trackColumnsWidth;
   final List<ExtinctionMarkerLayout> extinctionLayouts;
   final double eventsRowTop;

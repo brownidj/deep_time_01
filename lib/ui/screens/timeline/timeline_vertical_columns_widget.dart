@@ -262,6 +262,7 @@ class TimelineVerticalColumns extends StatelessWidget {
                 horizontalPadding: 12,
                 laneGap: 6,
                 showPoints: false,
+                fillLaneWidths: true,
               );
             case TimelineTrack.paleoEcology:
               return _VerticalPaleoEcologyColumn(
@@ -322,7 +323,13 @@ class TimelineVerticalColumns extends StatelessWidget {
 
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [for (final track in metrics.trackOrder) buildTrack(track)],
+          children: [
+            for (final track in metrics.trackOrder) ...[
+              buildTrack(track),
+              if (metrics.gapAfter(track) > 0)
+                SizedBox(width: metrics.gapAfter(track)),
+            ],
+          ],
         );
       },
     );
