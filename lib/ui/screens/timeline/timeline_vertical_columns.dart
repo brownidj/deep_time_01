@@ -6,6 +6,7 @@ import 'package:deep_time/application/services/clade_search.dart';
 import 'package:deep_time/application/services/clade_visibility_resolver.dart';
 import 'package:deep_time/application/services/timeline_layout_models.dart';
 import 'package:deep_time/domain/models/clade.dart';
+import 'package:deep_time/domain/models/paleo_ecology_entry.dart';
 import 'package:deep_time/domain/models/timeline_marker_catalog.dart';
 import 'package:deep_time/ui/models/clade_view_mode.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_body_metrics.dart';
@@ -26,6 +27,7 @@ part 'timeline_vertical_columns_extinctions.dart';
 part 'timeline_vertical_columns_painters.dart';
 part 'timeline_vertical_columns_clades.dart';
 part 'timeline_vertical_columns_continent_gradients.dart';
+part 'timeline_vertical_columns_paleo_ecology.dart';
 
 Color _darken(Color color, double amount) {
   final hsl = HSLColor.fromColor(color);

@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 import argparse
+import json
 import re
 from pathlib import Path
 import yaml
 
 RANKS = ["eon", "era", "period", "epoch", "age"]
 NEXT = {RANKS[i]: (RANKS[i + 1] if i + 1 < len(RANKS) else None) for i in range(len(RANKS))}
+
 
 class Node:
     def __init__(self, name, rank):
@@ -143,17 +145,130 @@ def collect_paths(roots):
     return paths
 
 
+def collect_nodes_by_rank(roots, rank):
+    matches = []
+
+    def walk(node):
+        if node.rank == rank:
+            matches.append(node)
+        for child in node.children:
+            walk(child)
+
+    for root in roots:
+        walk(root)
+    return matches
+
+
+def node_path(node):
+    parts = []
+    cur = node
+    while cur is not None:
+        parts.append(cur.name)
+        cur = cur.parent
+    return list(reversed(parts))
+
+
+def build_palaeo_ecology_prompt(roots, output_path):
+    stages = []
+    for node in collect_nodes_by_rank(roots, "age"):
+        stages.append(
+            {
+                "name": node.name,
+                "rank": "stage",
+                "path": node_path(node),
+            }
+        )
+
+    payload = {
+        "task": "Generate stage-level palaeo-ecology data for the geological Stages/Ages listed below.",
+        "output_file": output_path,
+        "requirements": [
+            "Return YAML only, with root key palaeo_ecology.",
+            "Use current peer-reviewed synthesis values where possible.",
+            "Return approximate values suitable for an educational deep-time timeline, not high-precision climate modelling.",
+            "Use null where evidence is too uncertain rather than inventing precision.",
+            "Express all numeric environmental fields as signed deltas from the present global baseline.",
+            "Use Ma-aware stage context: values should represent average conditions across the Stage/Age, not a single boundary value.",
+            "Use avg_co2_delta_percent, not avg_co2_percent. CO2 must be expressed as a signed percentage-point delta from present atmospheric CO2.",
+            "Include a concise confidence value: high, moderate, low, or very_low.",
+            "Include a short note explaining major uncertainty or important palaeo-ecological context.",
+        ],
+        "fields_to_return": {
+            "stage": "Stage/Age name exactly as supplied.",
+            "path": "Full hierarchy path exactly as supplied.",
+            "avg_temp_delta_c": "Signed average global surface temperature delta from present, in degrees Celsius. Example: +6.5.",
+            "avg_humidity_delta_percent": "Signed average global humidity delta from present, in percent. Example: +8.0. Use null when not defensible.",
+            "avg_co2_delta_percent": "Signed atmospheric CO2 concentration delta from present, expressed as percentage points of the atmosphere. Present is about 0.04%, so 0.20% CO2 should be stored as +0.16.",
+            "sea_level_delta_m": "Signed average eustatic sea-level delta from present, in metres. Example: +80.0 or -60.0.",
+            "icehouse_greenhouse_state": "One of: icehouse, cool_greenhouse, greenhouse, hothouse, transitional, uncertain.",
+            "dominant_ecology": "Brief phrase describing dominant global ecological setting.",
+            "confidence": "high, moderate, low, or very_low.",
+            "note": "One short sentence explaining uncertainty or context.",
+            "sources": "Short list of source names or DOI-style references used.",
+        },
+        "yaml_shape": {
+            "palaeo_ecology": [
+                {
+                    "stage": "Example Stage",
+                    "path": ["Eon", "Era", "Period", "Epoch", "Stage"],
+                    "avg_temp_delta_c": "+0.0",
+                    "avg_humidity_delta_percent": "+0.0",
+                    "avg_co2_delta_percent": "+0.00",
+                    "sea_level_delta_m": "+0.0",
+                    "icehouse_greenhouse_state": "uncertain",
+                    "dominant_ecology": "brief ecological summary",
+                    "confidence": "low",
+                    "note": "brief note",
+                    "sources": ["source 1", "source 2"],
+                }
+            ]
+        },
+        "stages": stages,
+    }
+
+    return (
+        "# Palaeo-ecology data generation prompt\n\n"
+        "Use the following JSON request to generate the contents of `"
+        + output_path
+        + "`. Return only valid YAML matching the requested `yaml_shape`.\n\n"
+        "```json\n"
+        + json.dumps(payload, indent=2, ensure_ascii=False)
+        + "\n```\n"
+    )
+
+
+def build_palaeo_ecology_template(roots):
+    rows = []
+    for node in collect_nodes_by_rank(roots, "age"):
+        rows.append(
+            {
+                "stage": node.name,
+                "path": node_path(node),
+                "avg_temp_delta_c": None,
+                "avg_humidity_delta_percent": None,
+                "avg_co2_delta_percent": None,
+                "sea_level_delta_m": None,
+                "icehouse_greenhouse_state": "uncertain",
+                "dominant_ecology": None,
+                "confidence": "very_low",
+                "note": "Template row; values need source-backed palaeo-ecology estimates.",
+                "sources": [],
+            }
+        )
+    return {"palaeo_ecology": rows}
+
+
 def print_tree(roots, show_heights, show_empty):
     def recur(node, prefix, is_last):
         connector = "└── " if is_last else "├── "
         label = node.name
         extra = []
         if show_heights:
-            extra.append(f"h={node.height:.1f}")
+            extra.append("h=" + format(node.height, ".1f"))
         if show_empty and node.empty_subblock:
             extra.append("empty")
         if extra:
-            label = f"{label} ({', '.join(extra)})"
+            label = label + " (" + ", ".join(extra) + ")"
         print(prefix + connector + label)
         new_prefix = prefix + ("    " if is_last else "│   ")
         children = node.children
@@ -161,15 +276,14 @@ def print_tree(roots, show_heights, show_empty):
             recur(child, new_prefix, i == len(children) - 1)
 
     for i, root in enumerate(roots):
-        # Root line
         label = root.name
         extra = []
         if show_heights:
-            extra.append(f"h={root.height:.1f}")
+            extra.append("h=" + format(root.height, ".1f"))
         if show_empty and root.empty_subblock:
             extra.append("empty")
         if extra:
-            label = f"{label} ({', '.join(extra)})"
+            label = label + " (" + ", ".join(extra) + ")"
         print(label)
         children = root.children
         for j, child in enumerate(children):
@@ -187,6 +301,26 @@ def main():
     parser.add_argument("--check-md", action="store_true")
     parser.add_argument("--show-heights", action="store_true")
     parser.add_argument("--show-empty", action="store_true")
+    parser.add_argument(
+        "--palaeo-ecology-prompt",
+        action="store_true",
+        help="Write a Markdown ChatGPT prompt for generating stage-level palaeo-ecology YAML data.",
+    )
+    parser.add_argument(
+        "--palaeo-ecology-prompt-output",
+        default="docs/palaeo_ecology_prompt.md",
+        help="Output path for the generated Markdown palaeo-ecology prompt.",
+    )
+    parser.add_argument(
+        "--write-palaeo-ecology-template",
+        action="store_true",
+        help="Write a blank stage-level palaeo-ecology YAML template.",
+    )
+    parser.add_argument(
+        "--palaeo-ecology-output",
+        default="data/palaeo_ecology.yaml",
+        help="Output path for the generated palaeo-ecology YAML file or prompt target.",
+    )
     args = parser.parse_args()
 
     roots = build_tree(args.yaml)
@@ -200,10 +334,30 @@ def main():
             args.char_width,
             vertical_ranks,
         )
+
     cur = 0.0
     for r in roots:
         assign_y(r, cur)
         cur += r.height
+
+    if args.palaeo_ecology_prompt:
+        prompt_path = Path(args.palaeo_ecology_prompt_output)
+        prompt_path.parent.mkdir(parents=True, exist_ok=True)
+        prompt_text = build_palaeo_ecology_prompt(roots, args.palaeo_ecology_output)
+        prompt_path.write_text(prompt_text, encoding="utf-8")
+        print("Wrote " + str(prompt_path))
+        return
+
+    if args.write_palaeo_ecology_template:
+        output_path = Path(args.palaeo_ecology_output)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        template = build_palaeo_ecology_template(roots)
+        output_path.write_text(
+            yaml.safe_dump(template, sort_keys=False, allow_unicode=True),
+            encoding="utf-8",
+        )
+        print("Wrote " + str(output_path))
+        return
 
     if args.check_md:
         md_paths = set(parse_md_tree(args.md))
@@ -211,10 +365,10 @@ def main():
         only_yaml = sorted(yaml_paths - md_paths)
         only_md = sorted(md_paths - yaml_paths)
         print("Structure check:")
-        print(f"  yaml nodes: {len(yaml_paths)}")
-        print(f"  md nodes:   {len(md_paths)}")
-        print(f"  only in yaml: {len(only_yaml)}")
-        print(f"  only in md:   {len(only_md)}")
+        print("  yaml nodes: " + str(len(yaml_paths)))
+        print("  md nodes:   " + str(len(md_paths)))
+        print("  only in yaml: " + str(len(only_yaml)))
+        print("  only in md:   " + str(len(only_md)))
         if only_yaml[:5]:
             print("  sample only in yaml:")
             for p in only_yaml[:5]:
@@ -226,6 +380,7 @@ def main():
         print("")
 
     print_tree(roots, show_heights=args.show_heights, show_empty=args.show_empty)
+
 
 if __name__ == "__main__":
     main()

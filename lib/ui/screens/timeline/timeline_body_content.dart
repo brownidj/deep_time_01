@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:deep_time/application/services/timeline_layout_models.dart';
 import 'package:deep_time/domain/models/clade.dart';
+import 'package:deep_time/domain/models/paleo_ecology_entry.dart';
 import 'package:deep_time/domain/models/timeline_marker_catalog.dart';
 import 'package:deep_time/ui/models/clade_view_mode.dart';
 import 'package:deep_time/ui/models/time_label_mode.dart';
@@ -31,6 +32,7 @@ class TimelineBodyContent extends StatelessWidget {
     required this.cladeSearchQuery,
     required this.cladeSpotlightId,
     required this.onCladeSpotlight,
+    required this.paleoEcology,
   });
 
   final TimelineLayoutSnapshot layout;
@@ -49,6 +51,7 @@ class TimelineBodyContent extends StatelessWidget {
   final String cladeSearchQuery;
   final String? cladeSpotlightId;
   final ValueChanged<Clade> onCladeSpotlight;
+  final List<PaleoEcologyEntry> paleoEcology;
 
   @override
   Widget build(BuildContext context) {
@@ -56,9 +59,7 @@ class TimelineBodyContent extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TimelineColumnHeaders(metrics: metrics, labelMode: labelMode),
-        Expanded(
-          child: _buildVerticalCanvas(),
-        ),
+        Expanded(child: _buildVerticalCanvas()),
       ],
     );
   }
@@ -90,6 +91,7 @@ class TimelineBodyContent extends StatelessWidget {
                 cladeSpotlightId: cladeSpotlightId,
                 onCladeSpotlight: onCladeSpotlight,
                 metrics: metrics,
+                paleoEcology: paleoEcology,
               ),
               Positioned.fill(
                 child: TimelineVerticalOverlays(

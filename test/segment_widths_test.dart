@@ -4,6 +4,7 @@ import 'package:deep_time/domain/models/timeline_marker_catalog.dart';
 import 'package:deep_time/ui/models/clade_view_mode.dart';
 import 'package:deep_time/ui/models/time_label_mode.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_body.dart';
+import 'package:deep_time/ui/screens/timeline/timeline_orientation.dart';
 
 import 'timeline_layout_test_helpers.dart';
 import 'timeline_row_alignment_helpers.dart';
@@ -39,6 +40,10 @@ void main() {
                   cladeSearchQuery: '',
                   cladeSpotlightId: null,
                   onCladeSpotlight: (_) {},
+                  visibleTracks: Set<TimelineTrack>.from(
+                    kDefaultTimelineTrackOrder,
+                  ),
+                  paleoEcology: const [],
                 ),
               ],
             ),
@@ -101,6 +106,10 @@ void main() {
                   cladeSearchQuery: '',
                   cladeSpotlightId: null,
                   onCladeSpotlight: (_) {},
+                  visibleTracks: Set<TimelineTrack>.from(
+                    kDefaultTimelineTrackOrder,
+                  ),
+                  paleoEcology: const [],
                 ),
               ],
             ),

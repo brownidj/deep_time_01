@@ -1,9 +1,120 @@
+# Curated clade data for the Deep Time timeline.
+#
+# This file follows the first clade data model described in
+# docs/deep_time_clades_implementation_plan.md:
+#
+#   id, label, scientific_rank, parent_id, start_ma, end_ma, range_note,
+#   confidence, display_groups, display_priority, min_zoom_level,
+#   short_description, representative_taxa, extinction_note, tags
+#
+# It also includes forward-looking cladistics fields used by
+# docs/cladistics_column_implementation_plan.md:
+#
+#   divergence_ma, branch_priority, cladistic_role, uncertainty
+#
+# The current Dart parser ignores the forward-looking fields, so they are safe
+# to add now while keeping the data ready for the next cladistics layout work.
+
+- id: life
+  label: Life
+  scientific_rank: domain
+  start_ma: 3800.0
+  end_ma: 0.0
+  range_note: Earliest evidence of life to present
+  confidence: approximate
+  display_groups:
+    - early_life
+  display_priority: 1
+  min_zoom_level: whole
+  short_description: The broadest biological lineage represented in the timeline.
+  divergence_ma: 3800.0
+  branch_priority: 1
+  cladistic_role: backbone
+  uncertainty: approximate
+  tags:
+    - life
+    - living clade
+    - backbone
+
+- id: eukaryota
+  label: Eukaryotes
+  scientific_rank: domain
+  parent_id: life
+  start_ma: 1850.0
+  end_ma: 0.0
+  range_note: Paleoproterozoic to present
+  confidence: approximate
+  display_groups:
+    - early_life
+  display_priority: 3
+  min_zoom_level: whole
+  short_description: Organisms with complex cells containing nuclei and organelles.
+  divergence_ma: 1850.0
+  branch_priority: 3
+  cladistic_role: backbone
+  uncertainty: approximate
+  tags:
+    - eukaryote
+    - living clade
+    - backbone
+
+- id: animalia
+  label: Animals
+  scientific_rank: kingdom
+  parent_id: eukaryota
+  start_ma: 800.0
+  end_ma: 0.0
+  range_note: Neoproterozoic to present
+  confidence: approximate
+  display_groups:
+    - early_life
+    - marine_invertebrates
+    - terrestrial_vertebrates
+  display_priority: 5
+  min_zoom_level: whole
+  short_description: Multicellular eukaryotes that include invertebrates and vertebrates.
+  divergence_ma: 800.0
+  branch_priority: 5
+  cladistic_role: backbone
+  uncertainty: approximate
+  tags:
+    - animal
+    - metazoan
+    - living clade
+    - backbone
+
+- id: arthropoda
+  label: Arthropods
+  scientific_rank: phylum
+  parent_id: animalia
+  start_ma: 541.0
+  end_ma: 0.0
+  range_note: Cambrian to present
+  confidence: approximate
+  display_groups:
+    - marine_invertebrates
+  display_priority: 12
+  min_zoom_level: era
+  short_description: Joint-legged animals including trilobites, crustaceans, insects, and arachnids.
+  divergence_ma: 541.0
+  branch_priority: 12
+  cladistic_role: major_branch
+  uncertainty: approximate
+  representative_taxa:
+    - Trilobites
+    - Crustaceans
+    - Insects
+  tags:
+    - arthropod
+    - invertebrate
+    - living clade
+
 - id: trilobita
   label: Trilobites
   scientific_rank: class
   parent_id: arthropoda
   start_ma: 521.0
-  end_ma: 252
+  end_ma: 252.0
   range_note: Cambrian to end-Permian
   confidence: approximate
   display_groups:
@@ -11,22 +122,80 @@
   display_priority: 15
   min_zoom_level: period
   short_description: Marine arthropods that were especially abundant during the Paleozoic.
+  divergence_ma: 521.0
+  branch_priority: 30
+  cladistic_role: detail
+  uncertainty: approximate
   representative_taxa:
     - Olenellus
     - Elrathia
     - Phacops
+  extinction_note: Extinct at the end-Permian mass extinction.
   tags:
     - marine
     - arthropod
     - Paleozoic
     - index fossils
+    - extinction
+
+- id: mollusca
+  label: Molluscs
+  scientific_rank: phylum
+  parent_id: animalia
+  start_ma: 541.0
+  end_ma: 0.0
+  range_note: Cambrian to present
+  confidence: approximate
+  display_groups:
+    - marine_invertebrates
+  display_priority: 13
+  min_zoom_level: era
+  short_description: Diverse invertebrates including bivalves, gastropods, and cephalopods.
+  divergence_ma: 541.0
+  branch_priority: 13
+  cladistic_role: major_branch
+  uncertainty: approximate
+  representative_taxa:
+    - Bivalves
+    - Gastropods
+    - Cephalopods
+  tags:
+    - mollusc
+    - marine
+    - living clade
+
+- id: cephalopoda
+  label: Cephalopods
+  scientific_rank: class
+  parent_id: mollusca
+  start_ma: 500.0
+  end_ma: 0.0
+  range_note: Cambrian to present
+  confidence: approximate
+  display_groups:
+    - marine_invertebrates
+  display_priority: 14
+  min_zoom_level: era
+  short_description: Molluscs including nautiloids, ammonoids, squids, octopuses, and cuttlefish.
+  divergence_ma: 500.0
+  branch_priority: 20
+  cladistic_role: major_branch
+  uncertainty: approximate
+  representative_taxa:
+    - Nautiloids
+    - Ammonoids
+    - Coleoids
+  tags:
+    - cephalopod
+    - marine
+    - living clade
 
 - id: ammonoidea
   label: Ammonoids
   scientific_rank: subclass
   parent_id: cephalopoda
   start_ma: 409.0
-  end_ma: 66
+  end_ma: 66.0
   range_note: Devonian to K-Pg boundary
   confidence: approximate
   display_groups:
@@ -34,6 +203,10 @@
   display_priority: 20
   min_zoom_level: period
   short_description: Externally shelled cephalopods, especially important as Mesozoic index fossils.
+  divergence_ma: 409.0
+  branch_priority: 32
+  cladistic_role: detail
+  uncertainty: approximate
   representative_taxa:
     - Goniatites
     - Ceratites
@@ -45,20 +218,346 @@
     - index fossils
     - extinction
 
+- id: chordata
+  label: Chordates
+  scientific_rank: phylum
+  parent_id: animalia
+  start_ma: 530.0
+  end_ma: 0.0
+  range_note: Cambrian to present
+  confidence: approximate
+  display_groups:
+    - fish_early_vertebrates
+    - terrestrial_vertebrates
+    - mammals_birds
+  display_priority: 8
+  min_zoom_level: whole
+  short_description: Animals with a notochord at some life stage, including vertebrates.
+  divergence_ma: 530.0
+  branch_priority: 8
+  cladistic_role: backbone
+  uncertainty: approximate
+  tags:
+    - chordate
+    - vertebrate ancestry
+    - living clade
+    - backbone
+
+- id: vertebrata
+  label: Vertebrates
+  scientific_rank: subphylum
+  parent_id: chordata
+  start_ma: 520.0
+  end_ma: 0.0
+  range_note: Cambrian to present
+  confidence: approximate
+  display_groups:
+    - fish_early_vertebrates
+    - terrestrial_vertebrates
+    - mammals_birds
+  display_priority: 9
+  min_zoom_level: whole
+  short_description: Chordates with backbones, including fish, amphibians, reptiles, birds, and mammals.
+  divergence_ma: 520.0
+  branch_priority: 9
+  cladistic_role: backbone
+  uncertainty: approximate
+  tags:
+    - vertebrate
+    - living clade
+    - backbone
+
+- id: sarcopterygii
+  label: Lobe-finned fish
+  scientific_rank: class
+  parent_id: vertebrata
+  start_ma: 425.0
+  end_ma: 0.0
+  range_note: Silurian to present
+  confidence: approximate
+  display_groups:
+    - fish_early_vertebrates
+  display_priority: 18
+  min_zoom_level: period
+  short_description: Lobe-finned vertebrates, including the lineage leading to tetrapods.
+  divergence_ma: 425.0
+  branch_priority: 18
+  cladistic_role: major_branch
+  uncertainty: approximate
+  representative_taxa:
+    - Coelacanths
+    - Lungfish
+  tags:
+    - vertebrate
+    - fish
+    - living clade
+
+- id: tetrapoda
+  label: Tetrapods
+  scientific_rank: superclass
+  parent_id: sarcopterygii
+  start_ma: 390.0
+  end_ma: 0.0
+  range_note: Devonian to present
+  confidence: approximate
+  display_groups:
+    - fish_early_vertebrates
+    - terrestrial_vertebrates
+  display_priority: 11
+  min_zoom_level: era
+  short_description: Four-limbed vertebrates and their descendants.
+  divergence_ma: 390.0
+  branch_priority: 11
+  cladistic_role: backbone
+  uncertainty: approximate
+  tags:
+    - vertebrate
+    - terrestrial
+    - living clade
+    - backbone
+
+- id: amniota
+  label: Amniotes
+  scientific_rank: clade
+  parent_id: tetrapoda
+  start_ma: 318.0
+  end_ma: 0.0
+  range_note: Late Carboniferous to present
+  confidence: approximate
+  display_groups:
+    - terrestrial_vertebrates
+    - mammals_birds
+    - dinosaurs_mesozoic_reptiles
+  display_priority: 12
+  min_zoom_level: era
+  short_description: Tetrapods with an amniotic egg, including mammals, reptiles, and birds.
+  divergence_ma: 318.0
+  branch_priority: 12
+  cladistic_role: backbone
+  uncertainty: approximate
+  tags:
+    - vertebrate
+    - terrestrial
+    - living clade
+    - backbone
+
+- id: synapsida
+  label: Synapsids
+  scientific_rank: clade
+  parent_id: amniota
+  start_ma: 318.0
+  end_ma: 0.0
+  range_note: Late Carboniferous to present
+  confidence: approximate
+  display_groups:
+    - terrestrial_vertebrates
+    - mammals_birds
+  display_priority: 16
+  min_zoom_level: era
+  short_description: The amniote lineage that includes mammals and their extinct relatives.
+  divergence_ma: 318.0
+  branch_priority: 16
+  cladistic_role: major_branch
+  uncertainty: approximate
+  tags:
+    - vertebrate
+    - synapsid
+    - mammal ancestry
+    - living clade
+
 - id: mammalia
   label: Mammals
   scientific_rank: class
   parent_id: synapsida
   start_ma: 225.0
-  end_ma: 0
+  end_ma: 0.0
   range_note: Late Triassic to present
   confidence: approximate
   display_groups:
     - mammals_birds
+    - terrestrial_vertebrates
   display_priority: 10
   min_zoom_level: era
   short_description: Endothermic vertebrates characterised by hair, mammary glands, and specialised teeth.
+  divergence_ma: 225.0
+  branch_priority: 15
+  cladistic_role: backbone
+  uncertainty: approximate
   tags:
     - vertebrate
     - mammal
+    - living clade
+    - backbone
+
+- id: sauropsida
+  label: Sauropsids
+  scientific_rank: clade
+  parent_id: amniota
+  start_ma: 318.0
+  end_ma: 0.0
+  range_note: Late Carboniferous to present
+  confidence: approximate
+  display_groups:
+    - terrestrial_vertebrates
+    - dinosaurs_mesozoic_reptiles
+    - mammals_birds
+  display_priority: 17
+  min_zoom_level: era
+  short_description: The amniote lineage including reptiles, dinosaurs, and birds.
+  divergence_ma: 318.0
+  branch_priority: 17
+  cladistic_role: major_branch
+  uncertainty: approximate
+  tags:
+    - vertebrate
+    - reptile
+    - bird ancestry
+    - living clade
+
+- id: dinosauria
+  label: Dinosaurs
+  scientific_rank: clade
+  parent_id: sauropsida
+  start_ma: 233.0
+  end_ma: 66.0
+  range_note: Late Triassic to K-Pg boundary, excluding living birds in this simplified display entry
+  confidence: approximate
+  display_groups:
+    - dinosaurs_mesozoic_reptiles
+  display_priority: 10
+  min_zoom_level: era
+  short_description: Mesozoic archosaurs that dominated many terrestrial ecosystems.
+  divergence_ma: 233.0
+  branch_priority: 19
+  cladistic_role: major_branch
+  uncertainty: approximate
+  representative_taxa:
+    - Tyrannosaurus
+    - Triceratops
+    - Diplodocus
+  extinction_note: Non-avian dinosaurs became extinct at the K-Pg boundary.
+  tags:
+    - vertebrate
+    - dinosaur
+    - Mesozoic
+    - extinction
+
+- id: aves
+  label: Birds
+  scientific_rank: class
+  parent_id: dinosauria
+  start_ma: 160.0
+  end_ma: 0.0
+  range_note: Jurassic to present
+  confidence: approximate
+  display_groups:
+    - mammals_birds
+    - dinosaurs_mesozoic_reptiles
+  display_priority: 14
+  min_zoom_level: period
+  short_description: Living feathered theropod dinosaurs.
+  divergence_ma: 160.0
+  branch_priority: 24
+  cladistic_role: major_branch
+  uncertainty: approximate
+  tags:
+    - vertebrate
+    - bird
+    - dinosaur
+    - living clade
+
+- id: archaeplastida
+  label: Plants and algae
+  scientific_rank: clade
+  parent_id: eukaryota
+  start_ma: 1600.0
+  end_ma: 0.0
+  range_note: Proterozoic to present
+  confidence: approximate
+  display_groups:
+    - early_life
+    - plants
+  display_priority: 7
+  min_zoom_level: whole
+  short_description: Photosynthetic eukaryotes including green algae and land plants.
+  divergence_ma: 1600.0
+  branch_priority: 7
+  cladistic_role: backbone
+  uncertainty: approximate
+  tags:
+    - plant
+    - algae
+    - photosynthesis
+    - living clade
+    - backbone
+
+- id: embryophyta
+  label: Land plants
+  scientific_rank: clade
+  parent_id: archaeplastida
+  start_ma: 470.0
+  end_ma: 0.0
+  range_note: Ordovician to present
+  confidence: approximate
+  display_groups:
+    - plants
+  display_priority: 12
+  min_zoom_level: era
+  short_description: Plants adapted to life on land.
+  divergence_ma: 470.0
+  branch_priority: 14
+  cladistic_role: major_branch
+  uncertainty: approximate
+  tags:
+    - plant
+    - terrestrial
+    - living clade
+
+- id: tracheophyta
+  label: Vascular plants
+  scientific_rank: clade
+  parent_id: embryophyta
+  start_ma: 430.0
+  end_ma: 0.0
+  range_note: Silurian to present
+  confidence: approximate
+  display_groups:
+    - plants
+  display_priority: 16
+  min_zoom_level: period
+  short_description: Land plants with specialised vascular tissues.
+  divergence_ma: 430.0
+  branch_priority: 22
+  cladistic_role: major_branch
+  uncertainty: approximate
+  tags:
+    - plant
+    - vascular plant
+    - living clade
+
+- id: angiospermae
+  label: Flowering plants
+  scientific_rank: clade
+  parent_id: tracheophyta
+  start_ma: 140.0
+  end_ma: 0.0
+  range_note: Early Cretaceous to present
+  confidence: approximate
+  display_groups:
+    - plants
+  display_priority: 13
+  min_zoom_level: period
+  short_description: Seed plants that produce flowers and enclosed seeds.
+  divergence_ma: 140.0
+  branch_priority: 25
+  cladistic_role: major_branch
+  uncertainty: approximate
+  representative_taxa:
+    - Magnolias
+    - Grasses
+    - Eudicots
+  tags:
+    - plant
+    - flowering plant
+    - Cretaceous
     - living clade

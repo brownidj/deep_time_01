@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:deep_time/application/services/timeline_layout_models.dart';
 import 'package:deep_time/domain/models/clade.dart';
+import 'package:deep_time/domain/models/paleo_ecology_entry.dart';
 import 'package:deep_time/domain/models/timeline_marker_catalog.dart';
 import 'package:deep_time/ui/models/clade_view_mode.dart';
 import 'package:deep_time/ui/models/time_label_mode.dart';
@@ -30,6 +31,8 @@ class TimelineBody extends StatelessWidget {
     required this.cladeSearchQuery,
     required this.cladeSpotlightId,
     required this.onCladeSpotlight,
+    required this.visibleTracks,
+    required this.paleoEcology,
   });
 
   final TimelineLayoutSnapshot layout;
@@ -47,6 +50,8 @@ class TimelineBody extends StatelessWidget {
   final String cladeSearchQuery;
   final String? cladeSpotlightId;
   final ValueChanged<Clade> onCladeSpotlight;
+  final Set<TimelineTrack> visibleTracks;
+  final List<PaleoEcologyEntry> paleoEcology;
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +89,10 @@ class TimelineBody extends StatelessWidget {
               constraints: constraints,
               config: config,
               minScrollHeight: minScrollHeight,
+              trackOrder: [
+                for (final track in kDefaultTimelineTrackOrder)
+                  if (visibleTracks.contains(track)) track,
+              ],
             );
             return TimelineBodyContent(
               layout: layout,
@@ -102,6 +111,7 @@ class TimelineBody extends StatelessWidget {
               cladeSearchQuery: cladeSearchQuery,
               cladeSpotlightId: cladeSpotlightId,
               onCladeSpotlight: onCladeSpotlight,
+              paleoEcology: paleoEcology,
             );
           },
         ),
@@ -181,11 +191,11 @@ class TimelineBody extends StatelessWidget {
         TimelineTrack.epoch: epochWidth,
         TimelineTrack.stage: stageWidth,
         TimelineTrack.rlife: rlifeWidth,
+        TimelineTrack.paleoEcology: rlifeWidth,
         TimelineTrack.extinctions: extinctionsWidth,
         TimelineTrack.continents: continentsWidth,
         TimelineTrack.events: rlifeWidth,
       },
     );
   }
-
 }

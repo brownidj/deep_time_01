@@ -30,6 +30,7 @@ class TimelineColumnHeaders extends StatelessWidget {
           TimelineTrack.period,
           TimelineTrack.epoch,
           TimelineTrack.stage,
+          TimelineTrack.paleoEcology,
           TimelineTrack.rlife,
           TimelineTrack.extinctions,
           TimelineTrack.continents,
@@ -86,12 +87,14 @@ class TimelineColumnHeaders extends StatelessWidget {
         return labelMode.stageRowLabel();
       case TimelineTrack.rlife:
         return 'Representative life';
+      case TimelineTrack.paleoEcology:
+        return 'Paleo-ecology';
       case TimelineTrack.events:
         return 'Events';
       case TimelineTrack.extinctions:
         return 'Ext.';
       case TimelineTrack.continents:
-        return 'Cont.';
+        return 'Land masses';
       case TimelineTrack.clades:
         return 'Clades';
       case TimelineTrack.ma:

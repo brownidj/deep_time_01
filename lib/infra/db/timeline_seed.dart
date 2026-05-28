@@ -7,6 +7,7 @@ import 'package:yaml/yaml.dart';
 
 class TimelineSeeder {
   const TimelineSeeder._();
+  static const int _maPrecision = 3;
 
   static Future<void> seedIfEmpty(Database db) async {
     final result = db.select(
@@ -22,6 +23,7 @@ class TimelineSeeder {
 
     try {
       if (count > 0) {
+        await _logDivisionDateDiffs(db);
         _clearExistingData(db);
       }
       await _seedDivisionsFromYaml(db);
@@ -51,15 +53,14 @@ class TimelineSeeder {
   }
 
   static Future<int> _expectedDivisionCount() async {
-    final yamlText = await rootBundle.loadString('data/time_divisions.yaml');
-    final document = loadYaml(yamlText) as YamlMap;
-    final eons = document['eons'];
+    final eons = await _loadNormalizedEons();
     return _countNodes(eons);
   }
 
   static Future<String> _currentYamlHash() async {
-    final yamlText = await rootBundle.loadString('data/time_divisions.yaml');
-    return _stableHash(yamlText);
+    final eons = await _loadNormalizedEons();
+    final canonical = jsonEncode(_canonicalNodeList(eons));
+    return _stableHash(canonical);
   }
 
   static String? _readSeedHash(Database db) {
@@ -107,9 +108,7 @@ class TimelineSeeder {
   }
 
   static Future<void> _seedDivisionsFromYaml(Database db) async {
-    final yamlText = await rootBundle.loadString('data/time_divisions.yaml');
-    final document = loadYaml(yamlText) as YamlMap;
-    final eons = _readNodes(document['eons']);
+    final eons = await _loadNormalizedEons();
 
     db.execute('BEGIN');
     final insertDivision = db.prepare('''
@@ -126,6 +125,7 @@ INSERT INTO geologic_divisions (
 
     try {
       _assignEndDates(eons, parentEndMa: 0.0);
+      _validateNodeDates(eons);
       for (final node in eons) {
         _insertNode(db, insertDivision, node, parentId: null);
       }
@@ -152,21 +152,21 @@ INSERT INTO geologic_divisions (
         'Diverse terrestrial reptiles spanning the Triassic to Cretaceous.',
       ]);
       final dinosaurId = db.lastInsertRowId;
-      insertRange.execute([dinosaurId, 233.0, 66.0]);
+      insertRange.execute([dinosaurId, _normMa(233.0), _normMa(66.0)]);
 
       insertTaxon.execute([
         'Mammals',
         'Synapsids that rose to dominance after the K-Pg boundary.',
       ]);
       final mammalId = db.lastInsertRowId;
-      insertRange.execute([mammalId, 200.0, 0.0]);
+      insertRange.execute([mammalId, _normMa(200.0), _normMa(0.0)]);
 
       insertTaxon.execute([
         'Flowering plants',
         'Angiosperms that diversified during the Cretaceous and Cenozoic.',
       ]);
       final floraId = db.lastInsertRowId;
-      insertRange.execute([floraId, 140.0, 0.0]);
+      insertRange.execute([floraId, _normMa(140.0), _normMa(0.0)]);
     } finally {
       insertTaxon.close();
       insertRange.close();
@@ -180,6 +180,15 @@ INSERT INTO geologic_divisions (
     return value.whereType<YamlMap>().map(_DivisionNode.fromYaml).toList();
   }
 
+  static Future<List<_DivisionNode>> _loadNormalizedEons() async {
+    final yamlText = await rootBundle.loadString('data/time_divisions.yaml');
+    final document = loadYaml(yamlText) as YamlMap;
+    final eons = _readNodes(document['eons']);
+    _assignEndDates(eons, parentEndMa: 0.0);
+    _validateNodeDates(eons);
+    return eons;
+  }
+
   static void _assignEndDates(
     List<_DivisionNode> nodes, {
     required double parentEndMa,
@@ -189,9 +198,109 @@ INSERT INTO geologic_divisions (
     for (var index = 0; index < sorted.length; index++) {
       final current = sorted[index];
       final next = index + 1 < sorted.length ? sorted[index + 1] : null;
-      current.endMa = next?.startMa ?? parentEndMa;
+      current.endMa = _normMa(next?.startMa ?? parentEndMa);
       _assignEndDates(current.children, parentEndMa: current.endMa);
     }
+  }
+
+  static void _validateNodeDates(List<_DivisionNode> nodes) {
+    for (final node in nodes) {
+      if (node.startMa < 0) {
+        throw StateError(
+          'Invalid start_ma for ${node.rank}:${node.name}: ${node.startMa}',
+        );
+      }
+      if (node.endMa < 0) {
+        throw StateError(
+          'Invalid end_ma for ${node.rank}:${node.name}: ${node.endMa}',
+        );
+      }
+      if (node.startMa < node.endMa) {
+        throw StateError(
+          'Invalid range for ${node.rank}:${node.name}: ${node.startMa} < ${node.endMa}',
+        );
+      }
+      if (node.uncertaintyMa != null && node.uncertaintyMa! < 0) {
+        throw StateError(
+          'Invalid uncertainty_ma for ${node.rank}:${node.name}: ${node.uncertaintyMa}',
+        );
+      }
+      _validateNodeDates(node.children);
+    }
+  }
+
+  static List<Map<String, Object?>> _canonicalNodeList(List<_DivisionNode> nodes) {
+    final out = <Map<String, Object?>>[];
+    for (final node in nodes) {
+      out.add({
+        'name': node.name,
+        'rank': node.rank,
+        'start_ma': node.startMa,
+        'end_ma': node.endMa,
+        'uncertainty_ma': node.uncertaintyMa,
+        'children': _canonicalNodeList(node.children),
+      });
+    }
+    return out;
+  }
+
+  static Future<void> _logDivisionDateDiffs(Database db) async {
+    if (!AppDebug.enabled) {
+      return;
+    }
+    final currentRows = db.select('''
+SELECT name, rank, start_ma, end_ma, start_ma_uncertainty
+FROM geologic_divisions
+''');
+    final currentByKey = <String, ({double start, double end, double? uncertainty})>{};
+    for (final row in currentRows) {
+      final key = '${row['rank']}::${row['name']}';
+      currentByKey[key] = (
+        start: _normMa((row['start_ma'] as num).toDouble()),
+        end: _normMa((row['end_ma'] as num).toDouble()),
+        uncertainty: row['start_ma_uncertainty'] == null
+            ? null
+            : _normMa((row['start_ma_uncertainty'] as num).toDouble()),
+      );
+    }
+
+    final nextEons = await _loadNormalizedEons();
+    final nextByKey = <String, ({double start, double end, double? uncertainty})>{};
+    void collect(List<_DivisionNode> nodes) {
+      for (final node in nodes) {
+        nextByKey['${node.rank}::${node.name}'] = (
+          start: node.startMa,
+          end: node.endMa,
+          uncertainty: node.uncertaintyMa,
+        );
+        collect(node.children);
+      }
+    }
+
+    collect(nextEons);
+
+    for (final entry in nextByKey.entries) {
+      final before = currentByKey[entry.key];
+      final after = entry.value;
+      if (before == null) {
+        continue;
+      }
+      final changed = before.start != after.start ||
+          before.end != after.end ||
+          before.uncertainty != after.uncertainty;
+      if (changed) {
+        AppDebug.log(
+          'Date diff ${entry.key}: '
+          'start ${before.start} -> ${after.start}, '
+          'end ${before.end} -> ${after.end}, '
+          'uncertainty ${before.uncertainty} -> ${after.uncertainty}',
+        );
+      }
+    }
+  }
+
+  static double _normMa(double value) {
+    return double.parse(value.toStringAsFixed(_maPrecision));
   }
 
   static void _insertNode(
@@ -237,7 +346,7 @@ class _DivisionNode {
     return _DivisionNode(
       name: name,
       rank: rank,
-      startMa: startMa,
+      startMa: TimelineSeeder._normMa(startMa),
       uncertaintyMa: uncertaintyMa,
       explanation: explanation,
       children: children,
@@ -257,9 +366,12 @@ class _DivisionNode {
       return value.toDouble();
     }
     if (value is String) {
-      return double.tryParse(value) ?? 0.0;
+      final parsed = double.tryParse(value);
+      if (parsed != null) {
+        return parsed;
+      }
     }
-    return 0.0;
+    throw StateError('Invalid numeric value for start/end Ma: $value');
   }
 
   static double? _parseOptionalDouble(Object? value) {
@@ -270,7 +382,8 @@ class _DivisionNode {
       return value.toDouble();
     }
     if (value is String) {
-      return double.tryParse(value);
+      final parsed = double.tryParse(value);
+      return parsed == null ? null : TimelineSeeder._normMa(parsed);
     }
     return null;
   }

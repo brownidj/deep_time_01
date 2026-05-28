@@ -8,6 +8,7 @@ import 'package:deep_time/infra/repositories/sqlite_geologic_division_repository
 import 'package:deep_time/infra/repositories/sqlite_paleontology_repository.dart';
 import 'package:deep_time/infra/repositories/yaml_clade_repository.dart';
 import 'package:deep_time/infra/repositories/yaml_continent_repository.dart';
+import 'package:deep_time/infra/repositories/yaml_paleo_ecology_repository.dart';
 import 'package:deep_time/infra/repositories/yaml_clade_display_group_repository.dart';
 import 'package:deep_time/infra/repositories/yaml_clade_representative_repository.dart';
 import 'package:deep_time/infra/repositories/yaml_timeline_marker_repository.dart';
@@ -58,6 +59,9 @@ class AppDependencies {
         markerRepository: markerRepository,
         cladeRepository: cladeRepository,
         continentRepository: continentRepository,
+        paleoEcologyRepository: YamlPaleoEcologyRepository(
+          assetPath: 'data/paleo_ecology.yaml',
+        ),
       );
       return AppDependencies(
         database: database,

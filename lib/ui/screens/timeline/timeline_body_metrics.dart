@@ -61,6 +61,7 @@ class TimelineBodyMetrics {
     required BoxConstraints constraints,
     TimelineOrientationConfig config = kDefaultTimelineOrientation,
     double? minScrollHeight,
+    List<TimelineTrack>? trackOrder,
   }) {
     const labelWidth = 96.0;
     const eonHeight = 44.0;
@@ -101,13 +102,16 @@ class TimelineBodyMetrics {
         AppDebug.timelineScale
             .clamp(AppDebug.minTimelineScale, AppDebug.maxTimelineScale)
             .toDouble();
-    final trackOrder = List<TimelineTrack>.from(kDefaultTimelineTrackOrder);
+    final resolvedTrackOrder =
+        (trackOrder == null || trackOrder.isEmpty)
+        ? List<TimelineTrack>.from(kDefaultTimelineTrackOrder)
+        : List<TimelineTrack>.from(trackOrder);
     final trackWidths = <TimelineTrack, double>{
-      for (final track in trackOrder) track: config.trackWidthFor(track),
+      for (final track in resolvedTrackOrder) track: config.trackWidthFor(track),
     };
     final trackStartXs = <TimelineTrack, double>{};
     var trackCursor = 0.0;
-    for (final track in trackOrder) {
+    for (final track in resolvedTrackOrder) {
       trackStartXs[track] = trackCursor;
       trackCursor += trackWidths[track]!;
     }
@@ -204,7 +208,7 @@ class TimelineBodyMetrics {
       periodUnits: periodUnits,
       scrollWidth: scrollWidth,
       scrollHeight: scrollHeight,
-      trackOrder: List.unmodifiable(trackOrder),
+      trackOrder: List.unmodifiable(resolvedTrackOrder),
       trackWidths: Map.unmodifiable(trackWidths),
       trackStartXs: Map.unmodifiable(trackStartXs),
       trackColumnsWidth: trackColumnsWidth,

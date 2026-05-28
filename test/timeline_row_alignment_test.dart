@@ -7,6 +7,7 @@ import 'package:deep_time/ui/models/clade_view_mode.dart';
 import 'package:deep_time/ui/models/time_label_mode.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_body.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_column_headers.dart';
+import 'package:deep_time/ui/screens/timeline/timeline_orientation.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_vertical_columns.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_vertical_overlays.dart';
 
@@ -45,6 +46,10 @@ void main() {
                   cladeSearchQuery: '',
                   cladeSpotlightId: null,
                   onCladeSpotlight: (_) {},
+                  visibleTracks: Set<TimelineTrack>.from(
+                    kDefaultTimelineTrackOrder,
+                  ),
+                  paleoEcology: const [],
                 ),
               ],
             ),
@@ -113,6 +118,10 @@ void main() {
                   cladeSearchQuery: '',
                   cladeSpotlightId: null,
                   onCladeSpotlight: (clade) => tappedId = clade.id,
+                  visibleTracks: Set<TimelineTrack>.from(
+                    kDefaultTimelineTrackOrder,
+                  ),
+                  paleoEcology: const [],
                 ),
               ],
             ),
@@ -181,6 +190,10 @@ void main() {
                   cladeSearchQuery: '',
                   cladeSpotlightId: null,
                   onCladeSpotlight: (_) {},
+                  visibleTracks: Set<TimelineTrack>.from(
+                    kDefaultTimelineTrackOrder,
+                  ),
+                  paleoEcology: const [],
                 ),
               ],
             ),

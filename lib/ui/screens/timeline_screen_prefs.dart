@@ -7,6 +7,8 @@ mixin _TimelineScreenPreferences on State<TimelineScreen> {
   set _cladeViewMode(CladeViewMode value);
   String get _cladeCategoryId;
   set _cladeCategoryId(String value);
+  Set<TimelineTrack> get _visibleTracks;
+  set _visibleTracks(Set<TimelineTrack> value);
   List<CladeDisplayGroup> get _cladeDisplayGroups;
   bool get _labelModeRetryScheduled;
   set _labelModeRetryScheduled(bool value);
@@ -25,6 +27,10 @@ mixin _TimelineScreenPreferences on State<TimelineScreen> {
       final storedScale = prefs.getDouble(_timelineScaleKey);
       final storedCladeView = prefs.getString(_cladeViewModeKey);
       final storedCladeCategory = prefs.getString(_cladeCategoryKey);
+      final storedContinentVisible = prefs.getBool(_continentColumnVisibleKey);
+      final storedPaleoEcologyVisible = prefs.getBool(
+        _paleoEcologyColumnVisibleKey,
+      );
       if (!mounted) {
         return;
       }
@@ -36,6 +42,20 @@ mixin _TimelineScreenPreferences on State<TimelineScreen> {
         }
         if (storedScale != null) {
           AppDebug.timelineScale = storedScale;
+        }
+        if (storedContinentVisible != null) {
+          final nextVisible = Set<TimelineTrack>.from(_visibleTracks);
+          if (!storedContinentVisible) {
+            nextVisible.remove(TimelineTrack.continents);
+          }
+          _visibleTracks = nextVisible;
+        }
+        if (storedPaleoEcologyVisible != null) {
+          final nextVisible = Set<TimelineTrack>.from(_visibleTracks);
+          if (!storedPaleoEcologyVisible) {
+            nextVisible.remove(TimelineTrack.paleoEcology);
+          }
+          _visibleTracks = nextVisible;
         }
       });
     } on PlatformException catch (error, stackTrace) {
@@ -146,6 +166,52 @@ mixin _TimelineScreenPreferences on State<TimelineScreen> {
     }
   }
 
+  Future<void> _saveContinentColumnVisible(bool visible) async {
+    if (!widget.enablePreferences) {
+      return;
+    }
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_continentColumnVisibleKey, visible);
+    } on PlatformException catch (error, stackTrace) {
+      _scheduleLabelModeRetry(error);
+      AppDebug.log(
+        'Failed to save continent column visibility',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    } catch (error, stackTrace) {
+      AppDebug.log(
+        'Failed to save continent column visibility',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
+  Future<void> _savePaleoEcologyColumnVisible(bool visible) async {
+    if (!widget.enablePreferences) {
+      return;
+    }
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_paleoEcologyColumnVisibleKey, visible);
+    } on PlatformException catch (error, stackTrace) {
+      _scheduleLabelModeRetry(error);
+      AppDebug.log(
+        'Failed to save paleo-ecology column visibility',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    } catch (error, stackTrace) {
+      AppDebug.log(
+        'Failed to save paleo-ecology column visibility',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
   void _scheduleLabelModeRetry(PlatformException error) {
     if (_labelModeRetryScheduled || !widget.enablePreferences) {
       return;
@@ -193,6 +259,24 @@ mixin _TimelineScreenPreferences on State<TimelineScreen> {
               _cladeCategoryId = id;
             });
             _saveCladeCategory(id);
+          },
+          visibleTracks: _visibleTracks,
+          onTrackVisibilityChanged: (track, visible) {
+            setState(() {
+              final next = Set<TimelineTrack>.from(_visibleTracks);
+              if (visible) {
+                next.add(track);
+              } else {
+                next.remove(track);
+              }
+              _visibleTracks = next;
+            });
+            if (track == TimelineTrack.continents) {
+              _saveContinentColumnVisible(visible);
+            }
+            if (track == TimelineTrack.paleoEcology) {
+              _savePaleoEcologyColumnVisible(visible);
+            }
           },
         );
       },

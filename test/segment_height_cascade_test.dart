@@ -6,6 +6,7 @@ import 'package:deep_time/domain/models/timeline_marker_catalog.dart';
 import 'package:deep_time/ui/models/clade_view_mode.dart';
 import 'package:deep_time/ui/models/time_label_mode.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_body.dart';
+import 'package:deep_time/ui/screens/timeline/timeline_orientation.dart';
 
 import 'timeline_row_alignment_helpers.dart';
 
@@ -42,6 +43,10 @@ void main() {
                   cladeSearchQuery: '',
                   cladeSpotlightId: null,
                   onCladeSpotlight: (_) {},
+                  visibleTracks: Set<TimelineTrack>.from(
+                    kDefaultTimelineTrackOrder,
+                  ),
+                  paleoEcology: const [],
                 ),
               ],
             ),
@@ -103,6 +108,10 @@ void main() {
                   cladeSearchQuery: '',
                   cladeSpotlightId: null,
                   onCladeSpotlight: (_) {},
+                  visibleTracks: Set<TimelineTrack>.from(
+                    kDefaultTimelineTrackOrder,
+                  ),
+                  paleoEcology: const [],
                 ),
               ],
             ),
@@ -147,7 +156,6 @@ void main() {
     expect(eraHeight! + 0.1, greaterThanOrEqualTo(requiredTotal));
     expect(eonHeight! + 0.1, greaterThanOrEqualTo(requiredTotal));
   });
-
 }
 
 Future<void> _setLargeSurface(WidgetTester tester) async {
@@ -156,7 +164,6 @@ Future<void> _setLargeSurface(WidgetTester tester) async {
     await tester.binding.setSurfaceSize(null);
   });
 }
-
 
 TimelineLayoutSnapshot _cascadeLayout() {
   return const TimelineLayoutSnapshot(

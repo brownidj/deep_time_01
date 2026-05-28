@@ -18,6 +18,9 @@ class _TimelineScreenState extends State<TimelineScreen>
   List<String> _cladeRepresentativeIds = const [];
   String _cladeSearchQuery = '';
   String? _cladeSpotlightId;
+  Set<TimelineTrack> _visibleTracks = Set<TimelineTrack>.from(
+    kDefaultTimelineTrackOrder,
+  );
   @override
   bool _labelModeRetryScheduled = false;
   @override
@@ -58,6 +61,7 @@ class _TimelineScreenState extends State<TimelineScreen>
         final palette = DeepTimePalette(snapshot.data!.palette);
         final markers = snapshot.data!.markers;
         final continents = snapshot.data!.continents;
+        final paleoEcology = snapshot.data!.paleoEcology;
         final clades = snapshot.data!.clades;
         final layout = _layoutService.build(divisions, markers, continents);
         _primeSelection(
@@ -158,6 +162,8 @@ class _TimelineScreenState extends State<TimelineScreen>
                         _cladeSearchQuery = clade.label;
                       });
                     },
+                    visibleTracks: _visibleTracks,
+                    paleoEcology: paleoEcology,
                   ),
                 ],
               ),

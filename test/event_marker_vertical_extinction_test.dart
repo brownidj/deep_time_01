@@ -7,6 +7,7 @@ import 'package:deep_time/domain/models/timeline_palette.dart';
 import 'package:deep_time/ui/models/clade_view_mode.dart';
 import 'package:deep_time/ui/models/time_label_mode.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_body.dart';
+import 'package:deep_time/ui/screens/timeline/timeline_orientation.dart';
 import 'package:deep_time/ui/theme/deep_time_palette.dart';
 
 void main() {
@@ -123,13 +124,13 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-        home: Scaffold(
-          body: SizedBox(
-            width: 2000,
-            height: 1200,
-            child: Column(
-              children: [
-                TimelineBody(
+          home: Scaffold(
+            body: SizedBox(
+              width: 2000,
+              height: 1200,
+              child: Column(
+                children: [
+                  TimelineBody(
                     layout: layout,
                     palette: palette,
                     markers: markers,
@@ -145,6 +146,9 @@ void main() {
                     cladeSearchQuery: '',
                     cladeSpotlightId: null,
                     onCladeSpotlight: (_) {},
+                    visibleTracks: {...kDefaultTimelineTrackOrder}
+                      ..remove(TimelineTrack.paleoEcology),
+                    paleoEcology: const [],
                   ),
                 ],
               ),

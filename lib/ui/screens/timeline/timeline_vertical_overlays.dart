@@ -34,6 +34,7 @@ class TimelineVerticalOverlays extends StatelessWidget {
           TimelineTrack.period,
           TimelineTrack.epoch,
           TimelineTrack.stage,
+          TimelineTrack.paleoEcology,
           TimelineTrack.rlife,
           TimelineTrack.extinctions,
           TimelineTrack.continents,
@@ -121,8 +122,12 @@ class TimelineVerticalOverlays extends StatelessWidget {
           trackCursor += width;
         }
         final eraPeriodBoundaryX = periodStart;
-        final eventAnchorX = trackStarts[TimelineTrack.events] ?? 0.0;
-        final extinctionAnchorX = trackStarts[TimelineTrack.extinctions] ?? 0.0;
+        final eventAnchorX =
+            trackStarts[TimelineTrack.events] ??
+            scaledX(metrics.trackX(TimelineTrack.events));
+        final extinctionAnchorX =
+            trackStarts[TimelineTrack.extinctions] ??
+            scaledX(metrics.trackX(TimelineTrack.extinctions));
         final eventLines = buildConnectorLines(
           ys: eventPointYs(
             metrics.layout.eventSegments,
@@ -279,7 +284,11 @@ class _DebugBoundaryLabel extends StatelessWidget {
         color: Colors.black87,
         child: Text(
           text,
-          style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.w700),
+          style: TextStyle(
+            color: color,
+            fontSize: 10,
+            fontWeight: FontWeight.w700,
+          ),
         ),
       ),
     );

@@ -1,5 +1,5 @@
 ```
-Name                               start_Ma  error  Rank
+Name                               start_Ma  error  Rank    Palaeo-ecology
 Hadean                                 4567         Eon
 Archean                                4031      3  Eon
 │   ├── Eoarchean                      4031      3  Era

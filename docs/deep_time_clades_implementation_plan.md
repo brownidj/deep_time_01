@@ -2,6 +2,8 @@
 
 This document outlines a staged approach for adding clades to the `gts_01` / **Deep Time** desktop app without overwhelming the user. The main idea is to treat clades as a separate biological layer plotted onto the geological timescale, rather than embedding clades directly into periods, epochs, or stages.
 
+For the newer plan to use the full right-side `Clades` column as a constrained cladistic branching canvas, see `docs/cladistics_column_implementation_plan.md`. That document supersedes the older "horizontal range bar" assumption for the vertical timeline column while keeping the data-first and progressive-disclosure principles from this plan.
+
 ## 1. Core design principle
 
 The geological timescale should remain the structural framework of the app. Clades should be a biological overlay.
