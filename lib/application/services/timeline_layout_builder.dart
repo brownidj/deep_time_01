@@ -11,6 +11,7 @@ class TimelineLayoutBuilder {
     List<GeologicDivision> divisions,
     TimelineMarkerCatalog markers,
     List<TimelineEventDefinition> continents,
+    List<TimelineEventDefinition> waterways,
   ) {
     if (divisions.isEmpty) {
       return const TimelineLayoutSnapshot(
@@ -87,6 +88,11 @@ class TimelineLayoutBuilder {
       periodSegments: layout.periodSegments,
       eraSegments: layout.eraSegments,
     );
+    final waterwaysBuilder = TimelineEventsBuilder(definitions: waterways);
+    final waterwaySegments = waterwaysBuilder.buildEventsRow(
+      periodSegments: layout.periodSegments,
+      eraSegments: layout.eraSegments,
+    );
 
     return TimelineLayoutSnapshot(
       divisions: divisions,
@@ -98,6 +104,7 @@ class TimelineLayoutBuilder {
       rlifeSegments: rlifeSegments,
       eventSegments: eventSegments,
       continentSegments: continentSegments,
+      waterwaySegments: waterwaySegments,
       oldestMa: oldestMa,
       youngestMa: youngestMa,
       fixedHeight: layout.fixedHeight,

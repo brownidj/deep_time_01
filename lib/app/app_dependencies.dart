@@ -13,6 +13,7 @@ import 'package:deep_time/infra/repositories/yaml_clade_display_group_repository
 import 'package:deep_time/infra/repositories/yaml_clade_representative_repository.dart';
 import 'package:deep_time/infra/repositories/yaml_timeline_marker_repository.dart';
 import 'package:deep_time/infra/repositories/yaml_timeline_palette_repository.dart';
+import 'package:deep_time/infra/repositories/yaml_waterway_repository.dart';
 
 class AppDependencies {
   AppDependencies({
@@ -52,6 +53,9 @@ class AppDependencies {
       final continentRepository = YamlContinentRepository(
         assetPath: 'data/continents.yaml',
       );
+      final waterwayRepository = YamlWaterwayRepository(
+        assetPath: 'data/waterways.yaml',
+      );
       final timelineService = TimelineService(
         divisionRepository: divisionRepository,
         paleontologyRepository: paleontologyRepository,
@@ -59,6 +63,7 @@ class AppDependencies {
         markerRepository: markerRepository,
         cladeRepository: cladeRepository,
         continentRepository: continentRepository,
+        waterwayRepository: waterwayRepository,
         paleoEcologyRepository: YamlPaleoEcologyRepository(
           assetPath: 'data/paleo_ecology.yaml',
         ),

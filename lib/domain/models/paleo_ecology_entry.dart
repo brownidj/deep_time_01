@@ -9,6 +9,11 @@ class PaleoEcologyEntry {
     this.avgHumidityDeltaPercent,
     this.avgCo2Ppm,
     this.seaLevelDeltaM,
+    this.icehouseGreenhouseState,
+    this.dominantEcology,
+    this.confidence,
+    this.note,
+    this.sources = const [],
   });
 
   final GeologicRank rank;
@@ -18,6 +23,11 @@ class PaleoEcologyEntry {
   final double? avgHumidityDeltaPercent;
   final double? avgCo2Ppm;
   final double? seaLevelDeltaM;
+  final String? icehouseGreenhouseState;
+  final String? dominantEcology;
+  final String? confidence;
+  final String? note;
+  final List<String> sources;
 
   bool get hasMetricSummary =>
       avgTempDeltaC != null ||

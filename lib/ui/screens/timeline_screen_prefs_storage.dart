@@ -116,6 +116,29 @@ extension _TimelineScreenPreferencesStorage on _TimelineScreenPreferences {
     }
   }
 
+  Future<void> _saveWaterwayColumnVisible(bool visible) async {
+    if (!widget.enablePreferences) {
+      return;
+    }
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_waterwayColumnVisibleKey, visible);
+    } on PlatformException catch (error, stackTrace) {
+      _scheduleLabelModeRetry(error);
+      AppDebug.log(
+        'Failed to save waterway column visibility',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    } catch (error, stackTrace) {
+      AppDebug.log(
+        'Failed to save waterway column visibility',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
   Future<void> _savePaleoEcologyColumnVisible(bool visible) async {
     if (!widget.enablePreferences) {
       return;

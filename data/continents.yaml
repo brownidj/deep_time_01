@@ -140,6 +140,25 @@ continents:
       Gondwana existed before Pangaea, formed the southern component of Pangaea,
       and later broke apart during the Mesozoic and Cenozoic.
 
+  - id: breakup_of_gondwana
+    label: Breakup of Gondwana
+    short_label: Gondwana breakup
+    type: bar
+    start_ma: 175.0
+    end_ma: 30.0
+    confidence: approximate
+    category: continental_breakup
+    explanation: |
+      The breakup of Gondwana was a long Mesozoic to Cenozoic process in which
+      the southern supercontinent fragmented into the landmasses that became
+      South America, Africa, Antarctica, Australia, India, Arabia, Madagascar,
+      and related continental blocks.
+
+      This marker spans the interval after the main Gondwana bar and before the
+      simplified modern-continent interval. It is intended to show the extended
+      transition from a connected southern supercontinent to a more modern
+      arrangement of separated southern continents.
+
   - id: pangaea
     label: Pangaea
     short_label: Pangaea

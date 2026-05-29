@@ -20,6 +20,10 @@ class TimeApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF2F6F74)),
         useMaterial3: true,
+        tooltipTheme: const TooltipThemeData(
+          waitDuration: Duration(seconds: 2),
+          exitDuration: Duration.zero,
+        ),
       ),
       home: _BootstrapScreen(enablePreferences: enablePreferences),
     );

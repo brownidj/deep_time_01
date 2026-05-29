@@ -15,6 +15,7 @@ import 'package:deep_time/domain/repositories/paleontology_repository.dart';
 import 'package:deep_time/domain/repositories/paleo_ecology_repository.dart';
 import 'package:deep_time/domain/repositories/timeline_marker_repository.dart';
 import 'package:deep_time/domain/repositories/timeline_palette_repository.dart';
+import 'package:deep_time/domain/repositories/waterway_repository.dart';
 
 class _FakeDivisionRepository implements GeologicDivisionRepository {
   _FakeDivisionRepository(this._divisions);
@@ -153,6 +154,15 @@ class _FakeContinentRepository implements ContinentRepository {
   Future<List<TimelineEventDefinition>> fetchContinents() async => _continents;
 }
 
+class _FakeWaterwayRepository implements WaterwayRepository {
+  _FakeWaterwayRepository(this._waterways);
+
+  final List<TimelineEventDefinition> _waterways;
+
+  @override
+  Future<List<TimelineEventDefinition>> fetchWaterways() async => _waterways;
+}
+
 class _FakePaleoEcologyRepository implements PaleoEcologyRepository {
   _FakePaleoEcologyRepository(this._entries);
 
@@ -208,6 +218,7 @@ void main() {
       ),
       cladeRepository: _FakeCladeRepository(const []),
       continentRepository: _FakeContinentRepository(const []),
+      waterwayRepository: _FakeWaterwayRepository(const []),
       paleoEcologyRepository: _FakePaleoEcologyRepository(const []),
     );
 
@@ -242,6 +253,7 @@ void main() {
       ),
       cladeRepository: _FakeCladeRepository(const []),
       continentRepository: _FakeContinentRepository(const []),
+      waterwayRepository: _FakeWaterwayRepository(const []),
       paleoEcologyRepository: _FakePaleoEcologyRepository(const []),
     );
 

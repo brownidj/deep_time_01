@@ -28,6 +28,7 @@ mixin _TimelineScreenPreferences on State<TimelineScreen> {
       final storedCladeView = prefs.getString(_cladeViewModeKey);
       final storedCladeCategory = prefs.getString(_cladeCategoryKey);
       final storedContinentVisible = prefs.getBool(_continentColumnVisibleKey);
+      final storedWaterwayVisible = prefs.getBool(_waterwayColumnVisibleKey);
       final storedPaleoEcologyVisible = prefs.getBool(
         _paleoEcologyColumnVisibleKey,
       );
@@ -48,6 +49,13 @@ mixin _TimelineScreenPreferences on State<TimelineScreen> {
           final nextVisible = Set<TimelineTrack>.from(_visibleTracks);
           if (!storedContinentVisible) {
             nextVisible.remove(TimelineTrack.continents);
+          }
+          _visibleTracks = nextVisible;
+        }
+        if (storedWaterwayVisible != null) {
+          final nextVisible = Set<TimelineTrack>.from(_visibleTracks);
+          if (!storedWaterwayVisible) {
+            nextVisible.remove(TimelineTrack.waterways);
           }
           _visibleTracks = nextVisible;
         }
@@ -122,6 +130,9 @@ mixin _TimelineScreenPreferences on State<TimelineScreen> {
             });
             if (track == TimelineTrack.continents) {
               _saveContinentColumnVisible(visible);
+            }
+            if (track == TimelineTrack.waterways) {
+              _saveWaterwayColumnVisible(visible);
             }
             if (track == TimelineTrack.paleoEcology) {
               _savePaleoEcologyColumnVisible(visible);

@@ -62,9 +62,15 @@ class _TimelineScreenState extends State<TimelineScreen>
         final palette = DeepTimePalette(snapshot.data!.palette);
         final markers = snapshot.data!.markers;
         final continents = snapshot.data!.continents;
+        final waterways = snapshot.data!.waterways;
         final paleoEcology = snapshot.data!.paleoEcology;
         final clades = snapshot.data!.clades;
-        final layout = _layoutService.build(divisions, markers, continents);
+        final layout = _layoutService.build(
+          divisions,
+          markers,
+          continents,
+          waterways,
+        );
         _primeSelection(
           layout.periodSegments,
           layout.epochSegments,

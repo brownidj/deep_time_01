@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:deep_time/ui/models/time_label_mode.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_body_metrics.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_orientation.dart';
+import 'package:deep_time/ui/screens/timeline/timeline_track_widths.dart';
 import 'package:deep_time/ui/theme/deep_time_palette.dart';
 
 class TimelineColumnHeaders extends StatelessWidget {
@@ -22,22 +23,12 @@ class TimelineColumnHeaders extends StatelessWidget {
     );
     return LayoutBuilder(
       builder: (context, constraints) {
-        final scale = _widthScale(constraints.maxWidth);
-        final cappedTracks = <TimelineTrack>{
-          TimelineTrack.ma,
-          TimelineTrack.eon,
-          TimelineTrack.era,
-          TimelineTrack.period,
-          TimelineTrack.epoch,
-          TimelineTrack.stage,
-          TimelineTrack.paleoEcology,
-          TimelineTrack.rlife,
-          TimelineTrack.extinctions,
-          TimelineTrack.continents,
-        };
+        final trackWidths = resolveTimelineTrackWidths(
+          metrics: metrics,
+          maxWidth: constraints.maxWidth,
+        );
         double scaledWidth(TimelineTrack track) =>
-            metrics.trackWidth(track) *
-            (cappedTracks.contains(track) ? 1.0 : scale);
+            trackWidths[track] ?? metrics.trackWidth(track);
         return SizedBox(
           height: metrics.headerHeight,
           child: Row(
@@ -71,41 +62,6 @@ class TimelineColumnHeaders extends StatelessWidget {
     );
   }
 
-  double _widthScale(double maxWidth) {
-    if (!maxWidth.isFinite || maxWidth <= 0 || metrics.trackColumnsWidth <= 0) {
-      return 1.0;
-    }
-    final cappedTracks = <TimelineTrack>{
-      TimelineTrack.ma,
-      TimelineTrack.eon,
-      TimelineTrack.era,
-      TimelineTrack.period,
-      TimelineTrack.epoch,
-      TimelineTrack.stage,
-      TimelineTrack.paleoEcology,
-      TimelineTrack.rlife,
-      TimelineTrack.extinctions,
-      TimelineTrack.continents,
-    };
-    var fixed = 0.0;
-    var scalable = 0.0;
-    for (final track in metrics.trackOrder) {
-      final width = metrics.trackWidth(track);
-      fixed += metrics.gapBefore(track);
-      if (cappedTracks.contains(track)) {
-        fixed += width;
-      } else {
-        scalable += width;
-      }
-      fixed += metrics.gapAfter(track);
-    }
-    if (scalable <= 0) {
-      return 1.0;
-    }
-    final available = (maxWidth - fixed).clamp(0.0, double.infinity);
-    return available / scalable;
-  }
-
   String _labelFor(TimelineTrack track) {
     switch (track) {
       case TimelineTrack.eon:
@@ -127,7 +83,9 @@ class TimelineColumnHeaders extends StatelessWidget {
       case TimelineTrack.extinctions:
         return 'Ext.';
       case TimelineTrack.continents:
-        return 'Landmasses';
+        return 'Land';
+      case TimelineTrack.waterways:
+        return 'Seas';
       case TimelineTrack.clades:
         return 'Clades';
       case TimelineTrack.ma:

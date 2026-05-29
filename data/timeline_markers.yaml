@@ -168,27 +168,6 @@ events:
     type: bar
     start_ma: 358.86
     end_ma: 298.9
-  - label: Pangea
-    explanation: |
-      The assembly of Pangaea, occurring approximately between 320 and 250 million
-      years ago during the Late Carboniferous to Permian periods, represents a
-      critical tectonic event in Earth’s geologic history. This supercontinent formed
-      through the convergence and collision of multiple continental landmasses,
-      including Laurentia, Gondwana, Siberia, and Baltica. The process involved
-      complex orogenies, such as the Alleghenian and Uralian, which facilitated the
-      suturing of these cratons. The amalgamation of Pangaea significantly altered
-      global paleogeography, ocean circulation, and climate patterns.
-
-      This tectonic
-      reorganization also influenced terrestrial and marine biota, promoting faunal
-      exchange and diversification, while simultaneously imposing environmental
-      stresses that contributed to the Permian mass extinction. The formation of
-      Pangaea marks a pivotal boundary in the geologic timeline, preceding the
-      Mesozoic breakup that shaped modern continental configurations.
-    short_label: Pangaea
-    type: bar
-    start_ma: 299
-    end_ma: 200
   - label: First dinosaurs
     explanation: |
       The "First dinosaurs" marker, dated approximately between 233 and 231 million
@@ -248,7 +227,7 @@ events:
       gave rise to the extensive diversification of modern avifauna. Moreover, this
       period provides key fossil evidence elucidating the functional morphology and
       ecological niches inhabited by basal birds.
-    short_label: Birds
+    short_label: First birds
     type: bar
     start_ma: 160.0
     end_ma: 150
@@ -312,7 +291,7 @@ events:
       influenced hominid evolution by altering available resources and habitats,
       underscoring its integral role in both paleoenvironmental reconstruction and the
       understanding of Cenozoic terrestrial biotic change.
-    short_label: Grasslands
+    short_label: Grassland expansion
     type: bar
     start_ma: 23.0
     end_ma: 5

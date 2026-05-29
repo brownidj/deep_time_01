@@ -6,6 +6,7 @@ import 'package:deep_time/ui/screens/timeline/timeline_body_metrics.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_body_metrics_overlay.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_min_height_helpers.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_orientation.dart';
+import 'package:deep_time/ui/screens/timeline/timeline_track_widths.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_vertical_overlays_helpers.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_vertical_overlays_line.dart';
 import 'package:deep_time/ui/theme/deep_time_palette.dart';
@@ -28,19 +29,10 @@ class TimelineVerticalOverlays extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final scale = _widthScale(constraints.maxWidth);
-        const cappedTracks = {
-          TimelineTrack.ma,
-          TimelineTrack.eon,
-          TimelineTrack.era,
-          TimelineTrack.period,
-          TimelineTrack.epoch,
-          TimelineTrack.stage,
-          TimelineTrack.paleoEcology,
-          TimelineTrack.rlife,
-          TimelineTrack.extinctions,
-          TimelineTrack.continents,
-        };
+        final trackWidths = resolveTimelineTrackWidths(
+          metrics: metrics,
+          maxWidth: constraints.maxWidth,
+        );
         final labelStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
           color: DeepTimePalette.darkLabel,
           fontWeight: FontWeight.w700,
@@ -100,42 +92,20 @@ class TimelineVerticalOverlays extends StatelessWidget {
           ],
           unitSpan: (segment) => segment.unitSpan,
         );
-        final cappedWidth = metrics.trackOrder.fold<double>(0.0, (sum, track) {
-          if (!cappedTracks.contains(track)) {
-            return sum;
-          }
-          return sum +
-              metrics.gapBefore(track) +
-              metrics.trackWidth(track) +
-              metrics.gapAfter(track);
-        });
-        double scaledX(double x) {
-          if (x <= cappedWidth) {
-            return x;
-          }
-          return cappedWidth + ((x - cappedWidth) * scale);
-        }
-
-        final eonStart = scaledX(metrics.trackX(TimelineTrack.eon));
-        final eraStart = scaledX(metrics.trackX(TimelineTrack.era));
-        final periodStart = scaledX(metrics.trackX(TimelineTrack.period));
         final trackStarts = <TimelineTrack, double>{};
         var trackCursor = 0.0;
         for (final track in metrics.trackOrder) {
           trackCursor += metrics.gapBefore(track);
           trackStarts[track] = trackCursor;
-          final width =
-              metrics.trackWidth(track) *
-              (cappedTracks.contains(track) ? 1.0 : scale);
+          final width = trackWidths[track] ?? metrics.trackWidth(track);
           trackCursor += width + metrics.gapAfter(track);
         }
+        final eonStart = trackStarts[TimelineTrack.eon] ?? 0.0;
+        final eraStart = trackStarts[TimelineTrack.era] ?? 0.0;
+        final periodStart = trackStarts[TimelineTrack.period] ?? 0.0;
         final eraPeriodBoundaryX = periodStart;
-        final eventAnchorX =
-            trackStarts[TimelineTrack.events] ??
-            scaledX(metrics.trackX(TimelineTrack.events));
-        final extinctionAnchorX =
-            trackStarts[TimelineTrack.extinctions] ??
-            scaledX(metrics.trackX(TimelineTrack.extinctions));
+        final eventAnchorX = trackStarts[TimelineTrack.events] ?? 0.0;
+        final extinctionAnchorX = trackStarts[TimelineTrack.extinctions] ?? 0.0;
         final eventLines = buildConnectorLines(
           ys: eventPointYs(
             metrics.layout.eventSegments,
@@ -187,21 +157,21 @@ class TimelineVerticalOverlays extends StatelessWidget {
               for (final y in eonBoundaryYs)
                 _HorizontalBoundaryMarker(
                   left: eonStart,
-                  right: scaledX(metrics.eonOverlayRight(y)),
+                  right: metrics.eonOverlayRight(y),
                   top: y,
                   contentHeight: contentHeight,
                 ),
               for (final y in eraBoundaryYs)
                 _HorizontalBoundaryMarker(
                   left: eraStart,
-                  right: scaledX(metrics.eraOverlayRight(y)),
+                  right: metrics.eraOverlayRight(y),
                   top: y,
                   contentHeight: contentHeight,
                 ),
               for (final y in periodBoundaryYs)
                 _HorizontalBoundaryMarker(
                   left: periodStart,
-                  right: scaledX(metrics.periodOverlayRight(y)),
+                  right: metrics.periodOverlayRight(y),
                   top: y,
                   contentHeight: contentHeight,
                 ),
@@ -244,40 +214,5 @@ class TimelineVerticalOverlays extends StatelessWidget {
         );
       },
     );
-  }
-
-  double _widthScale(double maxWidth) {
-    if (!maxWidth.isFinite || maxWidth <= 0 || metrics.trackColumnsWidth <= 0) {
-      return 1.0;
-    }
-    const cappedTracks = {
-      TimelineTrack.ma,
-      TimelineTrack.eon,
-      TimelineTrack.era,
-      TimelineTrack.period,
-      TimelineTrack.epoch,
-      TimelineTrack.stage,
-      TimelineTrack.paleoEcology,
-      TimelineTrack.rlife,
-      TimelineTrack.extinctions,
-      TimelineTrack.continents,
-    };
-    var fixed = 0.0;
-    var scalable = 0.0;
-    for (final track in metrics.trackOrder) {
-      final width = metrics.trackWidth(track);
-      fixed += metrics.gapBefore(track);
-      if (cappedTracks.contains(track)) {
-        fixed += width;
-      } else {
-        scalable += width;
-      }
-      fixed += metrics.gapAfter(track);
-    }
-    if (scalable <= 0) {
-      return 1.0;
-    }
-    final available = (maxWidth - fixed).clamp(0.0, double.infinity);
-    return available / scalable;
   }
 }

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:deep_time/application/services/timeline_layout_models.dart';
 import 'package:deep_time/domain/models/clade.dart';
 import 'package:deep_time/domain/models/clade_zoom_level.dart';
 import 'package:deep_time/domain/models/timeline_marker_catalog.dart';
 import 'package:deep_time/ui/models/clade_view_mode.dart';
 import 'package:deep_time/ui/models/time_label_mode.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_body.dart';
+import 'package:deep_time/ui/screens/timeline/timeline_body_metrics.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_column_headers.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_orientation.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_vertical_columns.dart';
@@ -142,6 +144,63 @@ void main() {
     await tester.tapAt(tapPoint);
     await tester.pumpAndSettle();
     expect(tappedId, 'vertical_test_clade');
+  });
+
+  testWidgets('Vertical events column handles sub-minimum lane width', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(32, 600));
+    addTearDown(() async {
+      await tester.binding.setSurfaceSize(null);
+    });
+    final layout = singleSpanLayout(
+      eventSegments: const [
+        TimelineEventSegment(
+          label: 'Tiny Event',
+          shortLabel: 'Tiny',
+          type: TimelineEventType.bar,
+          startMa: 100,
+          endMa: 0,
+          startUnit: 1,
+          endUnit: 0,
+          colorKey: 'period|test',
+        ),
+      ],
+    );
+    final metrics = TimelineBodyMetrics.fromLayout(
+      layout: layout,
+      markers: const TimelineMarkerCatalog(events: [], extinctions: []),
+      constraints: const BoxConstraints.tightFor(width: 32, height: 600),
+      config: const TimelineOrientationConfig(
+        trackWidths: {TimelineTrack.events: 4, TimelineTrack.clades: 28},
+      ),
+      trackOrder: const [TimelineTrack.events, TimelineTrack.clades],
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: TimelineVerticalColumns(
+          layout: layout,
+          markers: const TimelineMarkerCatalog(events: [], extinctions: []),
+          palette: testPalette(),
+          selectedId: null,
+          onBandSelect: (_) {},
+          onSelect: (_) {},
+          scrollController: ScrollController(),
+          clades: const [],
+          cladeViewMode: CladeViewMode.representativeOnly,
+          cladeCategoryId: 'all',
+          cladeRepresentativeIds: const [],
+          cladeSearchQuery: '',
+          cladeSpotlightId: null,
+          onCladeSpotlight: (_) {},
+          metrics: metrics,
+          paleoEcology: const [],
+        ),
+      ),
+    );
+
+    expect(find.byType(TimelineVerticalColumns), findsOneWidget);
   });
 
   testWidgets('Vertical mode clade bars map to vertical time span', (

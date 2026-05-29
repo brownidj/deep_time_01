@@ -29,6 +29,7 @@ const String _timelineScaleKey = 'timeline_scale';
 const String _cladeViewModeKey = 'clade_view_mode';
 const String _cladeCategoryKey = 'clade_category_id';
 const String _continentColumnVisibleKey = 'continent_column_visible';
+const String _waterwayColumnVisibleKey = 'waterway_column_visible';
 const String _paleoEcologyColumnVisibleKey = 'paleo_ecology_column_visible';
 const String _rlifeColumnVisibleKey = 'rlife_column_visible';
 const int _maxLabelModeRetries = 2;

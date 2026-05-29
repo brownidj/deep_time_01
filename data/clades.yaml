@@ -36,6 +36,52 @@
     - living clade
     - backbone
 
+- id: bacteria
+  label: Bacteria
+  scientific_rank: domain
+  parent_id: life
+  start_ma: 3500.0
+  end_ma: 0.0
+  range_note: Archean to present
+  confidence: approximate
+  display_groups:
+    - early_life
+  display_priority: 2
+  min_zoom_level: whole
+  short_description: Prokaryotic organisms central to early life and long-term microbial dominance.
+  divergence_ma: 3500.0
+  branch_priority: 2
+  cladistic_role: major_branch
+  uncertainty: approximate
+  tags:
+    - bacteria
+    - prokaryote
+    - microbial life
+    - living clade
+
+- id: archaea
+  label: Archaea
+  scientific_rank: domain
+  parent_id: life
+  start_ma: 3500.0
+  end_ma: 0.0
+  range_note: Archean to present
+  confidence: approximate
+  display_groups:
+    - early_life
+  display_priority: 2
+  min_zoom_level: whole
+  short_description: Major domain of prokaryotic life, including many extremophiles and the sister lineage to eukaryotes.
+  divergence_ma: 3500.0
+  branch_priority: 2
+  cladistic_role: major_branch
+  uncertainty: approximate
+  tags:
+    - archaea
+    - prokaryote
+    - microbial life
+    - living clade
+
 - id: eukaryota
   label: Eukaryotes
   scientific_rank: domain
@@ -83,10 +129,82 @@
     - living clade
     - backbone
 
+- id: bilateria
+  label: Bilateria
+  scientific_rank: clade
+  parent_id: animalia
+  start_ma: 560.0
+  end_ma: 0.0
+  range_note: Ediacaran to present
+  confidence: approximate
+  display_groups:
+    - early_life
+    - marine_invertebrates
+    - terrestrial_vertebrates
+  display_priority: 6
+  min_zoom_level: phanerozoic
+  short_description: Animals with left-right symmetry, including most familiar animal groups.
+  divergence_ma: 560.0
+  branch_priority: 6
+  cladistic_role: backbone
+  uncertainty: approximate
+  tags:
+    - animal
+    - bilaterian
+    - living clade
+    - backbone
+
+- id: protostomia
+  label: Protostomes
+  scientific_rank: clade
+  parent_id: bilateria
+  start_ma: 550.0
+  end_ma: 0.0
+  range_note: Ediacaran-Cambrian to present
+  confidence: approximate
+  display_groups:
+    - marine_invertebrates
+  display_priority: 7
+  min_zoom_level: phanerozoic
+  short_description: One major bilaterian branch, including arthropods, molluscs, annelids, and related groups.
+  divergence_ma: 550.0
+  branch_priority: 7
+  cladistic_role: major_branch
+  uncertainty: approximate
+  tags:
+    - animal
+    - protostome
+    - invertebrate
+    - living clade
+
+- id: deuterostomia
+  label: Deuterostomes
+  scientific_rank: clade
+  parent_id: bilateria
+  start_ma: 540.0
+  end_ma: 0.0
+  range_note: Cambrian to present
+  confidence: approximate
+  display_groups:
+    - marine_invertebrates
+    - fish_early_vertebrates
+    - terrestrial_vertebrates
+  display_priority: 7
+  min_zoom_level: phanerozoic
+  short_description: Major bilaterian branch including echinoderms and chordates.
+  divergence_ma: 540.0
+  branch_priority: 8
+  cladistic_role: major_branch
+  uncertainty: approximate
+  tags:
+    - animal
+    - deuterostome
+    - living clade
+
 - id: arthropoda
   label: Arthropods
   scientific_rank: phylum
-  parent_id: animalia
+  parent_id: protostomia
   start_ma: 541.0
   end_ma: 0.0
   range_note: Cambrian to present
@@ -141,7 +259,7 @@
 - id: mollusca
   label: Molluscs
   scientific_rank: phylum
-  parent_id: animalia
+  parent_id: protostomia
   start_ma: 541.0
   end_ma: 0.0
   range_note: Cambrian to present
@@ -218,10 +336,37 @@
     - index fossils
     - extinction
 
+- id: echinodermata
+  label: Echinoderms
+  scientific_rank: phylum
+  parent_id: deuterostomia
+  start_ma: 540.0
+  end_ma: 0.0
+  range_note: Cambrian to present
+  confidence: approximate
+  display_groups:
+    - marine_invertebrates
+  display_priority: 14
+  min_zoom_level: era
+  short_description: Deuterostomes including starfish, crinoids, sea urchins, and their relatives.
+  divergence_ma: 540.0
+  branch_priority: 18
+  cladistic_role: major_branch
+  uncertainty: approximate
+  representative_taxa:
+    - Starfish
+    - Crinoids
+    - Sea urchins
+  tags:
+    - marine
+    - echinoderm
+    - deuterostome
+    - living clade
+
 - id: chordata
   label: Chordates
   scientific_rank: phylum
-  parent_id: animalia
+  parent_id: deuterostomia
   start_ma: 530.0
   end_ma: 0.0
   range_note: Cambrian to present
@@ -267,10 +412,62 @@
     - living clade
     - backbone
 
+- id: gnathostomata
+  label: Jawed vertebrates
+  scientific_rank: infraphylum
+  parent_id: vertebrata
+  start_ma: 430.0
+  end_ma: 0.0
+  range_note: Silurian to present
+  confidence: approximate
+  display_groups:
+    - fish_early_vertebrates
+    - terrestrial_vertebrates
+    - mammals_birds
+  display_priority: 10
+  min_zoom_level: era
+  short_description: Vertebrates with jaws, including most living fish and all tetrapods.
+  divergence_ma: 430.0
+  branch_priority: 10
+  cladistic_role: backbone
+  uncertainty: approximate
+  tags:
+    - vertebrate
+    - jawed vertebrate
+    - fish
+    - living clade
+    - backbone
+
+- id: osteichthyes
+  label: Bony vertebrates
+  scientific_rank: superclass
+  parent_id: gnathostomata
+  start_ma: 420.0
+  end_ma: 0.0
+  range_note: Silurian to present
+  confidence: approximate
+  display_groups:
+    - fish_early_vertebrates
+    - terrestrial_vertebrates
+    - mammals_birds
+  display_priority: 11
+  min_zoom_level: era
+  short_description: Bony vertebrates, including ray-finned fish and lobe-finned fish.
+  divergence_ma: 420.0
+  branch_priority: 11
+  cladistic_role: backbone
+  uncertainty: approximate
+  tags:
+    - vertebrate
+    - bony vertebrate
+    - fish
+    - living clade
+    - backbone
+
 - id: sarcopterygii
   label: Lobe-finned fish
   scientific_rank: class
-  parent_id: vertebrata
+  parent_id: osteichthyes
   start_ma: 425.0
   end_ma: 0.0
   range_note: Silurian to present
@@ -368,7 +565,7 @@
 - id: mammalia
   label: Mammals
   scientific_rank: class
-  parent_id: synapsida
+  parent_id: therapsida
   start_ma: 225.0
   end_ma: 0.0
   range_note: Late Triassic to present
@@ -388,6 +585,150 @@
     - mammal
     - living clade
     - backbone
+
+- id: therapsida
+  label: Therapsids
+  scientific_rank: clade
+  parent_id: synapsida
+  start_ma: 275.0
+  end_ma: 0.0
+  range_note: Permian to present, including mammals
+  confidence: approximate
+  display_groups:
+    - terrestrial_vertebrates
+    - mammals_birds
+  display_priority: 18
+  min_zoom_level: period
+  short_description: Synapsids closer to mammals than to earlier pelycosaur-grade synapsids.
+  divergence_ma: 275.0
+  branch_priority: 18
+  cladistic_role: major_branch
+  uncertainty: approximate
+  representative_taxa:
+    - Dicynodonts
+    - Gorgonopsians
+    - Cynodonts
+  tags:
+    - vertebrate
+    - synapsid
+    - therapsid
+    - mammal ancestry
+    - living clade
+
+- id: primates
+  label: Primates
+  scientific_rank: order
+  parent_id: mammalia
+  start_ma: 56.0
+  end_ma: 0.0
+  range_note: Paleocene-Eocene to present
+  confidence: approximate
+  display_groups:
+    - mammals_birds
+    - terrestrial_vertebrates
+  display_priority: 20
+  min_zoom_level: period
+  short_description: Mammals including lemurs, monkeys, apes, and humans.
+  divergence_ma: 56.0
+  branch_priority: 30
+  cladistic_role: detail
+  uncertainty: approximate
+  representative_taxa:
+    - Lemurs
+    - Monkeys
+    - Apes
+  tags:
+    - vertebrate
+    - mammal
+    - primate
+    - human evolution
+    - living clade
+
+- id: hominini
+  label: Hominins
+  scientific_rank: tribe
+  parent_id: primates
+  start_ma: 7.0
+  end_ma: 0.0
+  range_note: Late Miocene to present
+  confidence: approximate
+  display_groups:
+    - mammals_birds
+    - terrestrial_vertebrates
+  display_priority: 24
+  min_zoom_level: epoch
+  short_description: The human lineage after divergence from the chimpanzee lineage.
+  divergence_ma: 7.0
+  branch_priority: 34
+  cladistic_role: detail
+  uncertainty: approximate
+  representative_taxa:
+    - Australopithecus
+    - Paranthropus
+    - Homo
+  tags:
+    - vertebrate
+    - mammal
+    - primate
+    - hominin
+    - human evolution
+    - living clade
+
+- id: homo
+  label: Homo
+  scientific_rank: genus
+  parent_id: hominini
+  start_ma: 2.8
+  end_ma: 0.0
+  range_note: Pliocene to present
+  confidence: approximate
+  display_groups:
+    - mammals_birds
+    - terrestrial_vertebrates
+  display_priority: 25
+  min_zoom_level: epoch
+  short_description: Genus including modern humans and extinct close relatives.
+  divergence_ma: 2.8
+  branch_priority: 35
+  cladistic_role: detail
+  uncertainty: approximate
+  representative_taxa:
+    - Homo habilis
+    - Homo erectus
+    - Homo sapiens
+  tags:
+    - vertebrate
+    - mammal
+    - primate
+    - Homo
+    - human evolution
+    - living clade
+
+- id: homo_sapiens
+  label: Homo sapiens
+  scientific_rank: species
+  parent_id: homo
+  start_ma: 0.3
+  end_ma: 0.0
+  range_note: Late Pleistocene to present
+  confidence: approximate
+  display_groups:
+    - mammals_birds
+    - terrestrial_vertebrates
+  display_priority: 26
+  min_zoom_level: epoch
+  short_description: Modern humans.
+  divergence_ma: 0.3
+  branch_priority: 36
+  cladistic_role: detail
+  uncertainty: approximate
+  tags:
+    - vertebrate
+    - mammal
+    - primate
+    - human
+    - human evolution
+    - living clade
 
 - id: sauropsida
   label: Sauropsids
@@ -414,20 +755,106 @@
     - bird ancestry
     - living clade
 
-- id: dinosauria
-  label: Dinosaurs
+- id: diapsida
+  label: Diapsids
   scientific_rank: clade
   parent_id: sauropsida
-  start_ma: 233.0
-  end_ma: 66.0
-  range_note: Late Triassic to K-Pg boundary, excluding living birds in this simplified display entry
+  start_ma: 310.0
+  end_ma: 0.0
+  range_note: Late Carboniferous to present
+  confidence: approximate
+  display_groups:
+    - terrestrial_vertebrates
+    - dinosaurs_mesozoic_reptiles
+    - mammals_birds
+  display_priority: 18
+  min_zoom_level: era
+  short_description: Sauropsids including most reptiles, birds, and many extinct marine reptiles.
+  divergence_ma: 310.0
+  branch_priority: 18
+  cladistic_role: major_branch
+  uncertainty: approximate
+  tags:
+    - vertebrate
+    - reptile
+    - diapsid
+    - bird ancestry
+    - living clade
+
+- id: archosauria
+  label: Archosaurs
+  scientific_rank: clade
+  parent_id: diapsida
+  start_ma: 250.0
+  end_ma: 0.0
+  range_note: Early Triassic to present
   confidence: approximate
   display_groups:
     - dinosaurs_mesozoic_reptiles
+    - mammals_birds
+  display_priority: 19
+  min_zoom_level: era
+  short_description: Diapsids including crocodilians, pterosaurs, dinosaurs, and birds.
+  divergence_ma: 250.0
+  branch_priority: 19
+  cladistic_role: major_branch
+  uncertainty: approximate
+  representative_taxa:
+    - Crocodilians
+    - Pterosaurs
+    - Dinosaurs
+  tags:
+    - vertebrate
+    - reptile
+    - archosaur
+    - dinosaur ancestry
+    - living clade
+
+- id: pterosauria
+  label: Pterosaurs
+  scientific_rank: order
+  parent_id: archosauria
+  start_ma: 228.0
+  end_ma: 66.0
+  range_note: Late Triassic to K-Pg boundary
+  confidence: approximate
+  display_groups:
+    - dinosaurs_mesozoic_reptiles
+  display_priority: 18
+  min_zoom_level: period
+  short_description: Flying archosaur reptiles and the first vertebrates to evolve powered flight.
+  divergence_ma: 228.0
+  branch_priority: 28
+  cladistic_role: detail
+  uncertainty: approximate
+  representative_taxa:
+    - Pteranodon
+    - Rhamphorhynchus
+    - Quetzalcoatlus
+  extinction_note: Extinct at the K-Pg boundary.
+  tags:
+    - vertebrate
+    - reptile
+    - archosaur
+    - pterosaur
+    - Mesozoic
+    - extinction
+
+- id: dinosauria
+  label: Dinosauria
+  scientific_rank: clade
+  parent_id: archosauria
+  start_ma: 231.0
+  end_ma: 0.0
+  range_note: Late Triassic to present, including birds
+  confidence: approximate
+  display_groups:
+    - dinosaurs_mesozoic_reptiles
+    - mammals_birds
   display_priority: 10
   min_zoom_level: era
-  short_description: Mesozoic archosaurs that dominated many terrestrial ecosystems.
-  divergence_ma: 233.0
+  short_description: Archosaurs including extinct non-avian dinosaurs and living birds.
+  divergence_ma: 231.0
   branch_priority: 19
   cladistic_role: major_branch
   uncertainty: approximate
@@ -435,7 +862,35 @@
     - Tyrannosaurus
     - Triceratops
     - Diplodocus
-  extinction_note: Non-avian dinosaurs became extinct at the K-Pg boundary.
+    - Birds
+  tags:
+    - vertebrate
+    - dinosaur
+    - Mesozoic
+    - living clade
+
+- id: non_avian_dinosaurs
+  label: Non-avian dinosaurs
+  scientific_rank: informal clade
+  parent_id: dinosauria
+  start_ma: 231.0
+  end_ma: 66.0
+  range_note: Late Triassic to K-Pg boundary
+  confidence: approximate
+  display_groups:
+    - dinosaurs_mesozoic_reptiles
+  display_priority: 11
+  min_zoom_level: period
+  short_description: The extinct dinosaurs most users expect, excluding birds.
+  divergence_ma: 231.0
+  branch_priority: 20
+  cladistic_role: detail
+  uncertainty: approximate
+  representative_taxa:
+    - Tyrannosaurus
+    - Triceratops
+    - Diplodocus
+  extinction_note: Extinct at the K-Pg boundary.
   tags:
     - vertebrate
     - dinosaur
@@ -560,4 +1015,32 @@
     - plant
     - flowering plant
     - Cretaceous
+    - living clade
+
+- id: poaceae
+  label: Grasses
+  scientific_rank: family
+  parent_id: angiospermae
+  start_ma: 70.0
+  end_ma: 0.0
+  range_note: Late Cretaceous to present
+  confidence: approximate
+  display_groups:
+    - plants
+  display_priority: 18
+  min_zoom_level: period
+  short_description: Flowering plants important for grasslands, grazing mammals, and many human food systems.
+  divergence_ma: 70.0
+  branch_priority: 30
+  cladistic_role: detail
+  uncertainty: approximate
+  representative_taxa:
+    - Grasses
+    - Cereals
+    - Bamboos
+  tags:
+    - plant
+    - flowering plant
+    - grass
+    - grassland
     - living clade

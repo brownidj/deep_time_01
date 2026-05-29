@@ -166,7 +166,7 @@ class _VerticalEventsColumn extends StatelessWidget {
           maxLines: 1,
           textDirection: TextDirection.ltr,
         )..layout();
-        desired = painter.height + 14;
+        desired = painter.height + 18;
       }
       final current = laneMaxWidth[layout.lane];
       if (current == null || desired > current) {
@@ -201,7 +201,9 @@ class _VerticalEventsColumn extends StatelessWidget {
     var cursor = leftInset + horizontalPadding;
     for (var i = 0; i < lanes.length; i += 1) {
       final lane = lanes[i];
-      final width = (rawWidths[i] * scale).clamp(3.0, usable);
+      final maxWidth = math.max(0.0, usable);
+      final minWidth = maxWidth >= 3.0 ? 3.0 : maxWidth;
+      final width = (rawWidths[i] * scale).clamp(minWidth, maxWidth);
       frames[lane] = (cursor, width);
       cursor += width + laneGap;
     }

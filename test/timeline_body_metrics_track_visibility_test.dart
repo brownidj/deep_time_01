@@ -1,17 +1,24 @@
 import 'package:deep_time/domain/models/timeline_marker_catalog.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_body_metrics.dart';
+import 'package:deep_time/application/services/timeline_layout_models.dart';
+import 'package:deep_time/ui/models/time_label_mode.dart';
+import 'package:deep_time/ui/screens/timeline/timeline_body_helpers.dart';
+import 'package:deep_time/ui/screens/timeline/timeline_column_headers.dart';
 import 'package:deep_time/ui/screens/timeline/timeline_orientation.dart';
-import 'package:flutter/rendering.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'timeline_layout_test_helpers.dart';
 
 void main() {
   test(
-    'default track order places paleo-ecology between continents and rlife',
+    'default track order places waterways between continents and paleo-ecology',
     () {
       final continentsIndex = kDefaultTimelineTrackOrder.indexOf(
         TimelineTrack.continents,
+      );
+      final waterwaysIndex = kDefaultTimelineTrackOrder.indexOf(
+        TimelineTrack.waterways,
       );
       final paleoIndex = kDefaultTimelineTrackOrder.indexOf(
         TimelineTrack.paleoEcology,
@@ -21,7 +28,8 @@ void main() {
       );
 
       expect(continentsIndex, isNonNegative);
-      expect(paleoIndex, greaterThan(continentsIndex));
+      expect(waterwaysIndex, greaterThan(continentsIndex));
+      expect(paleoIndex, greaterThan(waterwaysIndex));
       expect(rlifeIndex, greaterThan(paleoIndex));
     },
   );
@@ -47,6 +55,7 @@ void main() {
     );
 
     expect(metrics.trackOrder.contains(TimelineTrack.continents), isFalse);
+    expect(metrics.trackOrder.contains(TimelineTrack.waterways), isFalse);
     expect(metrics.trackOrder.contains(TimelineTrack.paleoEcology), isFalse);
     expect(metrics.trackOrder.contains(TimelineTrack.rlife), isFalse);
     expect(
@@ -73,6 +82,7 @@ void main() {
       expect(metrics.gapAfter(TimelineTrack.epoch), 0);
       expect(metrics.gapAfter(TimelineTrack.stage), 0);
       expect(metrics.gapAfter(TimelineTrack.continents), 0);
+      expect(metrics.gapAfter(TimelineTrack.waterways), 0);
       expect(metrics.gapAfter(TimelineTrack.paleoEcology), 0);
       expect(metrics.gapAfter(TimelineTrack.rlife), 0);
       expect(metrics.gapBefore(TimelineTrack.ma), 0);
@@ -84,6 +94,10 @@ void main() {
       );
       expect(
         metrics.gapBefore(TimelineTrack.paleoEcology),
+        kTimelineStandardInterColumnGap,
+      );
+      expect(
+        metrics.gapBefore(TimelineTrack.waterways),
         kTimelineStandardInterColumnGap,
       );
       expect(
@@ -121,5 +135,75 @@ void main() {
       metrics.trackX(TimelineTrack.paleoEcology) +
           metrics.trackWidth(TimelineTrack.paleoEcology),
     );
+  });
+
+  testWidgets('events column stays title-width while clades takes remainder', (
+    tester,
+  ) async {
+    final layout = layoutWithLongStage();
+    const markers = TimelineMarkerCatalog(events: [], extinctions: []);
+    const eventTitleWidth = 52.0;
+    const cladeBaseWidth = 100.0;
+    final metrics = TimelineBodyMetrics.fromLayout(
+      layout: layout,
+      markers: markers,
+      constraints: const BoxConstraints.tightFor(width: 800, height: 600),
+      config: const TimelineOrientationConfig(
+        trackWidths: {
+          TimelineTrack.events: eventTitleWidth,
+          TimelineTrack.clades: cladeBaseWidth,
+        },
+      ),
+      trackOrder: const [TimelineTrack.events, TimelineTrack.clades],
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: SizedBox(
+          width: 800,
+          child: TimelineColumnHeaders(
+            metrics: metrics,
+            labelMode: TimeLabelMode.geologicTime,
+          ),
+        ),
+      ),
+    );
+
+    final headerBoxes = find.byType(DecoratedBox);
+    expect(headerBoxes, findsNWidgets(2));
+
+    final eventsRect = tester.getRect(headerBoxes.at(0));
+    final cladesRect = tester.getRect(headerBoxes.at(1));
+
+    expect(eventsRect.width, eventTitleWidth);
+    expect(cladesRect.width, 800 - eventTitleWidth);
+  });
+
+  test('events width accounts for overlapping bar lanes', () {
+    const events = [
+      TimelineEventSegment(
+        label: 'Older event',
+        shortLabel: 'Older',
+        type: TimelineEventType.bar,
+        startMa: 100,
+        endMa: 40,
+        startUnit: 1,
+        endUnit: 0.4,
+        colorKey: 'period|test',
+      ),
+      TimelineEventSegment(
+        label: 'Overlapping event',
+        shortLabel: 'Overlap',
+        type: TimelineEventType.bar,
+        startMa: 80,
+        endMa: 20,
+        startUnit: 0.8,
+        endUnit: 0.2,
+        colorKey: 'period|test',
+      ),
+    ];
+
+    expect(overlappingEventBarLaneCount(events), 2);
+    expect(eventBarTrackWidth(events), (2 * 32) + 4 + 6);
   });
 }

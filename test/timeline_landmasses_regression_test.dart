@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('Settings and headers use Landmasses label', (tester) async {
+  testWidgets('Settings use Land and Seas labels', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: TimelineSettingsDialog(
@@ -29,10 +29,11 @@ void main() {
       ),
     );
 
-    expect(find.text('Landmasses'), findsOneWidget);
+    expect(find.text('Land'), findsOneWidget);
+    expect(find.text('Seas'), findsOneWidget);
   });
 
-  testWidgets('Landmasses bars expand to fill lane width', (tester) async {
+  testWidgets('Land and Seas bars match Events bar width', (tester) async {
     await tester.binding.setSurfaceSize(const Size(2200, 1400));
     addTearDown(() async {
       await tester.binding.setSurfaceSize(null);
@@ -126,11 +127,34 @@ void main() {
           unitSpan: 1,
         ),
       ],
-      eventSegments: const [],
+      eventSegments: const [
+        TimelineEventSegment(
+          label: 'TestEvent',
+          shortLabel: 'TestEvent',
+          type: TimelineEventType.bar,
+          startMa: 100,
+          endMa: 0,
+          startUnit: 1,
+          endUnit: 0,
+          colorKey: 'continent|test',
+        ),
+      ],
       continentSegments: const [
         TimelineEventSegment(
           label: 'TestLand',
           shortLabel: 'TestLand',
+          type: TimelineEventType.bar,
+          startMa: 100,
+          endMa: 0,
+          startUnit: 1,
+          endUnit: 0,
+          colorKey: 'continent|test',
+        ),
+      ],
+      waterwaySegments: const [
+        TimelineEventSegment(
+          label: 'TestSea',
+          shortLabel: 'TestSea',
           type: TimelineEventType.bar,
           startMa: 100,
           endMa: 0,
@@ -182,10 +206,22 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    final eventBar = find.byKey(
+      const ValueKey('vertical-event-bar-TestEvent-0'),
+    );
+    expect(eventBar, findsOneWidget);
     final bar = find.byKey(const ValueKey('vertical-event-bar-TestLand-0'));
     expect(bar, findsOneWidget);
-    final barWidth = tester.getRect(bar).width;
+    final waterwayBar = find.byKey(
+      const ValueKey('vertical-event-bar-TestSea-0'),
+    );
+    expect(waterwayBar, findsOneWidget);
 
-    expect(barWidth, greaterThan(40));
+    final eventBarWidth = tester.getRect(eventBar).width;
+    final landmassBarWidth = tester.getRect(bar).width;
+    final waterwayBarWidth = tester.getRect(waterwayBar).width;
+
+    expect(landmassBarWidth, eventBarWidth);
+    expect(waterwayBarWidth, eventBarWidth);
   });
 }

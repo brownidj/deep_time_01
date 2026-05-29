@@ -11,6 +11,7 @@ enum TimelineTrack {
   rlife,
   extinctions,
   continents,
+  waterways,
   events,
   clades,
 }
@@ -23,6 +24,7 @@ const List<TimelineTrack> kDefaultTimelineTrackOrder = <TimelineTrack>[
   TimelineTrack.epoch,
   TimelineTrack.stage,
   TimelineTrack.continents,
+  TimelineTrack.waterways,
   TimelineTrack.paleoEcology,
   TimelineTrack.rlife,
   TimelineTrack.extinctions,
@@ -38,6 +40,7 @@ double leadingGapForTrack(TimelineTrack track, {required bool isFirstVisible}) {
   }
   switch (track) {
     case TimelineTrack.continents:
+    case TimelineTrack.waterways:
     case TimelineTrack.paleoEcology:
     case TimelineTrack.rlife:
       return kTimelineStandardInterColumnGap;

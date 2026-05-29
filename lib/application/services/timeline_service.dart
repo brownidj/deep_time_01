@@ -9,6 +9,7 @@ import 'package:deep_time/domain/repositories/geologic_division_repository.dart'
 import 'package:deep_time/domain/repositories/paleontology_repository.dart';
 import 'package:deep_time/domain/repositories/clade_repository.dart';
 import 'package:deep_time/domain/repositories/continent_repository.dart';
+import 'package:deep_time/domain/repositories/waterway_repository.dart';
 import 'package:deep_time/domain/repositories/timeline_marker_repository.dart';
 import 'package:deep_time/domain/repositories/timeline_palette_repository.dart';
 import 'package:deep_time/domain/repositories/paleo_ecology_repository.dart';
@@ -21,6 +22,7 @@ class TimelineSnapshot {
     required this.palette,
     required this.markers,
     required this.continents,
+    required this.waterways,
     required this.paleoEcology,
     required this.clades,
   });
@@ -31,6 +33,7 @@ class TimelineSnapshot {
   final TimelinePalette palette;
   final TimelineMarkerCatalog markers;
   final List<TimelineEventDefinition> continents;
+  final List<TimelineEventDefinition> waterways;
   final List<PaleoEcologyEntry> paleoEcology;
   final List<Clade> clades;
 }
@@ -43,6 +46,7 @@ class TimelineService {
     required this.markerRepository,
     required this.cladeRepository,
     required this.continentRepository,
+    required this.waterwayRepository,
     required this.paleoEcologyRepository,
   });
 
@@ -52,6 +56,7 @@ class TimelineService {
   final TimelineMarkerRepository markerRepository;
   final CladeRepository cladeRepository;
   final ContinentRepository continentRepository;
+  final WaterwayRepository waterwayRepository;
   final PaleoEcologyRepository paleoEcologyRepository;
 
   Future<TimelineSnapshot> loadSnapshot() async {
@@ -64,6 +69,7 @@ class TimelineService {
     final palette = await paletteRepository.fetchPalette();
     final markers = await markerRepository.fetchMarkers();
     final continents = await continentRepository.fetchContinents();
+    final waterways = await waterwayRepository.fetchWaterways();
     final paleoEcology = await paleoEcologyRepository.fetchEntries();
     final clades = await cladeRepository.fetchAll();
     _validatePaletteCoverage(palette, divisions);
@@ -74,6 +80,7 @@ class TimelineService {
       palette: palette,
       markers: markers,
       continents: continents,
+      waterways: waterways,
       paleoEcology: paleoEcology,
       clades: clades,
     );

@@ -19,7 +19,9 @@ DeepTimePalette testPalette() {
   );
 }
 
-TimelineLayoutSnapshot singleSpanLayout() {
+TimelineLayoutSnapshot singleSpanLayout({
+  List<TimelineEventSegment> eventSegments = const [],
+}) {
   return TimelineLayoutSnapshot(
     divisions: const [],
     eonSegments: const [
@@ -94,7 +96,7 @@ TimelineLayoutSnapshot singleSpanLayout() {
         unitSpan: 1,
       ),
     ],
-    eventSegments: const [],
+    eventSegments: eventSegments,
     continentSegments: const [],
     oldestMa: 100,
     youngestMa: 0,

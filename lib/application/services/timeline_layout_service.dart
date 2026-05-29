@@ -10,8 +10,9 @@ class TimelineLayoutService {
     List<GeologicDivision> divisions,
     TimelineMarkerCatalog markers,
     List<TimelineEventDefinition> continents,
+    List<TimelineEventDefinition> waterways,
   ) {
     final builder = TimelineLayoutBuilder();
-    return builder.build(divisions, markers, continents);
+    return builder.build(divisions, markers, continents, waterways);
   }
 }

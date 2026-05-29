@@ -134,7 +134,7 @@ class _TimelineSettingsDialogState extends State<TimelineSettingsDialog> {
               ),
             ),
             _VisibilitySwitchTile(
-              title: 'Landmasses',
+              title: 'Land',
               value: _localVisibleTracks.contains(TimelineTrack.continents),
               onChanged: (value) {
                 setState(() {
@@ -148,6 +148,20 @@ class _TimelineSettingsDialogState extends State<TimelineSettingsDialog> {
                   TimelineTrack.continents,
                   value,
                 );
+              },
+            ),
+            _VisibilitySwitchTile(
+              title: 'Seas',
+              value: _localVisibleTracks.contains(TimelineTrack.waterways),
+              onChanged: (value) {
+                setState(() {
+                  if (value) {
+                    _localVisibleTracks.add(TimelineTrack.waterways);
+                  } else {
+                    _localVisibleTracks.remove(TimelineTrack.waterways);
+                  }
+                });
+                widget.onTrackVisibilityChanged(TimelineTrack.waterways, value);
               },
             ),
             _VisibilitySwitchTile(

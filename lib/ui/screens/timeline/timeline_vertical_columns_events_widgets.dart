@@ -67,7 +67,7 @@ class _VerticalEventBar extends StatelessWidget {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: textStyle,
-                              textAlign: TextAlign.left,
+                              textAlign: TextAlign.center,
                             ),
                           ),
                         ),

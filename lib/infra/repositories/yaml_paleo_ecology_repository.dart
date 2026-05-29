@@ -34,6 +34,11 @@ class YamlPaleoEcologyRepository implements PaleoEcologyRepository {
       avgHumidityDeltaPercent: metrics.avgHumidityDeltaPercent,
       avgCo2Ppm: metrics.avgCo2Ppm,
       seaLevelDeltaM: metrics.seaLevelDeltaM,
+      icehouseGreenhouseState: _readString(map['icehouse_greenhouse_state']),
+      dominantEcology: _readString(map['dominant_ecology']),
+      confidence: _readString(map['confidence']),
+      note: _readString(map['note']),
+      sources: _readOptionalStringList(map['sources']),
     );
   }
 
@@ -59,6 +64,17 @@ class YamlPaleoEcologyRepository implements PaleoEcologyRepository {
     if (out.length != value.length || out.isEmpty) {
       throw StateError('Invalid string list "$key" in $assetPath');
     }
+    return out;
+  }
+
+  List<String> _readOptionalStringList(Object? value) {
+    if (value is! YamlList) {
+      return const [];
+    }
+    final out = [
+      for (final item in value)
+        if (item is String && item.trim().isNotEmpty) item.trim(),
+    ];
     return out;
   }
 
@@ -89,6 +105,16 @@ class YamlPaleoEcologyRepository implements PaleoEcologyRepository {
     }
     if (value is String) {
       return double.tryParse(value);
+    }
+    return null;
+  }
+
+  String? _readString(Object? value) {
+    if (value is String) {
+      final trimmed = value.trim();
+      if (trimmed.isNotEmpty) {
+        return trimmed;
+      }
     }
     return null;
   }

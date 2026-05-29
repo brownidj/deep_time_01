@@ -177,12 +177,16 @@ class TimelineBody extends StatelessWidget {
     );
     final rlifeWidth =
         minimalHorizontalLabelWidth('Representative life', style: style) * 1.5;
+    final eventsWidth = math.max(
+      minimalHorizontalLabelWidth('Events', style: style),
+      eventBarTrackWidth(layout.eventSegments, style: style),
+    );
     const continentLaneCount = 3;
     const continentLaneGap = 6.0;
     const continentHorizontalPadding = 0.0;
     final continentLaneWidth = math.max(
       3.0,
-      ((style?.fontSize ?? 14.0) * (style?.height ?? 1.0)) + 14.0,
+      ((style?.fontSize ?? 14.0) * (style?.height ?? 1.0)) + 18.0,
     );
     final continentsWidth =
         (continentLaneCount * continentLaneWidth) +
@@ -201,7 +205,8 @@ class TimelineBody extends StatelessWidget {
         TimelineTrack.paleoEcology: rlifeWidth,
         TimelineTrack.extinctions: extinctionsWidth,
         TimelineTrack.continents: continentsWidth,
-        TimelineTrack.events: rlifeWidth,
+        TimelineTrack.waterways: continentsWidth,
+        TimelineTrack.events: eventsWidth,
       },
     );
   }

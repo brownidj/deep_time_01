@@ -67,6 +67,42 @@ paleo_ecology:
     expect(entries.single.hasCompleteMetricSummary, isFalse);
   });
 
+  test('parses contextual paleo fields including sources', () {
+    final repository = YamlPaleoEcologyRepository(
+      assetPath: 'data/paleo_ecology.yaml',
+    );
+
+    final entries = repository.parseEntries('''
+paleo_ecology:
+  - rank: stage
+    name: Chattian
+    path:
+      - Phanerozoic
+      - Cenozoic
+      - Paleogene
+      - Oligocene
+      - Chattian
+    avg_temp_delta_c: +2.0
+    avg_humidity_delta_percent: -1.0
+    avg_co2_ppm: 600
+    sea_level_delta_m: +20.0
+    icehouse_greenhouse_state: icehouse
+    dominant_ecology: late Oligocene cooler ecosystems
+    confidence: moderate
+    note: Oligocene values reflect cooler icehouse conditions.
+    sources:
+      - Source A
+      - Source B
+''');
+
+    final entry = entries.single;
+    expect(entry.icehouseGreenhouseState, 'icehouse');
+    expect(entry.dominantEcology, 'late Oligocene cooler ecosystems');
+    expect(entry.confidence, 'moderate');
+    expect(entry.note, 'Oligocene values reflect cooler icehouse conditions.');
+    expect(entry.sources, ['Source A', 'Source B']);
+  });
+
   test('project paleo ecology file includes higher-rank entries', () {
     final repository = YamlPaleoEcologyRepository(
       assetPath: 'data/paleo_ecology.yaml',

@@ -58,7 +58,10 @@ class TimelineVerticalColumns extends StatelessWidget {
           paleoWidth: metrics.trackWidth(TimelineTrack.paleoEcology),
           paleoStyle: stageLabelStyle,
         );
-        final scale = _widthScale(constraints.maxWidth);
+        final trackWidths = resolveTimelineTrackWidths(
+          metrics: metrics,
+          maxWidth: constraints.maxWidth,
+        );
         final stageHeightsForPaleo = useFixedHeights
             ? _computeProportionalHeights(
                 layout.stageSegments,
@@ -87,21 +90,8 @@ class TimelineVerticalColumns extends StatelessWidget {
                 ],
                 unitSpan: (segment) => segment.unitSpan,
               );
-        final cappedTracks = <TimelineTrack>{
-          TimelineTrack.ma,
-          TimelineTrack.eon,
-          TimelineTrack.era,
-          TimelineTrack.period,
-          TimelineTrack.epoch,
-          TimelineTrack.stage,
-          TimelineTrack.paleoEcology,
-          TimelineTrack.rlife,
-          TimelineTrack.extinctions,
-          TimelineTrack.continents,
-        };
         double scaledWidth(TimelineTrack track) =>
-            metrics.trackWidth(track) *
-            (cappedTracks.contains(track) ? 1.0 : scale);
+            trackWidths[track] ?? metrics.trackWidth(track);
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -139,40 +129,5 @@ class TimelineVerticalColumns extends StatelessWidget {
         );
       },
     );
-  }
-
-  double _widthScale(double maxWidth) {
-    if (!maxWidth.isFinite || maxWidth <= 0 || metrics.trackColumnsWidth <= 0) {
-      return 1.0;
-    }
-    final cappedTracks = <TimelineTrack>{
-      TimelineTrack.ma,
-      TimelineTrack.eon,
-      TimelineTrack.era,
-      TimelineTrack.period,
-      TimelineTrack.epoch,
-      TimelineTrack.stage,
-      TimelineTrack.paleoEcology,
-      TimelineTrack.rlife,
-      TimelineTrack.extinctions,
-      TimelineTrack.continents,
-    };
-    var fixed = 0.0;
-    var scalable = 0.0;
-    for (final track in metrics.trackOrder) {
-      final width = metrics.trackWidth(track);
-      fixed += metrics.gapBefore(track);
-      if (cappedTracks.contains(track)) {
-        fixed += width;
-      } else {
-        scalable += width;
-      }
-      fixed += metrics.gapAfter(track);
-    }
-    if (scalable <= 0) {
-      return 1.0;
-    }
-    final available = (maxWidth - fixed).clamp(0.0, double.infinity);
-    return available / scalable;
   }
 }

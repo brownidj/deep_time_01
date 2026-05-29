@@ -92,6 +92,7 @@ class TimelineLayoutSnapshot {
     required this.rlifeSegments,
     required this.eventSegments,
     required this.continentSegments,
+    this.waterwaySegments = const [],
     required this.oldestMa,
     required this.youngestMa,
     this.fixedHeight,
@@ -106,6 +107,7 @@ class TimelineLayoutSnapshot {
   final List<TimelineRowSegment> rlifeSegments;
   final List<TimelineEventSegment> eventSegments;
   final List<TimelineEventSegment> continentSegments;
+  final List<TimelineEventSegment> waterwaySegments;
   final double oldestMa;
   final double youngestMa;
   final double? fixedHeight;

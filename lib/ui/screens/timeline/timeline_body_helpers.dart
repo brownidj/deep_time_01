@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/widgets.dart';
 import 'package:deep_time/application/services/timeline_layout_models.dart';
 import 'package:deep_time/domain/models/paleo_ecology_entry.dart';
@@ -19,6 +21,60 @@ double minimalHorizontalLabelWidth(String label, {TextStyle? style}) {
     maxLines: 1,
   )..layout();
   return painter.width + 16;
+}
+
+double eventBarTrackWidth(
+  List<TimelineEventSegment> events, {
+  TextStyle? style,
+  double horizontalPadding = 3,
+  double laneGap = 4,
+}) {
+  final barEvents = events
+      .where((event) => event.type == TimelineEventType.bar)
+      .toList();
+  if (barEvents.isEmpty) {
+    return 0.0;
+  }
+  final laneCount = overlappingEventBarLaneCount(barEvents);
+  final laneWidth = math.max(
+    3.0,
+    ((style?.fontSize ?? 14.0) * (style?.height ?? 1.0)) + 18.0,
+  );
+  return (laneCount * laneWidth) +
+      (math.max(0, laneCount - 1) * laneGap) +
+      (horizontalPadding * 2);
+}
+
+int overlappingEventBarLaneCount(List<TimelineEventSegment> barEvents) {
+  if (barEvents.isEmpty) {
+    return 0;
+  }
+  final sorted = barEvents.toList()
+    ..sort((a, b) {
+      final startCompare = b.startMa.compareTo(a.startMa);
+      if (startCompare != 0) {
+        return startCompare;
+      }
+      return b.endMa.compareTo(a.endMa);
+    });
+
+  final laneBottoms = <double>[];
+  for (final event in sorted) {
+    final top = math.min(event.startUnit, event.endUnit);
+    final bottom = math.max(event.startUnit, event.endUnit);
+    var lane = 0;
+    for (; lane < laneBottoms.length; lane += 1) {
+      if (top >= laneBottoms[lane]) {
+        break;
+      }
+    }
+    if (lane == laneBottoms.length) {
+      laneBottoms.add(bottom);
+    } else {
+      laneBottoms[lane] = bottom;
+    }
+  }
+  return laneBottoms.length;
 }
 
 double minimalVerticalLabelWidth(String label, {TextStyle? style}) {
