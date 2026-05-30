@@ -54,6 +54,10 @@ class _VerticalCladeColumn extends StatelessWidget {
     if (width <= 0 || height <= 0 || totalUnits <= 0) {
       return const SizedBox.shrink();
     }
+    const horizontalInset = 6.0;
+    const bottomInset = 4.0;
+    final contentWidth = math.max(0.0, width - (horizontalInset * 2));
+    final contentHeight = math.max(0.0, height - bottomInset);
     return SizedBox(
       key: const ValueKey('vertical-clade-column'),
       width: width,
@@ -77,7 +81,7 @@ class _VerticalCladeColumn extends StatelessWidget {
               eraHeights: eraHeights,
               eonSegments: eonSegments,
               eonHeights: eonHeights,
-              totalHeight: height,
+              totalHeight: contentHeight,
               oldestMa: layout.oldestMa,
               youngestMa: layout.youngestMa,
             );
@@ -122,60 +126,92 @@ class _VerticalCladeColumn extends StatelessWidget {
               visible: visible,
               allById: allById,
               mapper: mapper,
-              columnWidth: width,
-              columnHeight: height,
+              columnWidth: contentWidth,
+              columnHeight: contentHeight,
             );
+            final lucaTop = _lucaTop(barLayouts, contentHeight);
+            final pinnedTop = scrollOffset
+                .clamp(0.0, math.max(0.0, contentHeight - lucaTop))
+                .toDouble();
             return Stack(
               children: [
-                for (final connector in _layoutCladeConnectors(barLayouts))
-                  Positioned(
-                    key: ValueKey(
-                      'vertical-clade-connector-${connector.parent.id}-${connector.child.id}',
-                    ),
-                    left: connector.left,
-                    top: connector.top,
-                    width: connector.width,
-                    height: 1,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: _VerticalCladeBar.baseColor.withValues(
-                          alpha: 0.9,
-                        ),
-                      ),
-                    ),
-                  ),
-                for (final entry in barLayouts)
-                  Positioned(
-                    left: entry.left,
-                    top: entry.top,
-                    child: Tooltip(
-                      message: entry.tooltip,
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.translucent,
-                        onTap: () => onSpotlight(entry.clade),
-                        onLongPress: () => showTimelineExplanationDialog(
-                          context: context,
-                          title: entry.clade.label,
-                          explanation: _buildCladeDetailsText(entry),
-                        ),
-                        child: _VerticalCladeBar(
-                          key: ValueKey('vertical-clade-${entry.clade.id}'),
-                          clade: entry.clade,
-                          width: entry.width,
-                          height: entry.height,
-                          isDimmed:
-                              spotlightId != null &&
-                              spotlightId != entry.clade.id,
-                          isHighlighted: spotlightId == entry.clade.id,
-                          onLongPress: () => showTimelineExplanationDialog(
-                            context: context,
-                            title: entry.clade.label,
-                            explanation: _buildCladeDetailsText(entry),
+                Positioned(
+                  left: horizontalInset,
+                  top: 0,
+                  width: contentWidth,
+                  height: contentHeight,
+                  child: Stack(
+                    children: [
+                      for (final connector in _layoutCladeConnectors(
+                        barLayouts,
+                      ))
+                        Positioned(
+                          key: ValueKey(
+                            'vertical-clade-connector-${connector.parent.id}-${connector.child.id}',
+                          ),
+                          left: connector.left,
+                          top: connector.top,
+                          width: connector.width,
+                          height: 1,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: _VerticalCladeBar.baseColor.withValues(
+                                alpha: 0.9,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
+                      for (final entry in barLayouts)
+                        Positioned(
+                          left: entry.left,
+                          top: entry.top,
+                          child: Tooltip(
+                            message: entry.tooltip,
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.translucent,
+                              onTap: () => onSpotlight(entry.clade),
+                              onLongPress: () => showTimelineExplanationDialog(
+                                context: context,
+                                title: entry.clade.label,
+                                explanation: _buildCladeDetailsText(entry),
+                              ),
+                              child: _VerticalCladeBar(
+                                key: ValueKey(
+                                  'vertical-clade-${entry.clade.id}',
+                                ),
+                                clade: entry.clade,
+                                width: entry.width,
+                                height: entry.height,
+                                isDimmed:
+                                    spotlightId != null &&
+                                    spotlightId != entry.clade.id,
+                                isHighlighted: spotlightId == entry.clade.id,
+                                onLongPress: () =>
+                                    showTimelineExplanationDialog(
+                                      context: context,
+                                      title: entry.clade.label,
+                                      explanation: _buildCladeDetailsText(
+                                        entry,
+                                      ),
+                                    ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      if (lucaTop > 0)
+                        _VisibleCladeTopStrip(
+                          height: lucaTop,
+                          top: pinnedTop,
+                          barLayouts: barLayouts,
+                        ),
+                    ],
                   ),
+                ),
+                _CladeColumnScrollbar(
+                  width: width,
+                  height: contentHeight,
+                  controller: scrollController,
+                ),
               ],
             );
           },
@@ -202,5 +238,14 @@ class _VerticalCladeColumn extends StatelessWidget {
     return Center(
       child: Text(message, style: style, textAlign: TextAlign.center),
     );
+  }
+
+  double _lucaTop(List<_VerticalCladeBarLayout> layouts, double maxHeight) {
+    for (final entry in layouts) {
+      if (entry.clade.id.toLowerCase() == 'luca') {
+        return entry.top.clamp(0.0, maxHeight);
+      }
+    }
+    return 0.0;
   }
 }

@@ -59,10 +59,18 @@ enum TimelineEventType { point, bar }
 
 class TimelineEventSegment {
   const TimelineEventSegment({
+    this.id,
     required this.label,
     required this.shortLabel,
     required this.type,
     this.explanation,
+    this.image,
+    this.sourcePage,
+    this.imageLicense,
+    this.imageLicenseUrl,
+    this.imageAuthor,
+    this.imageCredit,
+    this.localAssetImage,
     required this.startMa,
     required this.endMa,
     required this.startUnit,
@@ -70,10 +78,18 @@ class TimelineEventSegment {
     required this.colorKey,
   });
 
+  final String? id;
   final String label;
   final String shortLabel;
   final TimelineEventType type;
   final String? explanation;
+  final String? image;
+  final String? sourcePage;
+  final String? imageLicense;
+  final String? imageLicenseUrl;
+  final String? imageAuthor;
+  final String? imageCredit;
+  final String? localAssetImage;
   final double startMa;
   final double endMa;
   final double startUnit;

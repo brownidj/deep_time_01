@@ -170,19 +170,20 @@ class _EventBar extends StatelessWidget {
       child: Tooltip(
         message:
             '${event.label} • '
-            '${formatTimeRange(
-              startMa: event.startMa,
-              endMa: endMa,
-              startPrecision: 1,
-              endPrecision: 1,
-              durationPrecision: 1,
-            )}',
+            '${formatTimeRange(startMa: event.startMa, endMa: endMa, startPrecision: 1, endPrecision: 1, durationPrecision: 1)}',
         child: GestureDetector(
           onLongPress: hasExplanation
               ? () => showTimelineExplanationDialog(
                   context: context,
                   title: event.label,
                   explanation: event.explanation!.trim(),
+                  localAssetImage: event.localAssetImage,
+                  imageUrl: event.image,
+                  sourcePage: event.sourcePage,
+                  imageLicense: event.imageLicense,
+                  imageLicenseUrl: event.imageLicenseUrl,
+                  imageAuthor: event.imageAuthor,
+                  imageCredit: event.imageCredit,
                 )
               : null,
           child: Container(

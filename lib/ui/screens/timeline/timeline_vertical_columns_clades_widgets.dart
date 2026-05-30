@@ -142,3 +142,160 @@ class _VerticalCladeBar extends StatelessWidget {
     );
   }
 }
+
+class _VisibleCladeTopStrip extends StatelessWidget {
+  const _VisibleCladeTopStrip({
+    required this.height,
+    required this.top,
+    required this.barLayouts,
+    this.bottomPadding = 4.0,
+  });
+
+  final double height;
+  final double top;
+  final List<_VerticalCladeBarLayout> barLayouts;
+  final double bottomPadding;
+
+  @override
+  Widget build(BuildContext context) {
+    if (height <= 0 || barLayouts.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    const labelBandWidth = 28.0;
+    final bottom = top + height;
+    final sorted = [
+      for (final entry in barLayouts)
+        if (entry.top <= bottom) entry,
+    ]..sort((a, b) => a.left.compareTo(b.left));
+    return Positioned(
+      key: const ValueKey('clade-top-strip'),
+      left: 0,
+      top: top,
+      right: 0,
+      height: height,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          const Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: DeepTimePalette.timelineGapBackground,
+              ),
+            ),
+          ),
+          for (final entry in sorted)
+            Positioned(
+              left: entry.left + 1.0 - (labelBandWidth / 2),
+              bottom: bottomPadding,
+              width: labelBandWidth,
+              height: height,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: DecoratedBox(
+                  decoration: const BoxDecoration(
+                    color: DeepTimePalette.timelineGapBackground,
+                  ),
+                  child: RotatedBox(
+                    quarterTurns: 3,
+                    child: Tooltip(
+                      message: entry.tooltip,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        onLongPress: () => showTimelineExplanationDialog(
+                          context: context,
+                          title: entry.clade.label,
+                          explanation: _buildCladeDetailsText(entry),
+                        ),
+                        child: Text(
+                          entry.clade.label,
+                          key: ValueKey(
+                            'clade-top-strip-label-${entry.clade.id}',
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.labelSmall?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CladeColumnScrollbar extends StatelessWidget {
+  const _CladeColumnScrollbar({
+    required this.width,
+    required this.height,
+    required this.controller,
+  });
+
+  final double width;
+  final double height;
+  final ScrollController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    var viewport = height;
+    var maxScroll = 0.0;
+    var pixels = 0.0;
+    if (controller.hasClients) {
+      final position = controller.position;
+      if (position.hasContentDimensions) {
+        viewport = position.viewportDimension;
+        maxScroll = position.maxScrollExtent;
+      }
+      if (position.hasPixels) {
+        pixels = position.pixels;
+      }
+    }
+    final content = viewport + maxScroll;
+    final trackHeight = height;
+    final thumbHeight = math.max(18.0, trackHeight * (viewport / content));
+    final scrollFraction = maxScroll <= 0
+        ? 0.0
+        : (pixels / maxScroll).clamp(0.0, 1.0);
+    final thumbTop = (trackHeight - thumbHeight) * scrollFraction;
+    return Positioned(
+      key: const ValueKey('clade-scrollbar'),
+      right: 1,
+      top: 1,
+      width: 3,
+      height: math.max(0.0, height - 2),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(2),
+        ),
+        child: Stack(
+          children: [
+            Positioned(
+              left: 0,
+              right: 0,
+              top: thumbTop.clamp(
+                0.0,
+                math.max(0.0, trackHeight - thumbHeight),
+              ),
+              height: thumbHeight.clamp(0.0, trackHeight),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.65),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

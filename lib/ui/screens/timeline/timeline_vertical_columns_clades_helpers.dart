@@ -82,7 +82,8 @@ List<_VerticalCladeBarLayout> _layoutCladeBars({
   required double columnWidth,
   required double columnHeight,
 }) {
-  const padding = 8.0;
+  const labelHalfWidth = 14.0;
+  const padding = labelHalfWidth;
   const minBarHeight = 12.0;
   const lineHitWidth = 72.0;
   final visibleById = {for (final clade in visible) clade.id: clade};

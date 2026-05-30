@@ -27,10 +27,18 @@ class TimelineEventsBuilder {
       final endUnit = _unitForMa(range.endMa, periodRanges, eraRanges);
       events.add(
         TimelineEventSegment(
+          id: definition.id,
           label: definition.label,
           shortLabel: definition.shortLabel,
           type: _eventTypeFor(definition.kind),
           explanation: definition.explanation,
+          image: definition.image,
+          sourcePage: definition.sourcePage,
+          imageLicense: definition.imageLicense,
+          imageLicenseUrl: definition.imageLicenseUrl,
+          imageAuthor: definition.imageAuthor,
+          imageCredit: definition.imageCredit,
+          localAssetImage: definition.localAssetImage,
           startMa: range.startMa,
           endMa: range.endMa,
           startUnit: startUnit <= endUnit ? startUnit : endUnit,
