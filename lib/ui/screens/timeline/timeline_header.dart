@@ -17,6 +17,12 @@ class TimelineHeader extends StatelessWidget {
   final double minScale;
   final double maxScale;
 
+  String _scaleLabel() {
+    final offset = minScale - 1.0;
+    final displayScale = (scale - offset).clamp(1.0, maxScale - offset);
+    return displayScale.toStringAsFixed(1);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -59,7 +65,7 @@ class TimelineHeader extends StatelessWidget {
                     max: maxScale,
                     divisions: 12,
                     value: scale.clamp(minScale, maxScale),
-                    label: scale.toStringAsFixed(1),
+                    label: _scaleLabel(),
                     onChanged: onScaleChanged,
                   ),
                 ),

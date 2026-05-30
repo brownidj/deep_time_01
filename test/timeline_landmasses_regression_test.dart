@@ -221,6 +221,7 @@ void main() {
     final landmassBarWidth = tester.getRect(bar).width;
     final waterwayBarWidth = tester.getRect(waterwayBar).width;
 
+    expect(eventBarWidth, 24.0);
     expect(landmassBarWidth, eventBarWidth);
     expect(waterwayBarWidth, eventBarWidth);
   });

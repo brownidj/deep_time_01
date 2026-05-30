@@ -12,6 +12,7 @@ class _VerticalEventsColumn extends StatelessWidget {
     this.laneGap = 4.0,
     this.showPoints = true,
     this.fillLaneWidths = false,
+    this.fixedLaneWidth,
   });
 
   final double width;
@@ -24,6 +25,7 @@ class _VerticalEventsColumn extends StatelessWidget {
   final double laneGap;
   final bool showPoints;
   final bool fillLaneWidths;
+  final double? fixedLaneWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +64,7 @@ class _VerticalEventsColumn extends StatelessWidget {
       horizontalPadding: horizontalPadding,
       laneGap: laneGap,
       fillLaneWidths: fillLaneWidths,
+      fixedLaneWidth: fixedLaneWidth,
     );
     return SizedBox(
       width: width,
@@ -156,11 +159,12 @@ class _VerticalEventsColumn extends StatelessWidget {
     required double horizontalPadding,
     required double laneGap,
     required bool fillLaneWidths,
+    required double? fixedLaneWidth,
   }) {
     final laneMaxWidth = <int, double>{};
     for (final layout in layouts) {
-      var desired = 3.0;
-      if (textStyle != null) {
+      var desired = fixedLaneWidth ?? 3.0;
+      if (fixedLaneWidth == null && textStyle != null) {
         final painter = TextPainter(
           text: TextSpan(text: layout.event.shortLabel, style: textStyle),
           maxLines: 1,

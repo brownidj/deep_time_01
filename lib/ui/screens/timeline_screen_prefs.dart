@@ -43,7 +43,10 @@ mixin _TimelineScreenPreferences on State<TimelineScreen> {
           _cladeCategoryId = storedCladeCategory;
         }
         if (storedScale != null) {
-          AppDebug.timelineScale = storedScale;
+          AppDebug.timelineScale = storedScale.clamp(
+            AppDebug.minTimelineScale,
+            AppDebug.maxTimelineScale,
+          );
         }
         if (storedContinentVisible != null) {
           final nextVisible = Set<TimelineTrack>.from(_visibleTracks);

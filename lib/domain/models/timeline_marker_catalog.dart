@@ -2,19 +2,35 @@ enum TimelineEventKind { bar, point }
 
 class TimelineEventDefinition {
   const TimelineEventDefinition({
+    this.id,
     required this.label,
     required this.shortLabel,
     required this.kind,
     this.explanation,
+    this.image,
+    this.sourcePage,
+    this.imageLicense,
+    this.imageLicenseUrl,
+    this.imageAuthor,
+    this.imageCredit,
+    this.localAssetImage,
     this.startMa,
     this.endMa,
     this.atMa,
   });
 
+  final String? id;
   final String label;
   final String shortLabel;
   final TimelineEventKind kind;
   final String? explanation;
+  final String? image;
+  final String? sourcePage;
+  final String? imageLicense;
+  final String? imageLicenseUrl;
+  final String? imageAuthor;
+  final String? imageCredit;
+  final String? localAssetImage;
   final double? startMa;
   final double? endMa;
   final double? atMa;

@@ -83,7 +83,7 @@
     - living clade
 
 - id: eukaryota
-  label: Eukaryotes
+  label: Eukaryota
   scientific_rank: domain
   parent_id: luca
   start_ma: 1850.0
@@ -105,7 +105,7 @@
     - backbone
 
 - id: animalia
-  label: Animals
+  label: Animalia
   scientific_rank: kingdom
   parent_id: eukaryota
   start_ma: 800.0
@@ -155,7 +155,7 @@
     - backbone
 
 - id: protostomia
-  label: Protostomes
+  label: Protostomia
   scientific_rank: clade
   parent_id: bilateria
   start_ma: 550.0
@@ -178,7 +178,7 @@
     - living clade
 
 - id: deuterostomia
-  label: Deuterostomes
+  label: Deuterostomia
   scientific_rank: clade
   parent_id: bilateria
   start_ma: 540.0
@@ -202,7 +202,7 @@
     - living clade
 
 - id: arthropoda
-  label: Arthropods
+  label: Arthropoda
   scientific_rank: phylum
   parent_id: protostomia
   start_ma: 541.0
@@ -228,7 +228,7 @@
     - living clade
 
 - id: trilobita
-  label: Trilobites
+  label: Trilobita
   scientific_rank: class
   parent_id: arthropoda
   start_ma: 521.0
@@ -257,7 +257,7 @@
     - extinction
 
 - id: mollusca
-  label: Molluscs
+  label: Mollusca
   scientific_rank: phylum
   parent_id: protostomia
   start_ma: 541.0
@@ -283,7 +283,7 @@
     - living clade
 
 - id: cephalopoda
-  label: Cephalopods
+  label: Cephalopoda
   scientific_rank: class
   parent_id: mollusca
   start_ma: 500.0
@@ -309,7 +309,7 @@
     - living clade
 
 - id: ammonoidea
-  label: Ammonoids
+  label: Ammonoidea
   scientific_rank: subclass
   parent_id: cephalopoda
   start_ma: 409.0
@@ -337,7 +337,7 @@
     - extinction
 
 - id: echinodermata
-  label: Echinoderms
+  label: Echinodermata
   scientific_rank: phylum
   parent_id: deuterostomia
   start_ma: 540.0
@@ -364,7 +364,7 @@
     - living clade
 
 - id: chordata
-  label: Chordates
+  label: Chordata
   scientific_rank: phylum
   parent_id: deuterostomia
   start_ma: 530.0
@@ -389,7 +389,7 @@
     - backbone
 
 - id: vertebrata
-  label: Vertebrates
+  label: Vertebrata
   scientific_rank: subphylum
   parent_id: chordata
   start_ma: 520.0
@@ -413,7 +413,7 @@
     - backbone
 
 - id: gnathostomata
-  label: Jawed vertebrates
+  label: Gnathostomata (jawed vertebrates)
   scientific_rank: infraphylum
   parent_id: vertebrata
   start_ma: 430.0
@@ -439,7 +439,7 @@
     - backbone
 
 - id: osteichthyes
-  label: Bony vertebrates
+  label: Osteichthyes (bony vertebrates
   scientific_rank: superclass
   parent_id: gnathostomata
   start_ma: 420.0
@@ -465,7 +465,7 @@
     - backbone
 
 - id: sarcopterygii
-  label: Lobe-finned fish
+  label: Sarcopterygii (lobe-finned fish)
   scientific_rank: class
   parent_id: osteichthyes
   start_ma: 425.0
@@ -490,7 +490,7 @@
     - living clade
 
 - id: tetrapoda
-  label: Tetrapods
+  label: Tetrapoda
   scientific_rank: superclass
   parent_id: sarcopterygii
   start_ma: 390.0
@@ -514,7 +514,7 @@
     - backbone
 
 - id: amniota
-  label: Amniotes
+  label: Amniota
   scientific_rank: clade
   parent_id: tetrapoda
   start_ma: 318.0
@@ -539,7 +539,7 @@
     - backbone
 
 - id: synapsida
-  label: Synapsids
+  label: Synapsida
   scientific_rank: clade
   parent_id: amniota
   start_ma: 318.0
@@ -563,7 +563,7 @@
     - living clade
 
 - id: mammalia
-  label: Mammals
+  label: Mammalia
   scientific_rank: class
   parent_id: therapsida
   start_ma: 225.0
@@ -587,7 +587,7 @@
     - backbone
 
 - id: therapsida
-  label: Therapsids
+  label: Therapsida
   scientific_rank: clade
   parent_id: synapsida
   start_ma: 275.0
@@ -644,10 +644,74 @@
     - human evolution
     - living clade
 
+- id: hominidae
+  label: Hominidae (great apes)
+  scientific_rank: family
+  parent_id: primates
+  start_ma: 18.0
+  end_ma: 0.0
+  range_note: Early Miocene to present
+  confidence: approximate
+  display_groups:
+    - mammals_birds
+    - terrestrial_vertebrates
+  display_priority: 22
+  min_zoom_level: epoch
+  short_description: Great apes, including orangutans, gorillas, chimpanzees, humans, and their extinct relatives.
+  divergence_ma: 18.0
+  branch_priority: 32
+  cladistic_role: detail
+  uncertainty: approximate
+  representative_taxa:
+    - Orangutans
+    - Gorillas
+    - Chimpanzees
+    - Humans
+  tags:
+    - vertebrate
+    - mammal
+    - primate
+    - ape
+    - hominid
+    - human evolution
+    - living clade
+
+- id: homininae
+  label: Homininae (African apes)
+  scientific_rank: subfamily
+  parent_id: hominidae
+  start_ma: 14.0
+  end_ma: 0.0
+  range_note: Middle Miocene to present
+  confidence: approximate
+  display_groups:
+    - mammals_birds
+    - terrestrial_vertebrates
+  display_priority: 23
+  min_zoom_level: epoch
+  short_description: African apes, including gorillas, chimpanzees, humans, and their extinct relatives.
+  divergence_ma: 14.0
+  branch_priority: 33
+  cladistic_role: detail
+  uncertainty: approximate
+  representative_taxa:
+    - Gorillas
+    - Chimpanzees
+    - Humans
+  tags:
+    - vertebrate
+    - mammal
+    - primate
+    - ape
+    - hominid
+    - hominine
+    - human evolution
+    - living clade
+
 - id: hominini
   label: Hominins
   scientific_rank: tribe
-  parent_id: primates
+  parent_id: homininae
   start_ma: 7.0
   end_ma: 0.0
   range_note: Late Miocene to present
@@ -700,6 +764,8 @@
     - vertebrate
     - mammal
     - primate
+    - hominid
+    - hominin
     - Homo
     - human evolution
     - living clade
@@ -991,7 +1057,7 @@
     - living clade
 
 - id: angiospermae
-  label: Flowering plants
+  label: Angiospermae (flowering plants)
   scientific_rank: clade
   parent_id: tracheophyta
   start_ma: 140.0
@@ -1018,7 +1084,7 @@
     - living clade
 
 - id: poaceae
-  label: Grasses
+  label: Poaceae (grasses)
   scientific_rank: family
   parent_id: angiospermae
   start_ma: 70.0

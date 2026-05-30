@@ -172,6 +172,82 @@ void main() {
 
     expect((siblingA.left - siblingB.left).abs(), greaterThan(8.0));
   });
+
+  testWidgets('Clade column shows top strip and narrow scrollbar', (
+    tester,
+  ) async {
+    await _setLargeSurface(tester);
+    final palette = testPalette();
+    final layout = splitPeriodLayout();
+    const markers = TimelineMarkerCatalog(events: [], extinctions: []);
+    const clades = [
+      Clade(
+        id: 'luca',
+        label: 'LUCA',
+        scientificRank: 'test',
+        startMa: 80,
+        endMa: 0,
+        displayGroups: ['all'],
+        displayPriority: 0,
+        minZoomLevel: CladeZoomLevel.whole,
+      ),
+      Clade(
+        id: 'bacteria',
+        label: 'Bacteria',
+        scientificRank: 'test',
+        parentId: 'luca',
+        startMa: 60,
+        endMa: 0,
+        displayGroups: ['all'],
+        displayPriority: 1,
+        minZoomLevel: CladeZoomLevel.whole,
+      ),
+    ];
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: SizedBox(
+            width: 2000,
+            height: 1200,
+            child: Column(
+              children: [
+                TimelineBody(
+                  layout: layout,
+                  palette: palette,
+                  markers: markers,
+                  labelMode: TimeLabelMode.geologicTime,
+                  scrollController: ScrollController(),
+                  selectedId: null,
+                  onBandSelect: (_) {},
+                  onSelect: (_) {},
+                  clades: clades,
+                  cladeViewMode: CladeViewMode.representativeOnly,
+                  cladeCategoryId: 'all',
+                  cladeRepresentativeIds: const [],
+                  cladeSearchQuery: '',
+                  cladeSpotlightId: null,
+                  onCladeSpotlight: (_) {},
+                  visibleTracks: {...kDefaultTimelineTrackOrder}
+                    ..remove(TimelineTrack.paleoEcology),
+                  paleoEcology: const [],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const ValueKey('clade-top-strip')), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('clade-top-strip-label-luca')),
+      findsOneWidget,
+    );
+    expect(find.byKey(const ValueKey('clade-scrollbar')), findsOneWidget);
+  });
 }
 
 Future<void> _setLargeSurface(WidgetTester tester) async {

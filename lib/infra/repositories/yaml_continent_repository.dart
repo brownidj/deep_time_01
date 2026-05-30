@@ -20,16 +20,31 @@ class YamlContinentRepository implements ContinentRepository {
   }
 
   TimelineEventDefinition _parseBar(YamlMap entry) {
+    final id = _readString(entry['id']);
     final label = _requireString(entry, 'label');
     final shortLabel = _requireString(entry, 'short_label');
     final startMa = _requireDouble(entry, 'start_ma');
     final endMa = _requireDouble(entry, 'end_ma');
     final explanation = _readString(entry['explanation']);
+    final image = _readString(entry['image']);
+    final sourcePage = _readString(entry['source_page']);
+    final imageLicense = _readString(entry['image_license']);
+    final imageLicenseUrl = _readString(entry['image_license_url']);
+    final imageAuthor = _readString(entry['image_author']);
+    final imageCredit = _readString(entry['image_credit']);
     return TimelineEventDefinition(
+      id: id,
       label: label,
       shortLabel: shortLabel,
       kind: TimelineEventKind.bar,
       explanation: explanation,
+      image: image,
+      sourcePage: sourcePage,
+      imageLicense: imageLicense,
+      imageLicenseUrl: imageLicenseUrl,
+      imageAuthor: imageAuthor,
+      imageCredit: imageCredit,
+      localAssetImage: id == null ? null : 'assets/images/continents/$id.png',
       startMa: startMa,
       endMa: endMa,
       atMa: null,

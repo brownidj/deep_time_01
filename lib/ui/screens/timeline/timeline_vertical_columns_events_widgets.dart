@@ -42,6 +42,13 @@ class _VerticalEventBar extends StatelessWidget {
                   context: context,
                   title: event.label,
                   explanation: explanation.trim(),
+                  localAssetImage: event.localAssetImage,
+                  imageUrl: event.image,
+                  sourcePage: event.sourcePage,
+                  imageLicense: event.imageLicense,
+                  imageLicenseUrl: event.imageLicenseUrl,
+                  imageAuthor: event.imageAuthor,
+                  imageCredit: event.imageCredit,
                 ),
           child: DecoratedBox(
             decoration: BoxDecoration(
@@ -138,6 +145,13 @@ class _VerticalEventPoint extends StatelessWidget {
                   context: context,
                   title: event.label,
                   explanation: explanation.trim(),
+                  localAssetImage: event.localAssetImage,
+                  imageUrl: event.image,
+                  sourcePage: event.sourcePage,
+                  imageLicense: event.imageLicense,
+                  imageLicenseUrl: event.imageLicenseUrl,
+                  imageAuthor: event.imageAuthor,
+                  imageCredit: event.imageCredit,
                 ),
           child: Stack(
             children: [

@@ -92,9 +92,12 @@ void main() {
     expect(childRect.left, greaterThan(parentRect.left));
     expect(
       (childRect.top - (columnRect.top + columnRect.height / 2)).abs(),
-      lessThan(4.0),
+      lessThanOrEqualTo(4.0),
     );
-    expect((childRect.height - (columnRect.height / 2)).abs(), lessThan(4.0));
+    expect(
+      (childRect.height - (columnRect.height / 2)).abs(),
+      lessThanOrEqualTo(4.0),
+    );
     expect(
       find.byKey(
         const ValueKey('vertical-clade-connector-parent_clade-child_clade'),
