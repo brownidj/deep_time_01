@@ -15,6 +15,7 @@ const Set<TimelineTrack> kFixedTimelineTracks = {
   TimelineTrack.extinctions,
   TimelineTrack.continents,
   TimelineTrack.waterways,
+  TimelineTrack.events,
 };
 
 Map<TimelineTrack, double> resolveTimelineTrackWidths({
@@ -35,17 +36,10 @@ Map<TimelineTrack, double> resolveTimelineTrackWidths({
       fixedWidth += metrics.trackWidth(track);
       continue;
     }
-    if (track != TimelineTrack.events) {
-      flexibleBaseWidth += metrics.trackWidth(track);
-    }
+    flexibleBaseWidth += metrics.trackWidth(track);
   }
 
-  final remainingAfterFixed = math.max(0.0, maxWidth - fixedWidth);
-  final hasEvents = metrics.trackOrder.contains(TimelineTrack.events);
-  final eventWidth = hasEvents
-      ? math.min(metrics.trackWidth(TimelineTrack.events), remainingAfterFixed)
-      : 0.0;
-  final remainingForFlexible = math.max(0.0, remainingAfterFixed - eventWidth);
+  final remainingForFlexible = math.max(0.0, maxWidth - fixedWidth);
   final flexibleScale = flexibleBaseWidth <= 0
       ? 1.0
       : remainingForFlexible / flexibleBaseWidth;
@@ -54,8 +48,6 @@ Map<TimelineTrack, double> resolveTimelineTrackWidths({
     for (final track in metrics.trackOrder)
       track: kFixedTimelineTracks.contains(track)
           ? metrics.trackWidth(track)
-          : track == TimelineTrack.events
-          ? eventWidth
           : metrics.trackWidth(track) * flexibleScale,
   };
 }

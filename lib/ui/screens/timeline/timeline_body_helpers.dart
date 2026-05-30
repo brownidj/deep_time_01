@@ -28,6 +28,7 @@ double eventBarTrackWidth(
   TextStyle? style,
   double horizontalPadding = 3,
   double laneGap = 4,
+  double? laneWidth,
 }) {
   final barEvents = events
       .where((event) => event.type == TimelineEventType.bar)
@@ -36,13 +37,44 @@ double eventBarTrackWidth(
     return 0.0;
   }
   final laneCount = overlappingEventBarLaneCount(barEvents);
-  final laneWidth = math.max(
-    3.0,
-    ((style?.fontSize ?? 14.0) * (style?.height ?? 1.0)) + 18.0,
-  );
-  return (laneCount * laneWidth) +
+  final resolvedLaneWidth =
+      laneWidth ??
+      math.max(
+        3.0,
+        ((style?.fontSize ?? 14.0) * (style?.height ?? 1.0)) + 18.0,
+      );
+  return (laneCount * resolvedLaneWidth) +
       (math.max(0, laneCount - 1) * laneGap) +
       (horizontalPadding * 2);
+}
+
+double eventPointLabelInsetWidth(
+  List<TimelineEventSegment> events, {
+  TextStyle? style,
+}) {
+  final pointEvents = events
+      .where((event) => event.type == TimelineEventType.point)
+      .toList(growable: false);
+  if (pointEvents.isEmpty || style == null) {
+    return 0.0;
+  }
+  const markerLeft = 0.0;
+  const markerSize = 9.0;
+  const markerLabelGap = 6.0;
+  const barGapFromLabel = 8.0;
+  final textLeft = markerLeft + markerSize + markerLabelGap;
+  var maxLabelWidth = 0.0;
+  for (final event in pointEvents) {
+    final painter = TextPainter(
+      text: TextSpan(text: event.shortLabel, style: style),
+      textDirection: TextDirection.ltr,
+      maxLines: 1,
+    )..layout();
+    if (painter.width > maxLabelWidth) {
+      maxLabelWidth = painter.width;
+    }
+  }
+  return textLeft + maxLabelWidth + barGapFromLabel;
 }
 
 int overlappingEventBarLaneCount(List<TimelineEventSegment> barEvents) {

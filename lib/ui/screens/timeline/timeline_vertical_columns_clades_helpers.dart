@@ -77,6 +77,7 @@ bool _overlapsVisibleRange(
 
 List<_VerticalCladeBarLayout> _layoutCladeBars({
   required List<Clade> visible,
+  required Map<String, Clade> allById,
   required _StageRangeMapper mapper,
   required double columnWidth,
   required double columnHeight,
@@ -119,10 +120,33 @@ List<_VerticalCladeBarLayout> _layoutCladeBars({
         width: hitWidth,
         height: barHeight,
         parent: clade.parentId == null ? null : visibleById[clade.parentId],
+        parentLabel: clade.parentId == null
+            ? null
+            : allById[clade.parentId]?.label,
       ),
     );
   }
   return layouts;
+}
+
+String _formatCladeStartMa(double value) {
+  return value
+      .toStringAsFixed(3)
+      .replaceFirst(RegExp(r'0+$'), '')
+      .replaceFirst(RegExp(r'\.$'), '');
+}
+
+String _buildCladeDetailsText(_VerticalCladeBarLayout entry) {
+  final clade = entry.clade;
+  final parts = <String>[
+    'Rank: ${clade.scientificRank}',
+    'Parent: ${entry.parentLabel ?? '-'}',
+    'Started: ${_formatCladeStartMa(clade.startMa)} Ma ${clade.confidence ?? '-'}',
+    clade.shortDescription ?? '-',
+    'Range: ${clade.rangeNote ?? '-'}',
+    (clade.tags == null || clade.tags!.isEmpty) ? '-' : clade.tags!.join('; '),
+  ];
+  return parts.join('\n');
 }
 
 List<Clade> _orderedTreeClades(List<Clade> visible) {

@@ -8,6 +8,7 @@ class _VerticalCladeBarLayout {
     required this.width,
     required this.height,
     required this.parent,
+    required this.parentLabel,
   });
 
   final Clade clade;
@@ -16,6 +17,7 @@ class _VerticalCladeBarLayout {
   final double width;
   final double height;
   final Clade? parent;
+  final String? parentLabel;
 
   String get tooltip {
     return '${clade.label} • '
@@ -47,6 +49,7 @@ class _VerticalCladeBar extends StatelessWidget {
     required this.height,
     required this.isDimmed,
     required this.isHighlighted,
+    required this.onLongPress,
   });
 
   final Clade clade;
@@ -54,11 +57,19 @@ class _VerticalCladeBar extends StatelessWidget {
   final double height;
   final bool isDimmed;
   final bool isHighlighted;
+  final VoidCallback onLongPress;
 
   static const Color baseColor = Color(0xFF4DB6AC);
   static const Color highlightColor = Color(0xFFFFD978);
   static const Color labelBackgroundColor =
       DeepTimePalette.timelineGapBackground;
+
+  String _formatStartMa(double value) {
+    return value
+        .toStringAsFixed(3)
+        .replaceFirst(RegExp(r'0+$'), '')
+        .replaceFirst(RegExp(r'\.$'), '');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,14 +115,21 @@ class _VerticalCladeBar extends StatelessWidget {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: RotatedBox(
-                        quarterTurns: 3,
-                        child: Text(
-                          clade.label,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: labelStyle,
-                          textAlign: TextAlign.center,
+                      child: Tooltip(
+                        message: 'Start: ${_formatStartMa(clade.startMa)} Ma',
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          onLongPress: onLongPress,
+                          child: RotatedBox(
+                            quarterTurns: 3,
+                            child: Text(
+                              clade.label,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: labelStyle,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
                         ),
                       ),
                     ),

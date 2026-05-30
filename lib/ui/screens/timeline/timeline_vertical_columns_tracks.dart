@@ -1,5 +1,7 @@
 part of 'timeline_vertical_columns.dart';
 
+const double _standardVerticalEventBarWidth = 24.0;
+
 Widget _buildVerticalTrack({
   required TimelineTrack track,
   required double Function(TimelineTrack) scaledWidth,
@@ -189,6 +191,7 @@ Widget _buildVerticalTrack({
         laneGap: 6,
         showPoints: false,
         fillLaneWidths: false,
+        fixedLaneWidth: _standardVerticalEventBarWidth,
       );
     case TimelineTrack.waterways:
       return _VerticalEventsColumn(
@@ -227,6 +230,7 @@ Widget _buildVerticalTrack({
         laneGap: 6,
         showPoints: false,
         fillLaneWidths: false,
+        fixedLaneWidth: _standardVerticalEventBarWidth,
       );
     case TimelineTrack.paleoEcology:
       return _VerticalPaleoEcologyColumn(
@@ -265,6 +269,7 @@ Widget _buildVerticalTrack({
         events: layout.eventSegments,
         totalUnits: metrics.periodUnits,
         palette: palette,
+        fixedLaneWidth: _standardVerticalEventBarWidth,
       );
     case TimelineTrack.clades:
       return _VerticalCladeColumn(

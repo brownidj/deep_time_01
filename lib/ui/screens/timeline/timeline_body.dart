@@ -134,6 +134,7 @@ class TimelineBody extends StatelessWidget {
     TextStyle? stageStyle,
     TextStyle? maStyle,
   }) {
+    const standardVerticalEventBarWidth = 24.0;
     final eonLabel = labelMode.labelForRank('eon');
     final eraLabel = labelMode.labelForRank('era');
     final periodLabel = labelMode.divisionRowLabel();
@@ -177,19 +178,21 @@ class TimelineBody extends StatelessWidget {
     );
     final rlifeWidth =
         minimalHorizontalLabelWidth('Representative life', style: style) * 1.5;
+    final paleoEcologyWidth = math.max(40.0, rlifeWidth - 30.0);
     final eventsWidth = math.max(
       minimalHorizontalLabelWidth('Events', style: style),
-      eventBarTrackWidth(layout.eventSegments, style: style),
+      eventBarTrackWidth(
+            layout.eventSegments,
+            style: style,
+            laneWidth: standardVerticalEventBarWidth,
+          ) +
+          eventPointLabelInsetWidth(layout.eventSegments, style: style),
     );
     const continentLaneCount = 3;
     const continentLaneGap = 6.0;
     const continentHorizontalPadding = 0.0;
-    final continentLaneWidth = math.max(
-      3.0,
-      ((style?.fontSize ?? 14.0) * (style?.height ?? 1.0)) + 18.0,
-    );
     final continentsWidth =
-        (continentLaneCount * continentLaneWidth) +
+        (continentLaneCount * standardVerticalEventBarWidth) +
         ((continentLaneCount - 1) * continentLaneGap) +
         (continentHorizontalPadding * 2);
     final maWidth = maColumnWidth(layout, style: maStyle, padding: 20);
@@ -202,7 +205,7 @@ class TimelineBody extends StatelessWidget {
         TimelineTrack.epoch: epochWidth,
         TimelineTrack.stage: stageWidth,
         TimelineTrack.rlife: rlifeWidth,
-        TimelineTrack.paleoEcology: rlifeWidth,
+        TimelineTrack.paleoEcology: paleoEcologyWidth,
         TimelineTrack.extinctions: extinctionsWidth,
         TimelineTrack.continents: continentsWidth,
         TimelineTrack.waterways: continentsWidth,

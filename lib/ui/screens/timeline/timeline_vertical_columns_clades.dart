@@ -117,8 +117,10 @@ class _VerticalCladeColumn extends StatelessWidget {
             if (visible.isEmpty) {
               return _emptyColumn(_emptyMessage());
             }
+            final allById = {for (final clade in clades) clade.id: clade};
             final barLayouts = _layoutCladeBars(
               visible: visible,
+              allById: allById,
               mapper: mapper,
               columnWidth: width,
               columnHeight: height,
@@ -151,6 +153,11 @@ class _VerticalCladeColumn extends StatelessWidget {
                       child: GestureDetector(
                         behavior: HitTestBehavior.translucent,
                         onTap: () => onSpotlight(entry.clade),
+                        onLongPress: () => showTimelineExplanationDialog(
+                          context: context,
+                          title: entry.clade.label,
+                          explanation: _buildCladeDetailsText(entry),
+                        ),
                         child: _VerticalCladeBar(
                           key: ValueKey('vertical-clade-${entry.clade.id}'),
                           clade: entry.clade,
@@ -160,6 +167,11 @@ class _VerticalCladeColumn extends StatelessWidget {
                               spotlightId != null &&
                               spotlightId != entry.clade.id,
                           isHighlighted: spotlightId == entry.clade.id,
+                          onLongPress: () => showTimelineExplanationDialog(
+                            context: context,
+                            title: entry.clade.label,
+                            explanation: _buildCladeDetailsText(entry),
+                          ),
                         ),
                       ),
                     ),
