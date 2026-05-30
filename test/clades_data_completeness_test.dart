@@ -13,7 +13,7 @@ void main() {
     };
 
     const expectedIds = {
-      'life',
+      'luca',
       'bacteria',
       'archaea',
       'eukaryota',
@@ -55,5 +55,22 @@ void main() {
     expect(clades['dinosauria']?['parent_id'], 'archosauria');
     expect(clades['non_avian_dinosaurs']?['end_ma'], 66.0);
     expect(clades['aves']?['parent_id'], 'dinosauria');
+  });
+
+  test('representative clade list includes every clade', () {
+    final cladeDocument = loadYaml(File('data/clades.yaml').readAsStringSync());
+    final cladeIds = {
+      for (final entry in (cladeDocument as YamlList).whereType<YamlMap>())
+        entry['id'] as String,
+    };
+    final representativeDocument = loadYaml(
+      File('data/clade_representative_ids.yaml').readAsStringSync(),
+    );
+    expect(representativeDocument, isA<YamlList>());
+    final ids = (representativeDocument as YamlList)
+        .whereType<String>()
+        .toSet();
+
+    expect(ids, cladeIds);
   });
 }

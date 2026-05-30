@@ -8,6 +8,16 @@ class _VerticalCladeColumn extends StatelessWidget {
     required this.totalUnits,
     required this.scrollController,
     required this.clades,
+    required this.stageSegments,
+    required this.stageHeights,
+    required this.epochSegments,
+    required this.epochHeights,
+    required this.periodSegments,
+    required this.periodHeights,
+    required this.eraSegments,
+    required this.eraHeights,
+    required this.eonSegments,
+    required this.eonHeights,
     required this.viewMode,
     required this.displayGroupId,
     required this.representativeIds,
@@ -22,6 +32,16 @@ class _VerticalCladeColumn extends StatelessWidget {
   final double totalUnits;
   final ScrollController scrollController;
   final List<Clade> clades;
+  final List<TimelineRowSegment> stageSegments;
+  final List<double> stageHeights;
+  final List<TimelineRowSegment> epochSegments;
+  final List<double> epochHeights;
+  final List<TimelineRowSegment> periodSegments;
+  final List<double> periodHeights;
+  final List<TimelineBandSegment> eraSegments;
+  final List<double> eraHeights;
+  final List<TimelineBandSegment> eonSegments;
+  final List<double> eonHeights;
   final CladeViewMode viewMode;
   final String displayGroupId;
   final List<String> representativeIds;
@@ -46,10 +66,18 @@ class _VerticalCladeColumn extends StatelessWidget {
         child: AnimatedBuilder(
           animation: scrollController,
           builder: (context, child) {
-            final mapper = TimelineRangeMapper(
-              segments: layout.periodSegments,
-              totalUnits: totalUnits,
-              scrollWidth: height,
+            final mapper = _StageRangeMapper(
+              stageSegments: stageSegments,
+              stageHeights: stageHeights,
+              epochSegments: epochSegments,
+              epochHeights: epochHeights,
+              periodSegments: periodSegments,
+              periodHeights: periodHeights,
+              eraSegments: eraSegments,
+              eraHeights: eraHeights,
+              eonSegments: eonSegments,
+              eonHeights: eonHeights,
+              totalHeight: height,
               oldestMa: layout.oldestMa,
               youngestMa: layout.youngestMa,
             );
@@ -67,21 +95,21 @@ class _VerticalCladeColumn extends StatelessWidget {
                 scrollOffset = position.pixels;
               }
             }
-            final visibleStart = mapper.maForX(scrollOffset) ?? layout.oldestMa;
+            final visibleStart = mapper.maForY(scrollOffset) ?? layout.oldestMa;
             final visibleEnd =
-                mapper.maForX(scrollOffset + viewportHeight) ??
+                mapper.maForY(scrollOffset + viewportHeight) ??
                 layout.youngestMa;
-            final resolver = CladeVisibilityResolver();
-            final zoomLevel = resolver.zoomLevelForScale(
-              AppDebug.timelineScale,
+            final filtered = _filterCladesForMode(
+              source: clades,
+              representativeIds: representativeIds,
+              viewMode: viewMode,
+              searchQuery: searchQuery,
             );
-            final filtered = _filterCladesForMode();
             final filterId = viewMode == CladeViewMode.byCategory
                 ? displayGroupId
                 : null;
-            final visible = resolver.resolve(
+            final visible = _filterVisibleClades(
               clades: filtered,
-              zoomLevel: zoomLevel,
               visibleStartMa: visibleStart,
               visibleEndMa: visibleEnd,
               displayGroupId: filterId,
@@ -89,15 +117,39 @@ class _VerticalCladeColumn extends StatelessWidget {
             if (visible.isEmpty) {
               return _emptyColumn(_emptyMessage());
             }
+            final barLayouts = _layoutCladeBars(
+              visible: visible,
+              mapper: mapper,
+              columnWidth: width,
+              columnHeight: height,
+            );
             return Stack(
               children: [
-                for (final entry in _layoutBars(visible, mapper))
+                for (final connector in _layoutCladeConnectors(barLayouts))
+                  Positioned(
+                    key: ValueKey(
+                      'vertical-clade-connector-${connector.parent.id}-${connector.child.id}',
+                    ),
+                    left: connector.left,
+                    top: connector.top,
+                    width: connector.width,
+                    height: 1,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: _VerticalCladeBar.baseColor.withValues(
+                          alpha: 0.9,
+                        ),
+                      ),
+                    ),
+                  ),
+                for (final entry in barLayouts)
                   Positioned(
                     left: entry.left,
                     top: entry.top,
                     child: Tooltip(
                       message: entry.tooltip,
                       child: GestureDetector(
+                        behavior: HitTestBehavior.translucent,
                         onTap: () => onSpotlight(entry.clade),
                         child: _VerticalCladeBar(
                           key: ValueKey('vertical-clade-${entry.clade.id}'),
@@ -120,28 +172,6 @@ class _VerticalCladeColumn extends StatelessWidget {
     );
   }
 
-  List<Clade> _filterCladesForMode() {
-    if (viewMode == CladeViewMode.representativeOnly) {
-      return _filterRepresentative(clades);
-    }
-    if (viewMode == CladeViewMode.searchSpotlight) {
-      final query = searchQuery.trim();
-      if (query.isEmpty) {
-        return _filterRepresentative(clades);
-      }
-      return searchClades(clades, query);
-    }
-    return clades;
-  }
-
-  List<Clade> _filterRepresentative(List<Clade> source) {
-    if (representativeIds.isEmpty) {
-      return source;
-    }
-    final idSet = representativeIds.toSet();
-    return source.where((clade) => idSet.contains(clade.id)).toList();
-  }
-
   String _emptyMessage() {
     if (viewMode == CladeViewMode.searchSpotlight &&
         searchQuery.trim().isNotEmpty) {
@@ -159,131 +189,6 @@ class _VerticalCladeColumn extends StatelessWidget {
     const style = TextStyle(color: DeepTimePalette.panelText, fontSize: 12);
     return Center(
       child: Text(message, style: style, textAlign: TextAlign.center),
-    );
-  }
-
-  List<_VerticalCladeBarLayout> _layoutBars(
-    List<Clade> visible,
-    TimelineRangeMapper mapper,
-  ) {
-    const padding = 10.0;
-    const spacing = 4.0;
-    const minBarHeight = 12.0;
-    final count = visible.length;
-    final available = width - padding * 2 - math.max(0, count - 1) * spacing;
-    final laneWidth = count > 0 ? math.max(8.0, available / count) : 0.0;
-
-    final layouts = <_VerticalCladeBarLayout>[];
-    for (var i = 0; i < visible.length; i++) {
-      final clade = visible[i];
-      final start = (mapper.xForMa(clade.startMa) ?? 0.0).clamp(0.0, height);
-      final end = (mapper.xForMa(clade.endMa) ?? height).clamp(0.0, height);
-      final top = math.min(start, end);
-      final span = (end - start).abs();
-      var barHeight = math.max(minBarHeight, span);
-      if (top + barHeight > height) {
-        barHeight = math.max(0.0, height - top);
-      }
-      if (barHeight <= 0) {
-        continue;
-      }
-      final left = padding + i * (laneWidth + spacing);
-      if (left + laneWidth > width - padding) {
-        break;
-      }
-      layouts.add(
-        _VerticalCladeBarLayout(
-          clade: clade,
-          left: left,
-          top: top,
-          width: laneWidth,
-          height: barHeight,
-        ),
-      );
-    }
-    return layouts;
-  }
-}
-
-class _VerticalCladeBarLayout {
-  const _VerticalCladeBarLayout({
-    required this.clade,
-    required this.left,
-    required this.top,
-    required this.width,
-    required this.height,
-  });
-
-  final Clade clade;
-  final double left;
-  final double top;
-  final double width;
-  final double height;
-
-  String get tooltip {
-    return '${clade.label} • '
-        '${formatTimeRange(startMa: clade.startMa, endMa: clade.endMa, startPrecision: 1, endPrecision: 1, durationPrecision: 1)}';
-  }
-}
-
-class _VerticalCladeBar extends StatelessWidget {
-  const _VerticalCladeBar({
-    super.key,
-    required this.clade,
-    required this.width,
-    required this.height,
-    required this.isDimmed,
-    required this.isHighlighted,
-  });
-
-  final Clade clade;
-  final double width;
-  final double height;
-  final bool isDimmed;
-  final bool isHighlighted;
-
-  static const Color baseColor = Color(0xFF4DB6AC);
-  static const Color highlightColor = Color(0xFFFFD978);
-  static const Color textColor = DeepTimePalette.darkLabel;
-
-  @override
-  Widget build(BuildContext context) {
-    final color = isHighlighted ? highlightColor : baseColor;
-    final opacity = isDimmed ? 0.35 : 1.0;
-    final radius = math.min(width / 2, 12.0);
-    final showLabel = height >= 32;
-    final labelStyle = Theme.of(context).textTheme.labelSmall?.copyWith(
-      color: textColor,
-      fontWeight: FontWeight.w600,
-    );
-
-    return Opacity(
-      opacity: opacity,
-      child: Container(
-        width: width,
-        height: height,
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(radius),
-          border: Border.all(color: DeepTimePalette.frameBorder),
-        ),
-        alignment: Alignment.center,
-        child: showLabel
-            ? Padding(
-                padding: const EdgeInsets.symmetric(vertical: 6),
-                child: RotatedBox(
-                  quarterTurns: 3,
-                  child: Text(
-                    clade.label,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: labelStyle,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              )
-            : null,
-      ),
     );
   }
 }

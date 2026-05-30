@@ -90,6 +90,104 @@ class TimelineVerticalColumns extends StatelessWidget {
                 ],
                 unitSpan: (segment) => segment.unitSpan,
               );
+        final eonHeightsForClades = useFixedHeights
+            ? _computeProportionalHeights(
+                layout.eonSegments,
+                height: columnHeight,
+                unitsTotal: metrics.eonTotalUnits,
+                unitSpan: (segment) => segment.unitSpan,
+              )
+            : _computeHeightsWithMinimums(
+                layout.eonSegments,
+                height: columnHeight,
+                unitsTotal: metrics.eonTotalUnits,
+                minHeights: [
+                  for (final segment in layout.eonSegments)
+                    minHeights.eonHeights[segment.id] ?? 0.0,
+                ],
+                unitSpan: (segment) => segment.unitSpan,
+              );
+        final eraHeightsForClades = useFixedHeights
+            ? _computeProportionalHeights(
+                layout.eraSegments,
+                height: columnHeight,
+                unitsTotal: metrics.eraTotalUnits,
+                unitSpan: (segment) => segment.unitSpan,
+              )
+            : _computeHeightsWithMinimums(
+                layout.eraSegments,
+                height: columnHeight,
+                unitsTotal: metrics.eraTotalUnits,
+                minHeights: [
+                  for (final segment in layout.eraSegments)
+                    segment.isGap
+                        ? minHeightFromParentRange(
+                            segment.startMa,
+                            segment.endMa,
+                            layout.eonSegments,
+                            minHeights.eonHeights,
+                            (parent) => parent.startMa,
+                            (parent) => parent.endMa,
+                            (parent) => parent.id,
+                          )
+                        : (minHeights.eraHeights[segment.id] ?? 0.0),
+                ],
+                unitSpan: (segment) => segment.unitSpan,
+              );
+        final periodHeightsForClades = useFixedHeights
+            ? _computeProportionalHeights(
+                layout.periodSegments,
+                height: columnHeight,
+                unitsTotal: metrics.periodUnits,
+                unitSpan: (segment) => segment.unitSpan,
+              )
+            : _computeHeightsWithMinimums(
+                layout.periodSegments,
+                height: columnHeight,
+                unitsTotal: metrics.periodUnits,
+                minHeights: [
+                  for (final segment in layout.periodSegments)
+                    segment.isGap
+                        ? minHeightFromParentRange(
+                            segment.startMa,
+                            segment.endMa,
+                            layout.eraSegments,
+                            minHeights.eraHeights,
+                            (parent) => parent.startMa,
+                            (parent) => parent.endMa,
+                            (parent) => parent.id,
+                          )
+                        : (minHeights.periodHeights[segment.id] ?? 0.0),
+                ],
+                unitSpan: (segment) => segment.unitSpan,
+              );
+        final epochHeightsForClades = useFixedHeights
+            ? _computeProportionalHeights(
+                layout.epochSegments,
+                height: columnHeight,
+                unitsTotal: metrics.epochTotalUnits,
+                unitSpan: (segment) => segment.unitSpan,
+              )
+            : _computeHeightsWithMinimums(
+                layout.epochSegments,
+                height: columnHeight,
+                unitsTotal: metrics.epochTotalUnits,
+                minHeights: [
+                  for (final segment in layout.epochSegments)
+                    segment.isGap
+                        ? minHeightFromParentRange(
+                            segment.startMa,
+                            segment.endMa,
+                            layout.periodSegments,
+                            minHeights.periodHeights,
+                            (parent) => parent.startMa,
+                            (parent) => parent.endMa,
+                            (parent) => parent.id,
+                          )
+                        : (minHeights.epochHeights[segment.id] ?? 0.0),
+                ],
+                unitSpan: (segment) => segment.unitSpan,
+              );
         double scaledWidth(TimelineTrack track) =>
             trackWidths[track] ?? metrics.trackWidth(track);
         return Row(
@@ -121,6 +219,10 @@ class TimelineVerticalColumns extends StatelessWidget {
                 onCladeSpotlight: onCladeSpotlight,
                 paleoEcology: paleoEcology,
                 stageHeightsForPaleo: stageHeightsForPaleo,
+                eonHeightsForClades: eonHeightsForClades,
+                eraHeightsForClades: eraHeightsForClades,
+                periodHeightsForClades: periodHeightsForClades,
+                epochHeightsForClades: epochHeightsForClades,
               ),
               if (metrics.gapAfter(track) > 0)
                 SizedBox(width: metrics.gapAfter(track)),

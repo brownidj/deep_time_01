@@ -23,6 +23,10 @@ Widget _buildVerticalTrack({
   required ValueChanged<Clade> onCladeSpotlight,
   required List<PaleoEcologyEntry> paleoEcology,
   required List<double> stageHeightsForPaleo,
+  required List<double> eonHeightsForClades,
+  required List<double> eraHeightsForClades,
+  required List<double> periodHeightsForClades,
+  required List<double> epochHeightsForClades,
 }) {
   switch (track) {
     case TimelineTrack.ma:
@@ -270,6 +274,16 @@ Widget _buildVerticalTrack({
         totalUnits: metrics.periodUnits,
         scrollController: scrollController,
         clades: clades,
+        stageSegments: layout.stageSegments,
+        stageHeights: stageHeightsForPaleo,
+        epochSegments: layout.epochSegments,
+        epochHeights: epochHeightsForClades,
+        periodSegments: layout.periodSegments,
+        periodHeights: periodHeightsForClades,
+        eraSegments: layout.eraSegments,
+        eraHeights: eraHeightsForClades,
+        eonSegments: layout.eonSegments,
+        eonHeights: eonHeightsForClades,
         viewMode: cladeViewMode,
         displayGroupId: cladeCategoryId,
         representativeIds: cladeRepresentativeIds,

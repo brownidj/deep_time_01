@@ -15,31 +15,31 @@
 # The current Dart parser ignores the forward-looking fields, so they are safe
 # to add now while keeping the data ready for the next cladistics layout work.
 
-- id: life
-  label: Life
-  scientific_rank: domain
+- id: luca
+  label: LUCA
+  scientific_rank: last universal common ancestor
   start_ma: 3800.0
   end_ma: 0.0
-  range_note: Earliest evidence of life to present
+  range_note: Approximate age of the last universal common ancestor
   confidence: approximate
   display_groups:
     - early_life
   display_priority: 1
   min_zoom_level: whole
-  short_description: The broadest biological lineage represented in the timeline.
+  short_description: The inferred last universal common ancestor of all known cellular life.
   divergence_ma: 3800.0
   branch_priority: 1
   cladistic_role: backbone
   uncertainty: approximate
   tags:
+    - luca
     - life
-    - living clade
     - backbone
 
 - id: bacteria
   label: Bacteria
   scientific_rank: domain
-  parent_id: life
+  parent_id: luca
   start_ma: 3500.0
   end_ma: 0.0
   range_note: Archean to present
@@ -62,7 +62,7 @@
 - id: archaea
   label: Archaea
   scientific_rank: domain
-  parent_id: life
+  parent_id: luca
   start_ma: 3500.0
   end_ma: 0.0
   range_note: Archean to present
@@ -85,7 +85,7 @@
 - id: eukaryota
   label: Eukaryotes
   scientific_rank: domain
-  parent_id: life
+  parent_id: luca
   start_ma: 1850.0
   end_ma: 0.0
   range_note: Paleoproterozoic to present
